@@ -9,12 +9,17 @@ SIDES = ("north", "south", "east", "west")
 OPP = {"north": "south", "south": "north", "east": "west", "west": "east"}
 
 
+def _ns(m):
+    """A block family with its namespace: "oak" -> "minecraft:oak", "onepiece:marine_brick" stays as it is."""
+    return m if ":" in m else "minecraft:" + m
+
+
 def stair(m, facing, half="bottom"):
-    return f"minecraft:{m}_stairs[facing={facing},half={half},shape=straight,waterlogged=false]"
+    return f"{_ns(m)}_stairs[facing={facing},half={half},shape=straight,waterlogged=false]"
 
 
 def slab(m, t="bottom"):
-    return f"minecraft:{m}_slab[type={t},waterlogged=false]"
+    return f"{_ns(m)}_slab[type={t},waterlogged=false]"
 
 
 def trap(m, facing, half="top", open_=False):

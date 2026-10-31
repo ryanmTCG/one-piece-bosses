@@ -63,7 +63,12 @@ public class LairsClientTest implements FabricClientGameTest {
 			new Lair("fort_iron_tide", "iron_tide_graves", "deserter_marine", 7, false),
 			new Lair("hollow_shrine", "hollow_ronin_tsurugi", "", 0, false),
 			new Lair("shipbreakers_foundry", "boilerheart_gantz", "boiler_stoker", 7, false),
-			new Lair("abyssal_temple", "nereus_vane", "abyssal_cultist", 7, true));
+			new Lair("abyssal_temple", "nereus_vane", "abyssal_cultist", 7, true),
+			new Lair("gran_tesoro", "gild_tesoro", "gran_tesoro_guard", 7, true),
+			new Lair("elegia_stage", "uta_diva", "entranced_fan", 6, false),
+			new Lair("end_point", "zephyr_z", "neo_marine", 7, false),
+			new Lair("ironclad_colosseum", "douglas_bullet", "", 0, false),
+			new Lair("merveille", "shiki_golden_lion", "golden_lion_pirate", 7, false));
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -303,7 +308,8 @@ public class LairsClientTest implements FabricClientGameTest {
 			}
 		}
 
-		List<HumanNpc> crew = level.getEntitiesOfClass(HumanNpc.class, boss.getBoundingBox().inflate(48, 30, 48), Entity::isAlive);
+		// Tall enough for Merveille, whose palace guards are on the floating island 36 blocks over the arena.
+		List<HumanNpc> crew = level.getEntitiesOfClass(HumanNpc.class, boss.getBoundingBox().inflate(48, 44, 48), Entity::isAlive);
 		int kitted = 0;
 		for (HumanNpc npc : crew) {
 			boolean leftover = npc.entityTags().stream().anyMatch(t -> t.equals(GuardKit.GUARD_TAG) || t.startsWith(GuardKit.KIT_TAG_PREFIX));

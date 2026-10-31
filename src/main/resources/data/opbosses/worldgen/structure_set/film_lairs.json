@@ -1,0 +1,30 @@
+{
+  "structures": [
+    {
+      "structure": "opbosses:gran_tesoro",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:elegia_stage",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:end_point",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:ironclad_colosseum",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:merveille",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 52,
+    "separation": 18,
+    "salt": 1408172177
+  }
+}

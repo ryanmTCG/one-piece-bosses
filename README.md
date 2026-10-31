@@ -1,6 +1,6 @@
 # One Piece Bosses
 
-A companion mod for the One Piece Mod that adds original rogue boss fights, not story characters, so there's always someone new to fight. Each rogue brings their own crew, their own lines and a phase 3 signature move.
+A companion mod for the One Piece Mod that adds original rogue boss fights, plus the villains of the One Piece films (who aren't in the main mod's story), so there's always someone new to fight. Each boss brings their own crew, their own lines, a phase 3 signature move and a lair out in the world.
 
 Requires the One Piece Mod (Fabric, Minecraft 26.3, Java 25).
 
@@ -14,6 +14,22 @@ Requires the One Piece Mod (Fabric, Minecraft 26.3, Java 25).
 | **Tsurugi, the Hollow Ronin**, an empty suit of samurai armor that still duels | 3 | Sword, then curses | none (duels alone) | **Hollow Cut**: a flying cut, and the armor's curse withers anyone close | Hollow Menpo |
 | **Boilerheart Gantz**, a shipbreaker built around a ship's boiler | 4 | Fire, then quakes | Boiler Stokers | **Boiler Burst**: a scalding wave all around, then he slows down to cool (hit him then) | Cracked Boiler Core |
 | **Nereus Vane, Herald of the Deep**, a fishman prophet of something far below | 5 | Pulls, then quakes | Abyssal Cultists | **Tidal Judgment**: a whirlpool drags everything in while freezing water rains down | Abyssal Conch |
+
+## The film villains
+
+The main antagonists of the One Piece films, built the same way as the rogues (their own bodies, crews, lines, signatures, trophies, posters and lairs). They're the toughest fights in the mod.
+
+| Villain | Film | Tier | Fights with | Crew | Phase 3 signature | Trophy |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Gild Tesoro**, owner of the casino-ship Gran Tesoro (Gold-Gold Fruit) | Film Gold | 4 | Gold that holds you still, then pulls | Gran Tesoro Security | **Golden Finale**: the gold you touched grabs you (heavy slowness and mining fatigue), molten gold rains down | Tesoro's Golden Chip |
+| **Uta**, the world's diva (Sing-Sing Fruit) | Film Red | 5 | Staff-line bindings, then teleports | her entranced fans | **Uta World**: her song puts everyone half to sleep (nausea, slowness), then Tot Musica's light falls | Diva's Headphones |
+| **"Z", Admiral Zephyr** of the Neo Marines | Film Z | 5 | Punches, then Haki | Neo Marines | **Battle Smasher**: a seastone haymaker that sends you flying and drains fruit users, a shockwave and Smash Blaster shells | Battle Smasher Knuckle |
+| **Douglas Bullet**, the Demon Heir (Clank-Clank Fruit) | Stampede | 5 | Punches, then Haki | none (fights alone) | **Gashapon Fortress**: fuses scrap into armour (resistance and absorption), scrap rains down, then a shockwave | Clank-Clank Rivet |
+| **Shiki, the Golden Lion** (Float-Float Fruit) | Strong World | 5 | Launches you into the sky, then his sword legs | Golden Lion Pirates and his mutated beasts (manticores, humandrills, basilisks) | **Lion Float**: floats everyone into the air and lets go, while floating rock rains down | Golden Lion's Helm, and his **Float-Float Fruit** |
+
+Bounties for a first win: Tesoro 300M, Uta 400M, Zephyr 500M, Bullet 800M, Shiki 900M.
+
+Their looks: Bullet is a gorilla of a man with arms thicker than his body in fused-scrap gauntlets and a riveted plate on his back; Tesoro is all legs under a green pompadour, red shades, a white suit and a gold fur stole and cape, with hands of gold rings; Zephyr is lopsided by the Battle Smasher, a seastone war-arm bigger than his chest, under purple hair and a Neo Marine coat; Shiki has a golden mane bigger than he is, a ship's wheel stuck in his skull and two swords where his legs should be; Uta has red-and-white hair looped into two great rings, headphones and a frilled skirt.
 
 ## Their looks
 
@@ -47,12 +63,13 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 | `tools/gen_models.py` | **Each rogue's body shape and skin.** Writes `client/RogueModels.java` and the skins. |
 | `tools/gen_assets.py` | Draws the poster and trophy art and writes the item JSON. |
 | `tools/lairs/gen_lairs.py` | **Each rogue's lair:** the build, where it spawns, and its chest loot. Run `python3 tools/lairs/gen_lairs.py .` after a change. |
+| `tools/lairs/film_lairs.py` | The film villains' lairs and their chest loot (gen_lairs.py builds them too). |
 
 To add a rogue: add an entry to `bosses.json` (and a crew to `crews.json` if it has one), give it a body in `ROGUES` in `tools/gen_models.py` and its trophy a look in `TROPHIES` in `tools/gen_assets.py`, then run both (`python3 tools/gen_models.py .` and `python3 tools/gen_assets.py src/main/resources`, needs Pillow).
 
 ## Their lairs
 
-Every rogue has a base of their own out in the world, so you can stumble on them without a poster. Each one spawns its boss and crew once, when it's first generated, and has a chest whose loot always includes that boss's Rumor Poster for a rematch. They're rare: about one lair per 44 chunks. Find one with `/locate structure opbosses:<name>`.
+Every rogue has a base of their own out in the world, so you can stumble on them without a poster. Each one spawns its boss and crew once, when it's first generated, and has a chest whose loot always includes that boss's Rumor Poster for a rematch. They're rare: about one rogue lair per 44 chunks, and separately one film lair per 52 chunks. Find one with `/locate structure opbosses:<name>`.
 
 | Lair | Rogue | Where |
 | --- | --- | --- |
@@ -62,6 +79,11 @@ Every rogue has a base of their own out in the world, so you can stumble on them
 | `hollow_shrine`: a dueling ring under a torii, ringed with beaten swordsmen's blades | Hollow Ronin Tsurugi | Cherry groves, meadows, hills, taiga, Wano |
 | `shipbreakers_foundry`: a furnace hall by a warship being torn apart | Boilerheart Gantz | Stony shores, badlands, desert, Onigashima, Punk Hazard |
 | `abyssal_temple`: a prismarine arena rising out of the sea | Nereus Vane | Oceans |
+| `gran_tesoro`: a gold casino-ship 100 blocks long: a domed casino with roulette tables, slot machines and a gallery, the gold vault in the hull (the chest), a hotel tower, and a 45-block gold statue of Tesoro on the bow | Gild Tesoro | Oceans, New World sea |
+| `elegia_stage`: a concert stage under a great shell, speaker stacks, a runway into an amphitheatre for hundreds, Uta's dressing room (the chest), and ruined Elegia's broken castle tower | Uta | Meadows, flower forests, plains, Dressrosa |
+| `end_point`: a volcano with a glowing crater and a Dyna Stone vault inside, the Neo Marine HQ (Zephyr's office and the chest on the top floor), a training ground, a battleship in dry dock, watchtowers and cannons | Zephyr | Badlands, savanna plateaus, stony shores, Punk Hazard, Marineford |
+| `ironclad_colosseum`: an oval colosseum of fused scrap with an arena floor, and Bullet's Gashapon war machine slumped against its wall; his camp (the chest), wrecked ships and scrap heaps outside | Douglas Bullet | Desert, savanna, plains, Alabasta |
+| `merveille`: a jungle court ringed with lions, cages of mutated beasts, a rock spire with a stair to a floating island where Shiki's palace has a lion's head for a gate (the chest), more floating islets and his flagship hanging in the sky | Shiki | Jungles, Little Garden |
 
 ![The six lairs](docs/lairs.png)
 

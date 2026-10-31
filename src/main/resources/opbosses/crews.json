@@ -83,6 +83,74 @@
 			"damage": 14,
 			"armor": 8,
 			"berries": 8
+		},
+		{
+			"id": "gran_tesoro_guard",
+			"faction": "pirate",
+			"crews": ["Gran Tesoro Security"],
+			"name": "{rank} {name}",
+			"ranks": ["Dealer", "Pit Boss", "Gold Guard"],
+			"skins": ["cp_agent", "donquixote"],
+			"loadouts": [
+				{"style": "gunner", "weight": 2, "weapons": ["onepiece:flintlock_pistol"]},
+				{"style": "rokushiki", "weight": 1, "weapons": []},
+				{"style": "sword", "weight": 1, "weapons": ["minecraft:golden_sword"]}
+			],
+			"health": 80,
+			"damage": 12,
+			"armor": 7,
+			"berries": 10
+		},
+		{
+			"id": "entranced_fan",
+			"faction": "pirate",
+			"crews": ["Uta's Audience"],
+			"name": "{rank} {name}",
+			"ranks": ["Dreaming Fan", "Sleepwalker", "Front-Row Fan"],
+			"skins": ["deckhand", "rookie"],
+			"loadouts": [
+				{"style": "brawler", "weight": 3, "weapons": []},
+				{"style": "sword", "weight": 1, "weapons": ["minecraft:wooden_sword"]}
+			],
+			"health": 70,
+			"damage": 10,
+			"armor": 4,
+			"berries": 3
+		},
+		{
+			"id": "neo_marine",
+			"faction": "pirate",
+			"crews": ["Neo Marines"],
+			"name": "Neo Marine {rank} {surname}",
+			"ranks": ["Private", "Lieutenant", "Commander"],
+			"skins": ["marine_officer", "marine_captain"],
+			"loadouts": [
+				{"style": "sword", "weight": 2, "weapons": ["minecraft:iron_sword"]},
+				{"style": "rokushiki", "weight": 1, "weapons": []},
+				{"style": "gunner", "weight": 1, "weapons": ["onepiece:flintlock_pistol"]},
+				{"style": "heavy", "weight": 1, "weapons": ["onepiece:seastone_jitte"]}
+			],
+			"health": 100,
+			"damage": 14,
+			"armor": 9,
+			"berries": 8
+		},
+		{
+			"id": "golden_lion_pirate",
+			"faction": "pirate",
+			"crews": ["Golden Lion Pirates"],
+			"name": "{rank} {name}",
+			"ranks": ["Beast Tamer", "Sky Raider", "Lion's Officer"],
+			"skins": ["pirate_captain", "headliner"],
+			"loadouts": [
+				{"style": "sword", "weight": 2, "weapons": ["minecraft:iron_sword"]},
+				{"style": "gunner", "weight": 1, "weapons": ["onepiece:flintlock_pistol"]},
+				{"style": "heavy", "weight": 1, "weapons": ["minecraft:iron_axe"]}
+			],
+			"health": 95,
+			"damage": 14,
+			"armor": 8,
+			"berries": 8
 		}
 	]
 }

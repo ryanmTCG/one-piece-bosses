@@ -20,6 +20,11 @@ TROPHIES = {
     "hollow_menpo": ((40, 36, 46), (120, 230, 255), "mask"),
     "cracked_boiler_core": ((255, 140, 30), (80, 60, 50), "core"),
     "abyssal_conch": ((240, 220, 200), (60, 140, 160), "conch"),
+    "golden_casino_chip": ((240, 200, 60), (170, 30, 40), "chip"),
+    "diva_headphones": ((244, 244, 248), (232, 144, 184), "headphones"),
+    "smasher_knuckle": ((110, 90, 150), (50, 50, 60), "knuckle"),
+    "clank_clank_rivet": ((150, 150, 160), (70, 70, 80), "rivet"),
+    "golden_lion_helm": ((140, 90, 48), (240, 200, 64), "wheel"),
 }
 
 TROPHY_NAMES = {
@@ -29,6 +34,11 @@ TROPHY_NAMES = {
     "hollow_menpo": "Hollow Menpo",
     "cracked_boiler_core": "Cracked Boiler Core",
     "abyssal_conch": "Abyssal Conch",
+    "golden_casino_chip": "Tesoro's Golden Chip",
+    "diva_headphones": "Diva's Headphones",
+    "smasher_knuckle": "Battle Smasher Knuckle",
+    "clank_clank_rivet": "Clank-Clank Rivet",
+    "golden_lion_helm": "Golden Lion's Helm",
 }
 
 
@@ -57,6 +67,25 @@ def item_texture(main, dark, shape):
         d.line([(3, 4), (7, 8), (6, 12)], fill=(20, 20, 20, 255))
     elif shape == "conch":
         d.polygon([(2, 12), (8, 2), (14, 9), (9, 14)], fill=main + (255,)); d.line([(4, 11), (9, 5), (12, 9)], fill=dark + (255,))
+    elif shape == "chip":
+        d.ellipse([1, 1, 14, 14], fill=main + (255,)); d.ellipse([4, 4, 11, 11], outline=dark + (255,))
+        for (x, y) in ((7, 1), (7, 13), (1, 7), (13, 7)):
+            box(d, x, y, 2, 2, dark)
+        box(d, 7, 6, 2, 4, shade(main, 0.7))
+    elif shape == "headphones":
+        d.arc([2, 1, 13, 12], 180, 360, fill=main + (255,), width=2)
+        box(d, 1, 7, 4, 6, dark); box(d, 11, 7, 4, 6, dark); box(d, 2, 8, 2, 4, main); box(d, 12, 8, 2, 4, main)
+    elif shape == "knuckle":
+        box(d, 2, 4, 12, 9, main); [box(d, x, 3, 2, 2, dark) for x in (3, 6, 9, 12)]
+        box(d, 2, 8, 12, 1, dark); box(d, 4, 10, 8, 1, (200, 170, 255))
+    elif shape == "rivet":
+        d.polygon([(8, 1), (14, 5), (14, 11), (8, 15), (2, 11), (2, 5)], fill=main + (255,))
+        d.ellipse([5, 5, 10, 10], fill=dark + (255,)); d.point([(6, 6)], fill=(230, 230, 240, 255))
+    elif shape == "wheel":
+        d.ellipse([2, 2, 13, 13], outline=main + (255,), width=2)
+        d.line([(8, 0), (8, 15)], fill=main + (255,)); d.line([(0, 8), (15, 8)], fill=main + (255,))
+        d.line([(3, 3), (12, 12)], fill=main + (255,)); d.line([(12, 3), (3, 12)], fill=main + (255,))
+        d.ellipse([6, 6, 9, 9], fill=dark + (255,))
     elif shape == "poster":
         box(d, 2, 1, 12, 14, (215, 190, 140)); box(d, 3, 2, 10, 2, (90, 40, 30))
         box(d, 5, 5, 6, 5, (120, 110, 100)); box(d, 7, 6, 2, 1, (40, 30, 30))   # a figure in shadow

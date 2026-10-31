@@ -14,6 +14,7 @@ cloth turn around that point). Arm and leg boxes are given for the right side an
 The parts animate like a player's (walking, swinging, looking around); "sway" boxes (coat tails, trains, skirts)
 also swing back as the boss walks: sway=1 swings out behind, sway=-1 out in front.
 """
+import math
 import os
 import random
 import sys
@@ -153,6 +154,113 @@ ROGUES = {
             B('arm', -2.5, 19, -2.5, 5, 4, 5, '#4a8690', 'web'),
             B('leg', -2, 0, -2, 4, 10, 4, '#5a96a0', 'scales'),
         ]),
+
+    # ---------------- the film villains ----------------
+    # Douglas Bullet: a gorilla of a man. Traps up to his ears, a head sunk between them, arms thicker than his
+    # body that hang to his ankles, and the Clank-Clank Fruit's scrap fused into gauntlets and a riveted back plate.
+    "douglas_bullet": dict(
+        pivots=dict(head=(0, -4, -1), body=(0, -4, 0), arm=(-12, -1, 0), leg=(-3.5, 13, 0)),
+        boxes=[
+            B('head', -3, -6, -3.5, 6, 6, 7, '#8a5a40', None, front='face', eyes='#e02020', brows='#e8e8ec', mouth='grit'),
+            B('head', -3.5, -8, -2.5, 7, 3, 7, '#e8e8ec', 'hair'),                       # white hair, swept back
+            B('head', -3, 0, 0, 6, 10, 1, '#e8e8ec', 'hair', sway=1, pivot=(0, -6, 4)),  # long white mane down his back
+            B('body', -10, -2, -3, 20, 5, 7, '#8a5a40', 'muscle'),                       # traps
+            B('body', -9, 3, -4.5, 18, 8, 9, '#8a5a40', 'muscle', front='pecs'),         # chest
+            B('body', -6, 11, -3.5, 12, 4, 7, '#8a5a40', 'muscle', front='abs'),
+            B('body', -6.5, 15, -4, 13, 3, 8, '#2a2a30', 'leather', front='buckle'),
+            B('body', -8, -1, 4, 16, 13, 2, '#6a6a74', 'rivets'),                        # scrap fused to his back
+            B('body', -1, -5, 5.5, 2, 6, 2, '#5a5a64', 'iron', mirror=True),              # bolts sticking out of it
+            B('arm', -5, -4, -4.5, 9, 8, 9, '#8a5a40', 'muscle'),                        # boulder shoulders
+            B('arm', -5, 4, -4.5, 9, 11, 9, '#5a5a64', 'rivets'),                        # Clank-Clank gauntlet
+            B('arm', -4.5, 15, -4, 8, 6, 8, '#4a4a54', 'rivets', front='knuckles'),       # iron fist
+            B('leg', -3, 0, -3, 6, 8, 6, '#3a3a44', 'cloth'),
+            B('leg', -3.5, 8, -4, 7, 3, 7, '#202024', 'leather'),
+        ]),
+    # Gild Tesoro: all legs and gold. A towering green pompadour, red shades, a white suit pinched to a
+    # wasp waist, a gold fur stole and cape, and hands that are nothing but gold rings.
+    "gild_tesoro": dict(
+        pivots=dict(head=(0, -10, 0), body=(0, -10, 0), arm=(-5.5, -8, 0), leg=(-2, 6, 0)),
+        boxes=[
+            B('head', -3, -7, -3, 6, 7, 6, '#a87850', None, front='face', eyes=None, brows=None, mouth='grin', shades='#d02838'),
+            B('head', -3.5, -12, -4, 7, 5, 7, '#3aa060', 'hair'),                        # pompadour
+            B('head', -3, -11, -6.5, 6, 3, 3, '#3aa060', 'hair'),                        # its quiff
+            B('body', -4, 0, -2.5, 8, 10, 5, '#f4f0e8', 'cloth', front='suit_gold'),
+            B('body', -7, -1.5, -3.5, 14, 4, 7, '#e8c040', 'fur'),                       # gold fur stole
+            B('body', -6.5, 0, 0, 13, 15, 1, '#d8b030', 'fur', sway=1, pivot=(0, 1, 3)),  # gold fur cape
+            B('body', -3.5, 10, -2, 7, 6, 4, '#f4f0e8', 'cloth', front='buckle'),
+            B('arm', -1.5, -1, -1.5, 3, 13, 3, '#f4f0e8', 'cloth', front='cuff'),
+            B('arm', -2, 12, -2, 4, 3, 4, '#e8c040', 'gold', front='rings'),            # gold-ringed hand
+            B('leg', -1.5, 0, -1.5, 3, 16, 3, '#f4f0e8', 'cloth'),
+            B('leg', -1.8, 16, -2.6, 3.6, 2, 4.2, '#e8c040', 'gold'),                   # gold shoes
+        ]),
+    # Zephyr: a mountain of an old Admiral, lopsided by the Battle Smasher, a seastone war-arm bigger than
+    # his chest on his right. Purple hair and beard, a visor, and the Neo Marines' black coat.
+    "zephyr_z": dict(
+        pivots=dict(head=(0, -6, -1), body=(0, -6, 0), arm=(-9, -4, 0), leg=(-3, 12, 0)),
+        boxes=[
+            B('head', -3.5, -7, -3.5, 7, 7, 7, '#c89070', None, front='face', eyes=None, brows=None, mouth=None, shades='#6a3a9a', scar=True),
+            B('head', -3, -1.5, -4.2, 6, 3, 5, '#8a5ab8', 'hair'),                        # beard
+            B('head', -4, -9, -3.5, 8, 3, 8, '#8a5ab8', 'hair'),                          # hair
+            B('head', -3.5, -8, 3.5, 7, 5, 2, '#8a5ab8', 'hair'),                         # swept back
+            B('body', -8, -1.5, -4.5, 16, 3, 9, '#3a2a50', 'ruff'),                       # coat collar
+            B('body', -7, 1, -4, 14, 9, 8, '#1e2028', 'cloth', front='neo_coat'),
+            B('body', -6, 10, -3.5, 12, 6, 7, '#2a2a34', 'cloth', front='buckle'),
+            B('body', -7.5, 0, 0, 15, 14, 1, '#1e2028', 'coat', sway=1, pivot=(0, 9, 4.2)),   # coat tails
+            B('arm', -2.5, -2, -2.5, 5, 12, 5, '#1e2028', 'cloth', only='left'),          # his own left arm
+            B('arm', -2, 10, -2, 4, 4, 4, '#c89070', None, front='knuckles', only='left'),
+            B('arm', -6, -4, -5, 10, 8, 10, '#4a4a58', 'rivets', only='right'),           # the Battle Smasher
+            B('arm', -6.5, 4, -6, 11, 12, 12, '#5a4a78', 'smasher', front='smasher_face', only='right'),
+            B('arm', -5.5, 16, -5.5, 9, 5, 11, '#3a3a48', 'rivets', front='knuckles', only='right'),
+            B('leg', -2.5, 0, -2.5, 5, 9, 5, '#2a2a34', 'cloth'),
+            B('leg', -3, 9, -3.5, 6, 3, 6, '#141418', 'leather'),
+        ]),
+    # Shiki: a golden lion's mane bigger than he is, a ship's wheel stuck in his skull, a long captain's
+    # coat, and no legs at all: he stands on his two swords, Oto and Sakura Jubei.
+    "shiki_golden_lion": dict(
+        pivots=dict(head=(0, -6, 0), body=(0, -6, 0), arm=(-7, -4, 0), leg=(-2, 10, 0)),
+        boxes=[
+            B('head', -3.5, -7, -3.5, 7, 7, 7, '#d8b490', None, front='face', eyes='#2a2a2a', brows='#e8c040', mouth='smirk'),
+            B('head', -9, -12, 2, 18, 22, 4, '#f0c840', 'mane'),                          # the mane, behind
+            B('head', -6.5, -10, -4, 3, 12, 6, '#f0c840', 'mane', mirror=True),          # mane down the sides of his face
+            B('head', -6, -11, -4.5, 12, 4, 7, '#f0c840', 'mane'),                       # mane on top
+            B('head', -1, -4, -1, 2, 4, 2, '#7a4a28', 'wood', pivot=(0, -11, 0)),        # the wheel's hub, in his head
+            B('head', -4.5, -12, -0.5, 9, 9, 1, '#8a5a30', 'wheel', rot=(0, 0, 0.3), pivot=(0, -11, 0)),
+            B('body', -7, -1, -3.5, 14, 3, 7, '#f0ead8', 'coat'),                        # coat over his shoulders
+            B('body', -5, 1, -3, 10, 8, 6, '#1a2a3a', 'robe', front='kimono'),
+            B('body', -5.5, 9, -3.5, 11, 2, 7, '#c8a040', 'gold'),                       # sash
+            B('body', -4.5, 11, -3, 9, 4, 6, '#1a2a3a', 'robe'),
+            B('body', -7, 0, 0, 14, 20, 1, '#f0ead8', 'coat', sway=1, pivot=(0, 1, 3.6)),  # captain's coat
+            B('arm', -2, -1, -2, 4, 13, 4, '#1a2a3a', 'robe'),
+            B('arm', -1.8, 12, -1.8, 3.6, 3, 3.6, '#d8b490'),
+            B('leg', -1.5, 0, -1.5, 3, 3, 3, '#3a2a20', 'leather'),                      # sword hilt
+            B('leg', -2.5, 3, -2.5, 5, 1, 5, '#c8a040', 'gold'),                        # guard
+            B('leg', -0.5, 4, -1.5, 1, 10, 3, '#e0e4ec', 'blade'),                      # the blade he stands on
+        ]),
+    # Uta: hair split red and white, looped into two great rings, headphones, a puffed white top over a
+    # wasp waist, a frilled skirt and long boots on long thin legs.
+    "uta_diva": dict(
+        pivots=dict(head=(0, -8, 0), body=(0, -8, 0), arm=(-4.5, -6, 0), leg=(-1.8, 8, 0)),
+        boxes=[
+            B('head', -3.5, -7, -3, 7, 7, 6, '#f4dcd0', None, front='face', eyes='#a070c0', brows=None, mouth='smirk', lashes=True),
+            B('head', -4, -8.5, -3.5, 4, 3, 7.5, '#d83040', 'hair'),                     # red half
+            B('head', 0, -8.5, -3.5, 4, 3, 7.5, '#f4f4f8', 'hair'),                      # white half
+            B('head', -4, 0, 0, 4, 12, 1.5, '#d83040', 'hair', sway=1, pivot=(0, -6, 2.5)),
+            B('head', 0, 0, 0, 4, 12, 1.5, '#f4f4f8', 'hair', sway=1, pivot=(0, -6, 2.5)),
+            B('head', -4.5, -4.5, -0.5, 9, 9, 1, '#d83040', 'ring', rot=(0, 0, 0.3), pivot=(-7.5, -7, 0.5)),   # the hair loops
+            B('head', -4.5, -4.5, -0.5, 9, 9, 1, '#f4f4f8', 'ring', rot=(0, 0, -0.3), pivot=(7.5, -7, 0.5)),
+            B('head', -4.5, -5, -1.5, 9, 3, 3, '#f4f4f8', 'cloth', front='phones'),      # headphones
+            B('head', -4, -9.2, -0.5, 8, 1, 1, '#f4f4f8', 'cloth'),
+            B('body', -3, 0, -2, 6, 6, 4, '#f4f0f4', 'cloth', front='uta_top'),
+            B('body', -2, 6, -1.5, 4, 3, 3, '#2a2030', 'cloth'),                         # waist
+            B('body', -4, 9, -3, 8, 4, 6, '#d8d0e0', 'frills'),
+            B('body', -4.5, 0, 0, 9, 7, 1, '#e890b8', 'frills', sway=-1, pivot=(0, 13, -3.3)),
+            B('body', -4.5, 0, 0, 9, 7, 1, '#e890b8', 'frills', sway=1, pivot=(0, 13, 3.3)),
+            B('arm', -2, -1.5, -2, 4, 4, 4, '#f4f0f4', 'ruff'),                          # puffed sleeves
+            B('arm', -1, 2.5, -1, 2, 10, 2, '#f4dcd0'),
+            B('arm', -1.2, 12, -1.2, 2.4, 2, 2.4, '#2a2030', 'leather'),
+            B('leg', -1, 0, -1, 2, 10, 2, '#f4dcd0'),
+            B('leg', -1.3, 10, -1.6, 2.6, 6, 3.2, '#2a2030', 'leather'),                 # long boots
+        ]),
 }
 
 # ---------------- painting ----------------
@@ -231,6 +339,43 @@ def paint_face_texture(img, x0, y0, w, h, colour, pattern, rnd, face):
                 c = shade(base, 1.2) if n < 0.3 else base
             elif pattern == 'web':
                 c = shade(base, 0.8) if x % 2 == 0 else base
+            elif pattern == 'muscle':
+                c = shade(base, 0.95 + 0.06 * n)
+                if (x * 5 + y * 3) % 11 == 0:
+                    c = shade(base, 0.82)   # muscle shading and veins
+            elif pattern in ('fur', 'mane'):
+                c = shade(base, 0.8 + 0.35 * ((x * 7 + y * 3 + int(n * 3)) % 5) / 5)
+                if pattern == 'mane' and (x + 2 * y) % 9 == 0:
+                    c = shade(base, 1.2)
+            elif pattern == 'coat':
+                c = shade(base, 0.94 + 0.08 * n)
+                if x in (0, w - 1) or y == h - 1:
+                    c = (200, 160, 60)   # gold trim
+            elif pattern == 'blade':
+                c = shade(base, 1.15) if x == 0 or y == h - 1 else shade(base, 0.9 + 0.1 * n)
+                if face in ('left', 'right') and x == w - 1:
+                    c = (250, 250, 255)   # the edge
+            elif pattern == 'frills':
+                c = shade(base, 1.12) if y % 3 == 0 else shade(base, 0.95 + 0.06 * n)
+                if y == h - 1 and x % 2:
+                    c = (0, 0, 0)   # scalloped hem (cut out)
+            elif pattern == 'wood':
+                c = shade(base, 0.85 + 0.2 * ((x + int(n * 2)) % 3) / 3)
+            elif pattern == 'smasher':
+                c = shade(base, 0.92 + 0.12 * n)
+                if y % 4 == 0 or x % 6 == 0:
+                    c = (60, 60, 70)
+                if (x % 6 == 3 and y % 4 == 2):
+                    c = (210, 200, 230)   # rivets
+            elif pattern in ('ring', 'wheel'):
+                # A ring (hair loop) or a ship's wheel: the big faces are cut out in the middle.
+                c = shade(base, 0.9 + 0.15 * n)
+                if w >= 5 and h >= 5:
+                    cx, cy = (w - 1) / 2, (h - 1) / 2
+                    r = math.hypot((x - cx) / (w / 2), (y - cy) / (h / 2))
+                    spoke = pattern == 'wheel' and (abs(x - cx) < 0.6 or abs(y - cy) < 0.6 or abs(abs(x - cx) - abs(y - cy)) < 0.6)
+                    if r > 1.0 or (r < 0.62 and not spoke and r > 0.2):
+                        c = (0, 0, 0)
             if c == (0, 0, 0):
                 px[x0 + x, y0 + y] = (0, 0, 0, 0)
             else:
@@ -259,6 +404,9 @@ def decorate_front(img, x0, y0, w, h, box):
                 dot(img, ex + (1 if ex < cx else -1) * 0, ey, box['eyes'])
                 if box.get('lashes'):
                     dot(img, ex, ey - 1, '#101010')
+        if box.get('shades'):
+            for dx in range(-(w // 2) + 1, w // 2 - 1):
+                dot(img, cx + dx, ey, box['shades']); dot(img, cx + dx, ey - 1, '#141418')
         if box.get('brows'):
             for bx in range(w // 2 - 1):
                 dot(img, x0 + 1 + bx, ey - 2, box['brows']); dot(img, x0 + w - 2 - bx, ey - 2, box['brows'])
@@ -269,6 +417,10 @@ def decorate_front(img, x0, y0, w, h, box):
         my = y0 + h - 2
         if mouth == 'smirk':
             dot(img, cx - 1, my, '#8a3a4a'); dot(img, cx, my, '#8a3a4a'); dot(img, cx + 1, my - 1, '#8a3a4a')
+        elif mouth == 'grin':
+            for dx in range(-2, 3):
+                dot(img, cx + dx, my, '#f8f8f0' if abs(dx) < 2 else '#4a2020')
+            dot(img, cx - 1, my, '#e8c040')   # a gold tooth
         elif mouth == 'grit':
             for dx in range(-2, 2):
                 dot(img, cx + dx, my, '#f0f0e8' if dx % 2 else '#303030')
@@ -346,6 +498,59 @@ def decorate_front(img, x0, y0, w, h, box):
     elif kind == 'trim':
         for y in range(h):
             dot(img, cx - 1, y0 + y, '#f0dc96'); dot(img, cx, y0 + y, '#f0dc96')
+    elif kind == 'pecs':
+        for x in range(2, w - 2):
+            dot(img, x0 + x, y0 + h // 2 + 1, shade(rgb(box['colour']), 0.75))
+        for y in range(1, h // 2 + 2):
+            dot(img, cx, y0 + y, shade(rgb(box['colour']), 0.75))
+        for x in (3, w - 4):   # scars
+            dot(img, x0 + x, y0 + 2, '#b88070'); dot(img, x0 + x + 1, y0 + 3, '#b88070')
+    elif kind == 'abs':
+        for y in range(0, h, 2):
+            for x in range(2, w - 2):
+                dot(img, x0 + x, y0 + y, shade(rgb(box['colour']), 0.8))
+        for y in range(h):
+            dot(img, cx, y0 + y, shade(rgb(box['colour']), 0.75))
+    elif kind == 'suit_gold':
+        for y in range(h):
+            dot(img, cx, y0 + y, '#f8f8f8')
+            dot(img, cx - 1 - min(y, 2), y0 + y, '#e8c040'); dot(img, cx + min(y, 2), y0 + y, '#e8c040')   # gold lapels
+        for y in (3, 5, 7):
+            dot(img, cx, y0 + y, '#e8c040')
+        for x in range(1, w - 1):   # gold chains
+            dot(img, x0 + x, y0 + 4 + abs(x - w // 2) // 2, '#f0d050')
+    elif kind == 'cuff':
+        for x in range(w):
+            dot(img, x0 + x, y0 + h - 1, '#e8c040'); dot(img, x0 + x, y0 + h - 2, '#e8c040')
+    elif kind == 'rings':
+        for x in range(w):
+            dot(img, x0 + x, y0 + 1, '#fff2a0' if x % 2 else '#b08020')
+    elif kind == 'neo_coat':
+        for y in range(h):
+            for x in range(-2, 2):
+                dot(img, cx + x, y0 + y, '#c89070' if y < 4 else '#3a3a48')   # open coat, chest and shirt
+        for y in range(1, h, 3):
+            dot(img, x0 + 1, y0 + y, '#8a5ab8'); dot(img, x0 + w - 2, y0 + y, '#8a5ab8')
+    elif kind == 'smasher_face':
+        for y in range(3, h - 3):
+            for x in range(2, w - 2):
+                if (x - 2) % 3 == 0:
+                    dot(img, x0 + x, y0 + y, '#2a2a34')   # vents
+        for x in range(1, w - 1):
+            dot(img, x0 + x, y0 + 1, '#c8a8ff')   # seastone glow
+    elif kind == 'kimono':
+        for y in range(h):
+            dot(img, cx - 1 + y // 3, y0 + y, '#c8a040'); dot(img, cx + 1 - y // 3, y0 + y, '#c8a040')
+    elif kind == 'uta_top':
+        for x in range(cx - 2, cx + 2):
+            dot(img, x, y0 + 1, '#e890b8'); dot(img, x, y0 + 2, '#e890b8')   # pink bow
+        dot(img, cx - 3, y0 + 1, '#e890b8'); dot(img, cx + 2, y0 + 1, '#e890b8')
+        for y in range(3, h):
+            dot(img, cx - 1, y0 + y, '#3a2a40'); dot(img, cx, y0 + y, '#3a2a40')
+    elif kind == 'phones':
+        for x in (0, 1, w - 2, w - 1):
+            for y in range(h):
+                dot(img, x0 + x, y0 + y, '#e890b8' if y == 1 else '#d8d8e0')
     elif kind == 'bands':
         for y in range(2, h, 5):
             for x in range(w):
@@ -464,12 +669,12 @@ def java(rogues, layouts):
     w('\tpublic static final Set<String> IDS = Set.of(%s);' % ', '.join('"%s"' % i for i in rogues))
     w('')
     w('\t/** Each rogue\'s right shoulder (x, y, z); RogueModel keeps the arms there while the boss swings. */')
-    w('\tpublic static final Map<String, float[]> SHOULDERS = Map.of(%s);' % ', '.join(
-        '"%s", new float[] {%s}' % (i, ', '.join(f(v) for v in rogues[i]['pivots']['arm'])) for i in rogues))
+    w('\tpublic static final Map<String, float[]> SHOULDERS = Map.ofEntries(%s);' % ', '.join(
+        'Map.entry("%s", new float[] {%s})' % (i, ', '.join(f(v) for v in rogues[i]['pivots']['arm'])) for i in rogues))
     w('')
     w('\t/** How far below the shoulder each rogue\'s hand is, in pixels (a player\'s is about 10). */')
-    w('\tpublic static final Map<String, Float> HANDS = Map.of(%s);' % ', '.join(
-        '"%s", %s' % (i, f(max(b['y'] + b['h'] for b in rogues[i]['boxes'] if b['part'] == 'arm' and 'pivot' not in b and 'only' not in b) - 1.5)) for i in rogues))
+    w('\tpublic static final Map<String, Float> HANDS = Map.ofEntries(%s);' % ', '.join(
+        'Map.entry("%s", %sF)' % (i, f(max(b['y'] + b['h'] for b in rogues[i]['boxes'] if b['part'] == 'arm' and 'pivot' not in b and b.get('only') != 'right') - 1.5)[:-1]) for i in rogues))
     w('')
     w('\tprivate RogueModels() {')
     w('\t}')

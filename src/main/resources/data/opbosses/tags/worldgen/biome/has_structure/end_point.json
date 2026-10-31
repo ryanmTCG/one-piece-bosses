@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:is_badlands",
+    "minecraft:savanna_plateau",
+    "minecraft:windswept_savanna",
+    "minecraft:stony_shore",
+    {
+      "id": "onepiece:punk_hazard_burning",
+      "required": false
+    },
+    {
+      "id": "onepiece:marineford",
+      "required": false
+    }
+  ]
+}

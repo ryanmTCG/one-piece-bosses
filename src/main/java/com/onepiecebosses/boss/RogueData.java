@@ -42,6 +42,8 @@ public class RogueData {
 	public List<String> rumorFrom = List.of();
 	/** The trophy item this boss drops on a first win (an item id in this mod, like "rusted_anchor_link"). */
 	public String trophy = "";
+	/** Creatures (entity ids, like "onepiece:manticore") that come with each crew wave. Shiki's mutated beasts. */
+	public List<String> beasts = List.of();
 
 	public int tier() {
 		return character.tier;
@@ -64,8 +66,8 @@ public class RogueData {
 					RogueData boss = gson.fromJson(entry, RogueData.class);
 					boss.character = gson.fromJson(entry, CharacterData.class);
 					boss.character.role = CharacterData.BOSS;
-					// Prizes and the fruit are the main mod's; a trophy is added by BossRewards instead.
-					boss.character.fruitItem = null;
+					// Prizes are the main mod's; a trophy is added by BossRewards. A boss with a fruitItem (Shiki's
+					// Float-Float Fruit) drops it on a win, the way the main mod's story bosses do.
 					ALL.put(boss.id, boss);
 				}
 			} catch (Exception e) {

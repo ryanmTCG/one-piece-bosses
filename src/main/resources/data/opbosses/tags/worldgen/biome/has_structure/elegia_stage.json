@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:meadow",
+    "minecraft:flower_forest",
+    "minecraft:sunflower_plains",
+    "minecraft:plains",
+    {
+      "id": "onepiece:dressrosa",
+      "required": false
+    }
+  ]
+}

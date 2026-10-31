@@ -15,7 +15,7 @@ import com.onepiecebosses.loot.RumorDrops;
  * The starting point of One Piece Bosses. Minecraft calls onInitialize() once while the game is loading,
  * after the One Piece Mod (fabric.mod.json makes this mod depend on it).
  *
- * Every boss here is an original rogue, not a story character. Underneath they are the One Piece Mod's own
+ * The bosses here are original rogues, plus the films' villains (who aren't in the main mod's story). Underneath they are the One Piece Mod's own
  * boss mobs (see boss/RogueBossEntity), so they get its health bar, phases, wind-ups, Hard and Expert rematches
  * and bounty. Their data is in src/main/resources/opbosses/bosses.json and crews.json.
  */

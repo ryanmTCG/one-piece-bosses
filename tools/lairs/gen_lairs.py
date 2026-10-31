@@ -41,6 +41,12 @@ class Lair(Parts):
             self.entities.append(("onepiece:sea_pirate", x, yy, z,
                                   {"PersistenceRequired": Byte(1), "Tags": [GUARD_TAG, KIT_TAG_PREFIX + kit]}))
 
+    def beast(self, entity_id, spots, y=1):
+        # A creature (Shiki's mutated beasts) that stays put: it never despawns.
+        for spot in spots:
+            x, yy, z = spot if len(spot) == 3 else (spot[0], y, spot[1])
+            self.entities.append((entity_id, x, yy, z, {"PersistenceRequired": Byte(1)}))
+
     def chest(self, x, y, z, loot, facing="south"):
         self.set(x, y, z, f"minecraft:chest[facing={facing},type=single,waterlogged=false]",
                  {"id": "minecraft:chest", "LootTable": f"opbosses:chests/{loot}"})
@@ -76,9 +82,9 @@ class Lair(Parts):
 LAIRS = []
 
 
-def lair(name, title, boss, biomes, place):
+def lair(name, title, boss, biomes, place, group="rogue_lairs"):
     def deco(fn):
-        LAIRS.append(dict(name=name, title=title, boss=boss, biomes=biomes, place=place, build=fn))
+        LAIRS.append(dict(name=name, title=title, boss=boss, biomes=biomes, place=place, build=fn, group=group))
         return fn
     return deco
 
@@ -1052,6 +1058,11 @@ def _(b):
     b.crew("abyssal_cultist", ((C - 7, C - 6), (C + 7, C - 6), (C - 7, C + 7), (C + 7, C + 7), (C, SZ + 2), (C - R - 4, C), (C + R + 4, C)), y=F + 1)
 
 
+# ============================================================ the film villains (film_lairs.py)
+import film_lairs  # noqa: E402
+film_lairs.add(lair, OCEANS, DEEP)
+
+
 # ============================================================ loot
 
 def item(name, weight, lo=1, hi=1, extra=None):
@@ -1103,6 +1114,9 @@ LOOT = {
 
 # One rogue lair per this many chunks on average (the main mod's hard lairs are 40 / 14).
 SPACING, SEPARATION, SALT = 44, 16, 1408172101
+# The film villains' lairs are their own set, so adding them didn't make the rogue lairs any rarer.
+GROUPS = {"rogue_lairs": (SPACING, SEPARATION, SALT), "film_lairs": (52, 18, 1408172177)}
+LOOT.update(film_lairs.LOOT)
 
 
 def write(path, obj):
@@ -1125,7 +1139,7 @@ def main(root):
         for (eid, *_r, data) in b.entities:
             if eid == "opbosses:rogue_boss":
                 assert data["Character"] in bosses, (l['name'], data["Character"])
-            else:
+            elif "Tags" in data:
                 kit = [t for t in data["Tags"] if t.startswith(KIT_TAG_PREFIX)][0][len(KIT_TAG_PREFIX):]
                 assert kit in kits, (l['name'], kit)
         name = l['name']
@@ -1146,9 +1160,10 @@ def main(root):
             v if v.startswith('#') or v.startswith('minecraft:') else {"id": v, "required": False} for v in l['biomes']]})
         write(f'{D}/loot_table/chests/{name}.json', LOOT[name])
         rows.append((name, l['title'], l['boss'], size, len(b.entities) - 1))
-    write(f'{D}/worldgen/structure_set/rogue_lairs.json', {
-        "structures": [{"structure": f"opbosses:{l['name']}", "weight": 1} for l in LAIRS],
-        "placement": {"type": "minecraft:random_spread", "spacing": SPACING, "separation": SEPARATION, "salt": SALT}})
+    for group, (spacing, separation, salt) in GROUPS.items():
+        write(f'{D}/worldgen/structure_set/{group}.json', {
+            "structures": [{"structure": f"opbosses:{l['name']}", "weight": 1} for l in LAIRS if l['group'] == group],
+            "placement": {"type": "minecraft:random_spread", "spacing": spacing, "separation": separation, "salt": salt}})
     for r in rows:
         print('%-22s %-28s boss %-22s size %-14s crew %d' % (r[0], r[1], r[2], r[3], r[4]))
 
