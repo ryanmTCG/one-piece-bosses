@@ -1,8 +1,12 @@
 package com.onepiecebosses.compat;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -36,6 +40,26 @@ public final class OnePieceBridge {
 			npc.addTag(BossStrikes.MINION_TAG);
 		}
 		return npc;
+	}
+
+	/** Spawns any mob (a main mod creature like "onepiece:manticore", or a vanilla one), tagged as a boss minion. */
+	public static Mob spawnBeast(ServerLevel level, String entityId, BlockPos pos, float yaw) {
+		Identifier id = Identifier.tryParse(entityId);
+		if (id == null || !BuiltInRegistries.ENTITY_TYPE.containsKey(id)) {
+			return null;
+		}
+		Entity entity = BuiltInRegistries.ENTITY_TYPE.getValue(id).create(level, EntitySpawnReason.MOB_SUMMONED);
+		if (!(entity instanceof Mob mob)) {
+			if (entity != null) {
+				entity.discard();
+			}
+			return null;
+		}
+		mob.snapTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, yaw, 0.0f);
+		mob.addTag(BossStrikes.MINION_TAG);
+		mob.setPersistenceRequired();
+		level.addFreshEntity(mob);
+		return mob;
 	}
 
 	/** The kit a main mod NPC was made from ("pirate", "fishman"...), or null for anything else. */

@@ -63,7 +63,12 @@ public class LairsClientTest implements FabricClientGameTest {
 			new Lair("fort_iron_tide", "iron_tide_graves", "deserter_marine", 7, false),
 			new Lair("hollow_shrine", "hollow_ronin_tsurugi", "", 0, false),
 			new Lair("shipbreakers_foundry", "boilerheart_gantz", "boiler_stoker", 7, false),
-			new Lair("abyssal_temple", "nereus_vane", "abyssal_cultist", 7, true));
+			new Lair("abyssal_temple", "nereus_vane", "abyssal_cultist", 7, true),
+			new Lair("gran_tesoro", "gild_tesoro", "gran_tesoro_guard", 7, true),
+			new Lair("elegia_stage", "uta_diva", "entranced_fan", 6, false),
+			new Lair("end_point", "zephyr_z", "neo_marine", 7, false),
+			new Lair("ironclad_colosseum", "douglas_bullet", "", 0, false),
+			new Lair("merveille", "shiki_golden_lion", "golden_lion_pirate", 7, false));
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -252,6 +257,16 @@ public class LairsClientTest implements FabricClientGameTest {
 		context.waitTicks(40);
 		sp.getConnection().waitForChunksRender();
 		boolean[] placed = new boolean[1];
+		// The film lairs are up to 120 blocks across, wider than the view distance: load all of it for /place.
+		int cx = pos.getX() >> 4, cz = pos.getZ() >> 4, r = 9;
+		server(sp, s -> {
+			for (int x = cx - r; x <= cx + r; x++) {
+				for (int z = cz - r; z <= cz + r; z++) {
+					s.overworld().setChunkForced(x, z, true);
+				}
+			}
+		});
+		context.waitTicks(40);
 		server(sp, s -> {
 			try {
 				PlaceCommand.placeStructure(s.createCommandSourceStack().withSuppressedOutput(), structure(s, lair.name), pos);
@@ -265,6 +280,13 @@ public class LairsClientTest implements FabricClientGameTest {
 			context.waitTicks(40);
 			server(sp, s -> inspect(s, lair, pos, "placed", null));
 		}
+		server(sp, s -> {
+			for (int x = cx - r; x <= cx + r; x++) {
+				for (int z = cz - r; z <= cz + r; z++) {
+					s.overworld().setChunkForced(x, z, false);
+				}
+			}
+		});
 	}
 
 	/**
@@ -303,7 +325,8 @@ public class LairsClientTest implements FabricClientGameTest {
 			}
 		}
 
-		List<HumanNpc> crew = level.getEntitiesOfClass(HumanNpc.class, boss.getBoundingBox().inflate(48, 30, 48), Entity::isAlive);
+		// Tall enough for Merveille, whose palace guards are on the floating island 36 blocks over the arena.
+		List<HumanNpc> crew = level.getEntitiesOfClass(HumanNpc.class, boss.getBoundingBox().inflate(48, 44, 48), Entity::isAlive);
 		int kitted = 0;
 		for (HumanNpc npc : crew) {
 			boolean leftover = npc.entityTags().stream().anyMatch(t -> t.equals(GuardKit.GUARD_TAG) || t.startsWith(GuardKit.KIT_TAG_PREFIX));

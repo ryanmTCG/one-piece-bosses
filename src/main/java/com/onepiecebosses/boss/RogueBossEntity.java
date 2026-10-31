@@ -127,37 +127,51 @@ public class RogueBossEntity extends CharacterEntity {
 		return share < 0.33f ? 3 : share < 0.66f ? 2 : 1;
 	}
 
-	/** Calls a few of the boss's crew around it. Bosses with no crew (Tsurugi) fight alone. */
+	/** Calls a few of the boss's crew around it, and its beasts if it has any. Bosses with neither (Tsurugi, Bullet) fight alone. */
 	private void callCrew(ServerLevel level, LivingEntity target) {
 		String kit = rogue().crew;
-		if (kit == null || kit.isEmpty()) {
+		List<String> beasts = rogue().beasts;
+		boolean hasCrew = kit != null && !kit.isEmpty();
+		if (!hasCrew && beasts.isEmpty()) {
 			return;
 		}
 		crew.removeIf(id -> {
 			Entity member = level.getEntity(id);
 			return member == null || !member.isAlive();
 		});
-		int count = Math.min(2 + getDifficulty(), 5 - crew.size());
+		int count = hasCrew ? Math.min(2 + getDifficulty(), 5 - crew.size()) : 0;
 		int called = 0;
 		for (int i = 0; i < count; i++) {
 			BlockPos spot = crewSpot(level);
-			if (spot == null) {
-				continue;
+			if (spot != null && join(level, OnePieceBridge.spawnMinion(level, kit, spot, getRandom().nextFloat() * 360f), target)) {
+				called++;
 			}
-			Mob member = OnePieceBridge.spawnMinion(level, kit, spot, getRandom().nextFloat() * 360f);
-			if (member == null) {
-				continue;
+		}
+		// Beasts on top of the crew: one, or two on Hard and Expert.
+		int beastCount = beasts.isEmpty() ? 0 : Math.min(getDifficulty() > 0 ? 2 : 1, 7 - crew.size());
+		for (int i = 0; i < beastCount; i++) {
+			BlockPos spot = crewSpot(level);
+			String beast = beasts.get(getRandom().nextInt(beasts.size()));
+			if (spot != null && join(level, OnePieceBridge.spawnBeast(level, beast, spot, getRandom().nextFloat() * 360f), target)) {
+				called++;
 			}
-			member.setTarget(target);
-			crew.add(member.getUUID());
-			level.sendParticles(ParticleTypes.POOF, member.getX(), member.getY() + 1, member.getZ(), 12, 0.3, 0.6, 0.3, 0.02);
-			called++;
 		}
 		if (called > 0) {
 			for (ServerPlayer player : listeners(level)) {
 				player.sendSystemMessage(Component.literal(getData().name + " calls their crew!").withStyle(ChatFormatting.GOLD), true);
 			}
 		}
+	}
+
+	/** A freshly called crew member or beast joins the fight. False if it couldn't be spawned. */
+	private boolean join(ServerLevel level, Mob member, LivingEntity target) {
+		if (member == null) {
+			return false;
+		}
+		member.setTarget(target);
+		crew.add(member.getUUID());
+		level.sendParticles(ParticleTypes.POOF, member.getX(), member.getY() + 1, member.getZ(), 12, 0.3, 0.6, 0.3, 0.02);
+		return true;
 	}
 
 	/** A free spot with solid ground 3-6 blocks from the boss, at about its height (works inside lairs too). */
