@@ -176,8 +176,13 @@ public class RogueBossEntity extends CharacterEntity {
 		if (isBoss() && level() instanceof ServerLevel level) {
 			shout(level, rogue().defeat);
 			// Worked out before super.die(), which marks everyone here as having beaten this boss.
+			// The killer always counts, wherever they are (the main mod pays them too, from any range).
+			List<ServerPlayer> nearby = new ArrayList<>(level.getEntitiesOfClass(ServerPlayer.class, getBoundingBox().inflate(WIN_RANGE), p -> !p.isSpectator()));
+			if (source.getEntity() instanceof ServerPlayer killer && !nearby.contains(killer)) {
+				nearby.add(killer);
+			}
 			List<ServerPlayer> firstTimers = new ArrayList<>();
-			for (ServerPlayer player : level.getEntitiesOfClass(ServerPlayer.class, getBoundingBox().inflate(WIN_RANGE), p -> !p.isSpectator())) {
+			for (ServerPlayer player : nearby) {
 				if (OnePieceBridge.unlockedDifficulty(player, getCharacterId()) == NORMAL) {
 					firstTimers.add(player);
 				}
