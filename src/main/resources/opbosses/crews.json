@@ -1,0 +1,88 @@
+{
+	"_help": "The rogue bosses' crews. Same format as the One Piece Mod's npc_kits.json: they are its pirate NPCs (same AI, fighting styles and skins), added to its kit list when the game loads. Skins must be one of the main mod's skin groups (see its NpcSkins.java).",
+	"kits": [
+		{
+			"id": "scrapdeck_raider",
+			"faction": "pirate",
+			"crews": ["Scrapdeck Pirates"],
+			"name": "{rank} {name}",
+			"ranks": ["Scrapper", "Salvager", "Wrecker"],
+			"skins": ["bandit", "deckhand"],
+			"loadouts": [
+				{"style": "heavy", "weight": 2, "weapons": ["minecraft:iron_axe", "minecraft:stone_axe"]},
+				{"style": "brawler", "weight": 1, "weapons": []}
+			],
+			"health": 26,
+			"damage": 5,
+			"armor": 2,
+			"berries": 2
+		},
+		{
+			"id": "lantern_smuggler",
+			"faction": "pirate",
+			"crews": ["Fog Widow's Ring"],
+			"name": "{rank} {name}",
+			"ranks": ["Lantern-bearer", "Smuggler", "Fogrunner"],
+			"skins": ["baroque", "deckhand"],
+			"loadouts": [
+				{"style": "gunner", "weight": 2, "weapons": ["onepiece:flintlock_pistol"]},
+				{"style": "sword", "weight": 1, "weapons": ["minecraft:iron_sword"]}
+			],
+			"health": 34,
+			"damage": 6,
+			"armor": 2,
+			"berries": 3
+		},
+		{
+			"id": "deserter_marine",
+			"faction": "pirate",
+			"crews": ["Iron Tide Garrison"],
+			"name": "Deserter {rank} {surname}",
+			"ranks": ["Private", "Corporal", "Sergeant", "Lieutenant"],
+			"skins": ["marine_grunt", "marine_rifle"],
+			"loadouts": [
+				{"style": "sword", "weight": 2, "weapons": ["minecraft:iron_sword"]},
+				{"style": "gunner", "weight": 2, "weapons": ["onepiece:flintlock_pistol"]},
+				{"style": "heavy", "weight": 1, "weapons": ["onepiece:seastone_jitte"]}
+			],
+			"health": 48,
+			"damage": 8,
+			"armor": 5,
+			"berries": 4
+		},
+		{
+			"id": "boiler_stoker",
+			"faction": "pirate",
+			"crews": ["Boilerheart Shipbreakers"],
+			"name": "{rank} {name}",
+			"ranks": ["Coal-hand", "Stoker", "Chief Stoker"],
+			"skins": ["gifter", "bandit"],
+			"loadouts": [
+				{"style": "bomber", "weight": 2, "weapons": []},
+				{"style": "heavy", "weight": 2, "weapons": ["minecraft:iron_axe", "minecraft:mace"]}
+			],
+			"health": 70,
+			"damage": 11,
+			"armor": 7,
+			"knockbackResistance": 0.4,
+			"scale": 1.2,
+			"berries": 6
+		},
+		{
+			"id": "abyssal_cultist",
+			"faction": "pirate",
+			"crews": ["Choir of the Deep"],
+			"name": "{rank} {name}",
+			"ranks": ["Acolyte", "Tidecaller", "Deep Priest"],
+			"skins": ["fishman"],
+			"loadouts": [
+				{"style": "fishman", "weight": 3, "weapons": []},
+				{"style": "sword", "weight": 1, "weapons": ["minecraft:trident"]}
+			],
+			"health": 95,
+			"damage": 14,
+			"armor": 8,
+			"berries": 8
+		}
+	]
+}

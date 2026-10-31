@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "opbosses",
+  "version": "${version}",
+  "name": "One Piece Bosses",
+  "description": "Original rogue boss fights and their crews for the One Piece Mod: new villains, not story characters.",
+  "authors": [
+    "ryan"
+  ],
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.onepiecebosses.BossesMod"
+    ],
+    "client": [
+      "com.onepiecebosses.client.BossesClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*",
+    "onepiece": "*"
+  }
+}
