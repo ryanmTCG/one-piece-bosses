@@ -270,6 +270,14 @@ def add(lair, OCEANS, DEEP):
                 if abs(z - CZ) < half(x, DECK) - 1 and b.get(x, 1, z) is None:
                     b.lamp_post(x, 1, z, "dark_oak", 3, LAMP_POST_GOLD)
 
+        # Clear the air over the deck, so nothing the sea already had there (a shipwreck, an iceberg) pokes through it.
+        for x in range(L):
+            h = half(x, DECK)
+            for z in range(CZ - h + 1, CZ + h):
+                for y in range(1, 6):
+                    if b.get(x, y, z) is None:
+                        b.set(x, y, z, AIR)
+
         b.rogue(AX, 1, AZ, "gild_tesoro")
         b.crew("gran_tesoro_guard", ((AX - 9, AZ - 6), (AX + 9, AZ - 6), (AX - 9, AZ + 6), (AX + 9, AZ + 6), (20, 25), (30, 15), (SX - 8, SZ)))
 
@@ -460,7 +468,7 @@ def add(lair, OCEANS, DEEP):
             b.tree(x, 1, z, 6, "birch", 2.6)
 
         b.rogue(CX, 4, 22, "uta_diva")
-        b.crew("entranced_fan", ((CX - 10, 4, 24), (CX + 10, 4, 24), (CX, 1, AZ + 10), (CX - 8, 1, AZ + 6), (CX + 8, 1, AZ + 6), (CX - 2, 4, BZ0 + 5)))
+        b.crew("entranced_fan", ((CX - 10, 4, 24), (CX + 10, 4, 24), (CX + 7, 1, AZ + 12), (CX - 8, 1, AZ + 6), (CX + 8, 1, AZ + 6), (CX - 2, 4, BZ0 + 5)))
 
     # ============================================================ Zephyr: the End Point
     @lair("end_point", "The End Point", "zephyr_z",
@@ -933,7 +941,7 @@ def add(lair, OCEANS, DEEP):
 
         b.rogue(AX, 1, AZ, "shiki_golden_lion")
         b.crew("golden_lion_pirate", ((AX - 8, AZ - 6), (AX + 8, AZ - 6), (AX - 8, AZ + 6), (AX + 8, AZ + 6), (22, 60)))
-        b.crew("golden_lion_pirate", ((TX - 6, PZ1 + 4), (TX + 6, PZ1 + 4)), y=IY + 1)
+        b.crew("golden_lion_pirate", ((TX - 6, PZ0 + 9), (TX + 6, PZ0 + 9)), y=IY + 1)   # palace guards, inside the hall
 
 
 def item(name, weight, lo=1, hi=1, extra=None):

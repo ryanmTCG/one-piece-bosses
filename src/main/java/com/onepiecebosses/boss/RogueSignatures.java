@@ -2,6 +2,8 @@ package com.onepiecebosses.boss;
 
 import java.util.List;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -43,7 +45,10 @@ public final class RogueSignatures {
 				level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, boss.getX(), boss.getY() + 1, boss.getZ(), 60, 3, 1.5, 3, 0.01);
 				boss.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 50, 0));
 				Vec3 behind = target.position().subtract(target.getLookAngle().multiply(1, 0, 1).scale(2.0));
-				boss.teleportTo(behind.x, target.getY(), behind.z);
+				BlockPos spot = safeSpot(level, BlockPos.containing(behind.x, target.getY(), behind.z));
+				if (spot != null) { // Only onto solid ground: never off a cliff or into a wall.
+					boss.teleportTo(behind.x, spot.getY(), behind.z);
+				}
 				strikes.signature("rain_smoke", boss, target, level, damage, extra);
 			}
 			case "seastone_volley" -> { // Graves's garrison fires seastone shot: it rains metal and drains fruit users.
@@ -147,6 +152,19 @@ public final class RogueSignatures {
 		Vec3 toward = boss.position().subtract(target.position()).normalize().scale(strength);
 		target.setDeltaMovement(toward.x, 0.3, toward.z);
 		target.needsSync = true;
+	}
+
+	/** The spot itself, or one a block up or down, where the boss can stand: solid below, two blocks of air. Null if none. */
+	private static BlockPos safeSpot(ServerLevel level, BlockPos pos) {
+		for (int dy : new int[] {0, 1, -1}) {
+			BlockPos p = pos.offset(0, dy, 0);
+			if (level.getBlockState(p.below()).isFaceSturdy(level, p.below(), Direction.UP)
+					&& level.getBlockState(p).getCollisionShape(level, p).isEmpty()
+					&& level.getBlockState(p.above()).getCollisionShape(level, p.above()).isEmpty()) {
+				return p;
+			}
+		}
+		return null;
 	}
 
 	private static List<Player> playersNear(Mob boss, ServerLevel level, double radius) {

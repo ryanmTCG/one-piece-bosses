@@ -257,6 +257,16 @@ public class LairsClientTest implements FabricClientGameTest {
 		context.waitTicks(40);
 		sp.getConnection().waitForChunksRender();
 		boolean[] placed = new boolean[1];
+		// The film lairs are up to 120 blocks across, wider than the view distance: load all of it for /place.
+		int cx = pos.getX() >> 4, cz = pos.getZ() >> 4, r = 9;
+		server(sp, s -> {
+			for (int x = cx - r; x <= cx + r; x++) {
+				for (int z = cz - r; z <= cz + r; z++) {
+					s.overworld().setChunkForced(x, z, true);
+				}
+			}
+		});
+		context.waitTicks(40);
 		server(sp, s -> {
 			try {
 				PlaceCommand.placeStructure(s.createCommandSourceStack().withSuppressedOutput(), structure(s, lair.name), pos);
@@ -270,6 +280,13 @@ public class LairsClientTest implements FabricClientGameTest {
 			context.waitTicks(40);
 			server(sp, s -> inspect(s, lair, pos, "placed", null));
 		}
+		server(sp, s -> {
+			for (int x = cx - r; x <= cx + r; x++) {
+				for (int z = cz - r; z <= cz + r; z++) {
+					s.overworld().setChunkForced(x, z, false);
+				}
+			}
+		});
 	}
 
 	/**

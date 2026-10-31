@@ -1117,6 +1117,8 @@ SPACING, SEPARATION, SALT = 44, 16, 1408172101
 # The film villains' lairs are their own set, so adding them didn't make the rogue lairs any rarer.
 GROUPS = {"rogue_lairs": (SPACING, SEPARATION, SALT), "film_lairs": (52, 18, 1408172177)}
 LOOT.update(film_lairs.LOOT)
+# ...and never right next to one: a film lair stays at least 10 chunks from any rogue lair.
+EXCLUDE = {"film_lairs": {"exclusion_zone": {"other_set": "opbosses:rogue_lairs", "chunk_count": 10}}}
 
 
 def write(path, obj):
@@ -1163,7 +1165,8 @@ def main(root):
     for group, (spacing, separation, salt) in GROUPS.items():
         write(f'{D}/worldgen/structure_set/{group}.json', {
             "structures": [{"structure": f"opbosses:{l['name']}", "weight": 1} for l in LAIRS if l['group'] == group],
-            "placement": {"type": "minecraft:random_spread", "spacing": spacing, "separation": separation, "salt": salt}})
+            "placement": dict({"type": "minecraft:random_spread", "spacing": spacing, "separation": separation, "salt": salt},
+                              **EXCLUDE.get(group, {}))})
     for r in rows:
         print('%-22s %-28s boss %-22s size %-14s crew %d' % (r[0], r[1], r[2], r[3], r[4]))
 
