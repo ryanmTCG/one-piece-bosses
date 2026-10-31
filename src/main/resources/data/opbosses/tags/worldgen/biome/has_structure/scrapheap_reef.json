@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:is_beach",
+    "minecraft:ocean",
+    "minecraft:lukewarm_ocean",
+    "minecraft:warm_ocean",
+    "minecraft:cold_ocean",
+    {
+      "id": "onepiece:east_blue",
+      "required": false
+    }
+  ]
+}

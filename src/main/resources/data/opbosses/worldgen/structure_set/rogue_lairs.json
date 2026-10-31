@@ -1,0 +1,34 @@
+{
+  "structures": [
+    {
+      "structure": "opbosses:scrapheap_reef",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:lantern_house",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:fort_iron_tide",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:hollow_shrine",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:shipbreakers_foundry",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:abyssal_temple",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 44,
+    "separation": 16,
+    "salt": 1408172101
+  }
+}

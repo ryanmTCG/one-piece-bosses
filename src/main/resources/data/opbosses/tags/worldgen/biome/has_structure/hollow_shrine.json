@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cherry_grove",
+    "minecraft:meadow",
+    "minecraft:windswept_hills",
+    "minecraft:taiga",
+    {
+      "id": "onepiece:wano",
+      "required": false
+    }
+  ]
+}

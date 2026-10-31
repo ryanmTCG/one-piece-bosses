@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:stony_shore",
+    "minecraft:badlands",
+    "minecraft:desert",
+    "minecraft:windswept_gravelly_hills",
+    {
+      "id": "onepiece:onigashima",
+      "required": false
+    },
+    {
+      "id": "onepiece:punk_hazard_burning",
+      "required": false
+    }
+  ]
+}
