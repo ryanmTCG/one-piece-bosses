@@ -7,7 +7,8 @@ Writes into src/main/resources/data/opbosses/: structure/, worldgen/structure, w
 worldgen/structure_set, tags/worldgen/biome/has_structure and loot_table/chests. Change a lair here and run it
 again; it rewrites all of those folders. Builds with the One Piece Mod's building kit (kit.py), so they work the
 same way as its lairs: the boss and its crew appear when the chunk is first made, and only then.
-Coordinates: x east, y up, z south; y = 0 is the ground (or the sea floor of a "sea" lair, see waterline).
+Coordinates: x east, y up, z south; y = 0 is the ground. A "sea" lair sets waterline, the level that sits at the sea's surface;
+its blocks below y = 0 reach down toward the sea floor.
 """
 import json
 import math
@@ -41,11 +42,32 @@ class Lair(B):
         self.set(x, y, z, f"minecraft:chest[facing={facing},type=single,waterlogged=false]",
                  {"id": "minecraft:chest", "LootTable": f"opbosses:chests/{loot}"})
 
-    def scatter(self, x0, z0, x1, z1, y, blocks, chance, rnd, only_on=None):
+    def scatter(self, x0, z0, x1, z1, y, blocks, chance, rnd, only_on=None, replace=False):
         for x in range(x0, x1 + 1):
             for z in range(z0, z1 + 1):
-                if rnd.random() < chance and self.get(x, y, z) in (None, AIR) and (only_on is None or self.get(x, y - 1, z) in only_on):
+                if rnd.random() < chance and (replace or self.get(x, y, z) in (None, AIR)) and (only_on is None or self.get(x, y - 1, z) in only_on):
                     self.set(x, y, z, rnd.choice(blocks))
+
+    def support(self, x0, z0, x1, z1, y, blocks, rnd, down_to=0):
+        """Fills the empty space under every block at level y down to the ground, so nothing floats."""
+        for x in range(x0, x1 + 1):
+            for z in range(z0, z1 + 1):
+                if self.get(x, y, z) in (None, AIR):
+                    continue
+                yy = y - 1
+                while yy >= down_to and self.get(x, yy, z) in (None, AIR):
+                    self.set(x, yy, z, rnd.choice(blocks))
+                    yy -= 1
+
+    def skirt(self, cx, cz, r, y0, y1, blocks, rnd, spread=0.35, sz=1.0):
+        """A pile under a sea lair from y1 down to y0, widening as it goes down, so it reaches the sea floor."""
+        for y in range(y1, y0 - 1, -1):
+            rr = r + (y1 - y) * spread
+            for x in range(int(cx - rr) - 2, int(cx + rr) + 3):
+                for z in range(int(cz - rr) - 2, int(cz + rr) + 3):
+                    d = math.hypot(x - cx, (z - cz) * sz) + rnd.random() * 1.6
+                    if rr - 3 < d <= rr or (y == y1 and d <= rr):   # a shell: nobody sees the inside
+                        self.set(x, y, z, rnd.choice(blocks))
 
 
 LAIRS = []
@@ -73,7 +95,6 @@ def _(b):
     scrap = ["minecraft:iron_block", "minecraft:oxidized_copper", "minecraft:weathered_cut_copper", "minecraft:dark_oak_planks",
              "minecraft:stripped_spruce_log[axis=x]", "minecraft:gravel", "minecraft:exposed_copper", "minecraft:spruce_planks",
              "minecraft:rooted_dirt", "minecraft:mossy_cobblestone"]
-    b.waterline = 3   # y = 3 sits at the sea's surface; the island is piled up out of the water
     for y in range(0, 5):
         r = 15 - y * 0.8
         for x in range(-16, 17):
@@ -81,6 +102,9 @@ def _(b):
                 d = math.hypot(x * 1.0, z * 1.25) + rnd.random() * 1.6
                 if d <= r:
                     b.set(x + 16, y, z + 16, rnd.choice(scrap))
+    # Under the water, the heap goes on down to the sea floor (no gravel: it would fall into the gaps).
+    rubble = ["minecraft:cobblestone", "minecraft:mossy_cobblestone", "minecraft:oxidized_copper", "minecraft:dark_oak_planks", "minecraft:iron_block"]
+    b.skirt(16, 16, 15, -14, -1, rubble, rnd, sz=1.25)
     # The yard: a deck of salvaged planks in the middle, where Rourke fights.
     b.disk(16, 4, 16, 7.5, "minecraft:spruce_planks")
     b.disk(16, 4, 16, 3, "minecraft:stripped_dark_oak_wood[axis=y]")
@@ -91,9 +115,11 @@ def _(b):
     b.box(13, 3, 1, 17, 9, 10, AIR)   # snapped off at the middle
     dy2 = b.ship(18, 2, 22, 14, 8, hull="minecraft:spruce_planks", deck="minecraft:oak_planks", masts=(), flag=None, depth=3)
     b.box(18, 3, 22, 21, 8, 30, AIR)
+    b.waterline = 3   # y = 3 sits at the sea's surface; the island is piled up out of the water (set after ship(), which sets it too)
     # The crane Rourke hauls wrecks in with, his spare anchor still hanging from the chain.
     for y in range(5, 19):
         b.set(28, y, 8, log("spruce"))
+    b.support(28, 8, 28, 8, 5, [log("spruce")], rnd, down_to=-14)   # the crane stands off the shore, on a pile driven into the sea floor
     b.box(18, 18, 8, 28, 18, 8, log("spruce", "x"))
     for y in range(11, 18):
         b.set(19, y, 8, CHAIN)
@@ -104,12 +130,13 @@ def _(b):
     # Scrap piles and salvage around the yard.
     for x, z in ((7, 20), (24, 18), (10, 26), (25, 25)):
         b.sphere(x, 5, z, 2.2, rnd.choice(scrap), ry=1.6, upper=True)
+        b.support(x - 3, z - 3, x + 3, z + 3, 5, rubble, rnd, down_to=-14)   # piles past the shore stand on rubble, not on nothing
     for x, z, s in ((9, 12, "minecraft:anvil[facing=north]"), (23, 13, "minecraft:chipped_anvil[facing=east]"), (12, 22, BARREL),
                     (21, 21, BARREL), (22, 20, "minecraft:cauldron"), (11, 11, "minecraft:damaged_anvil[facing=south]")):
         b.set(x, 5, z, s)
     for x, z in ((8, 16), (24, 16), (16, 8), (16, 24)):
         b.box(x, 5, z, x, 6, z, FENCE.format("spruce")); b.set(x, 7, z, LANTERN)
-    b.flag(4, 5, 28, h=9, colors=("minecraft:brown_wool", "minecraft:white_wool"))
+    b.flag(10, 5, 21, h=9, colors=("minecraft:brown_wool", "minecraft:white_wool"))
     b.chest(13, 5, 19, "scrapheap_reef", "east")
     b.rogue(16, 5, 16, "saltjaw_rourke")
     b.crew("scrapdeck_raider", ((11, 14), (21, 15), (16, 22)), y=5)
@@ -136,14 +163,16 @@ def _(b):
     b.tower(13, 6, 2, 22, "minecraft:polished_blackstone_bricks", "minecraft:deepslate_tiles", y=4, ladder_side=False)
     for x in range(6, 21, 3):
         b.set(x, 8, 11, pane("purple")); b.set(x, 11, 11, pane("purple"))
-        b.set(x, 7, 10, HANG); b.set(x, 10, 10, HANG)
     b.door(13, 5, 11, h=3, w=1)
     b.box(5, 5, 2, 21, 12, 10, AIR)
+    for x in range(6, 21, 3):
+        b.set(x, 12, 9, HANG); b.set(x, 12, 4, HANG)
     b.chest(6, 5, 3, "lantern_house", "south")
     for x, z in ((8, 3), (18, 3), (20, 8)):
         b.set(x, 5, z, BARREL)
-    b.scatter(5, 5, 2, 21, 12, 10, [COBWEB], 0.03, rnd)
-    b.scatter(5, 12, 2, 21, 12, 10, [COBWEB], 0.15, rnd)
+    for y in range(5, 12):
+        b.scatter(5, 2, 21, 10, y, [COBWEB], 0.01, rnd)
+    b.scatter(5, 2, 21, 10, 12, [COBWEB], 0.15, rnd)
     # The terrace in front, ringed with lantern posts: the fight is here.
     for x in range(0, W + 1, 3):
         for z in (12, D - 8):
@@ -159,7 +188,7 @@ def _(b):
         b.set(14, 5, z, FENCE.format("dark_oak")); b.set(14, 6, z, LANTERN)
     for x, z in ((3, 16), (23, 19), (5, 20)):
         b.tree(x, 5, z, 5, "dark_oak", 1.6)
-        b.set(x + 1, 7, z, HANG)
+        b.set(x + 1, 9, z, HANG)   # under the leaves
     b.rogue(13, 5, 17, "corvina_fog_widow")
     b.crew("lantern_smuggler", ((7, 15), (19, 15), (9, 20), (17, 20)), y=5)
 
@@ -241,7 +270,7 @@ def _(b):
     for _ in range(26):
         a = rnd.uniform(0, 2 * math.pi); r = rnd.uniform(10.8, 13)
         x = round(14 + r * math.cos(a)); z = round(16 + r * math.sin(a))
-        if 0 < x < 28 and 0 < z < 26:
+        if 0 < x < 28 and 0 < z < 26 and b.get(x, 1, z) is None:
             b.set(x, 1, z, "minecraft:lightning_rod[facing=up,powered=false,waterlogged=false]")
     for x, z in ((3, 6), (25, 8), (3, 26), (25, 24), (4, 15)):
         b.tree(x, 1, z, 5, "cherry", 2.6)
@@ -255,7 +284,7 @@ def _(b):
     rnd = random.Random(5)
     W, D = 36, 30
     b.box(0, 0, 0, W, 0, D, "minecraft:blackstone")
-    b.scatter(0, 0, W, D, 0, ["minecraft:polished_blackstone", "minecraft:cracked_polished_blackstone_bricks", "minecraft:gravel"], 0.35, rnd)
+    b.scatter(0, 0, W, D, 0, ["minecraft:polished_blackstone", "minecraft:cracked_polished_blackstone_bricks", "minecraft:gravel"], 0.35, rnd, replace=True)
     # The furnace hall at the back: brick and iron, three smokestacks pouring smoke.
     b.room(4, 0, 18, 32, 9, 29, "minecraft:bricks", floor="minecraft:polished_blackstone")
     for x in range(4, 33, 4):
@@ -295,8 +324,8 @@ def _(b):
     # Pillars from the sea floor up, then a round altar-platform open to the sky.
     for i in range(0, 360, 30):
         a = math.radians(i); x = round(C + (R - 1) * math.cos(a)); z = round(C + (R - 1) * math.sin(a))
-        b.box(x, 0, z, x + 1, 9, z + 1, "minecraft:prismarine_bricks")
-    b.cyl(C, C, 3, 0, 9, "minecraft:dark_prismarine")
+        b.box(x, -22, z, x + 1, 9, z + 1, "minecraft:prismarine_bricks")
+    b.cyl(C, C, 3, -22, 9, "minecraft:dark_prismarine")
     b.disk(C, 10, C, R, "minecraft:prismarine_bricks")
     b.disk(C, 10, C, R - 2, "minecraft:dark_prismarine")
     b.disk(C, 10, C, 4, "minecraft:prismarine")
@@ -310,7 +339,7 @@ def _(b):
     corals = ["minecraft:tube_coral_block", "minecraft:brain_coral_block", "minecraft:fire_coral_block", "minecraft:horn_coral_block", "minecraft:bubble_coral_block"]
     for _ in range(40):
         a = rnd.uniform(0, 2 * math.pi); r = rnd.uniform(R - 1, R + 2)
-        b.set(round(C + r * math.cos(a)), rnd.randint(7, 11), round(C + r * math.sin(a)), rnd.choice(corals))
+        b.set(round(C + r * math.cos(a)), rnd.randint(4, 9), round(C + r * math.sin(a)), rnd.choice(corals))
     # The shrine at the back: a half dome over the altar where he preaches, the conduit at its heart.
     b.sphere(C, 10, C + 9, 5, "minecraft:dark_prismarine", hollow=True, upper=True)
     b.box(C - 5, 11, C + 4, C + 5, 16, C + 8, AIR)

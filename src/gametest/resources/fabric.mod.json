@@ -7,7 +7,8 @@
   "environment": "*",
   "entrypoints": {
     "fabric-client-gametest": [
-      "com.onepiecebosses.test.BossesClientTest"
+      "com.onepiecebosses.test.BossesClientTest",
+      "com.onepiecebosses.test.LairsClientTest"
     ]
   },
   "depends": {
