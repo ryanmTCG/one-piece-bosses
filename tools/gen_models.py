@@ -76,7 +76,7 @@ ROGUES = {
     # A slab-shouldered officer gone bad: V-shaped torso twice as wide as his hips, a chin you could
     # land a ship on, a towering Marine cap, epaulettes like serving trays and a torn "Justice" coat.
     "iron_tide_graves": dict(
-        pivots=dict(head=(0, -5, -1), body=(0, -4, 0), arm=(-10, -2, 0), leg=(-2.2, 13, 0)),
+        pivots=dict(head=(0, -5, -1), body=(0, -4, 0), arm=(-10, -2, 0), leg=(-2.2, 12, 0)),
         boxes=[
             B('head', -3, -8, -3.5, 6, 6, 7, '#cda07d', None, front='face', eyes='#284060', brows='#9a9aa0', mouth=None, scar=True),
             B('head', -4, -2.5, -5.5, 8, 4, 7, '#cda07d', 'stubble', front='jaw', teeth='grim'),   # the chin
@@ -91,8 +91,8 @@ ROGUES = {
             B('arm', -3.5, -3, -3.5, 7, 3, 7, '#d8b040', 'fringe'),                  # epaulette
             B('arm', -2.5, 0, -2.5, 5, 13, 5, '#f0f0f4', 'cloth'),
             B('arm', -2, 13, -2, 4, 3, 4, '#cda07d'),
-            B('leg', -2, 0, -2, 4, 8, 4, '#323850', 'cloth'),
-            B('leg', -2.5, 8, -2.5, 5, 3, 5, '#14141c', 'leather'),
+            B('leg', -2, 0, -2, 4, 9, 4, '#323850', 'cloth'),
+            B('leg', -2.5, 9, -2.5, 5, 3, 5, '#14141c', 'leather'),
         ]),
     # Hollow armour with nothing inside: every piece floats apart from the rest, held by nothing.
     # A crescent-crested helm over two glowing eyes, shoulder plates like doors, a plated skirt.
@@ -117,7 +117,7 @@ ROGUES = {
     # A ship's boiler with a man somewhere on top: a riveted belly as big as a cabin with a glowing firebox,
     # two smokestacks, piston arms ending in sledgehammer fists, stubby iron legs and a tiny goggled head.
     "boilerheart_gantz": dict(
-        pivots=dict(head=(0, -7, -4), body=(0, -6, 0), arm=(-11, -2, 0), leg=(-4.5, 19, 0)),
+        pivots=dict(head=(0, -7, -4), body=(0, -6, 0), arm=(-11, -2, 0), leg=(-4.5, 14, 0)),
         boxes=[
             B('head', -2.5, -5, -2.5, 5, 5, 5, '#b4785a', None, front='face', eyes=None, brows=None, mouth='grit', goggles=True),
             B('head', -3, -4, -3, 6, 2, 6, '#5a4a3a', 'leather'),                    # goggle strap
@@ -130,7 +130,8 @@ ROGUES = {
             B('arm', -3, -3, -3, 6, 6, 6, '#5a5a62', 'rivets'),                       # shoulder joint
             B('arm', -1.5, 3, -1.5, 3, 8, 3, '#9a9aa4', 'piston'),                    # piston rod
             B('arm', -4, 11, -4, 8, 8, 8, '#5a5a62', 'rivets', front='knuckles'),     # sledgehammer fist
-            B('leg', -2.5, 0, -2.5, 5, 5, 5, '#5a5a62', 'rivets'),
+            B('leg', -1.5, 0, -1.5, 3, 5, 3, '#9a9aa4', 'piston'),
+            B('leg', -3, 5, -3.5, 6, 5, 7, '#5a5a62', 'rivets'),                      # iron boots
         ]),
     # Tall and eerie: a long robed body, arms that hang to his knees, a great dorsal fin, fin ears,
     # a shark's jaw full of fangs, white hair streaming back and a crown of coral.
@@ -147,7 +148,7 @@ ROGUES = {
             B('body', -5, 4, -3, 10, 14, 6, '#1e3a5a', 'robe', front='trim'),         # long body
             B('body', -0.5, -3, 0, 1, 12, 7, '#3c7884', 'fin', rot=(0.25, 0, 0), pivot=(0, 1, 3)),   # dorsal fin
             B('body', -6, 0, 0, 12, 12, 1, '#1e3a5a', 'robe', sway=-1, pivot=(0, 18, -3.4)),   # robe, front
-            B('body', -6, 0, 0, 12, 13, 1, '#1e3a5a', 'robe', sway=1, pivot=(0, 18, 3.2)),     # robe, back
+            B('body', -6, 0, 0, 12, 12, 1, '#1e3a5a', 'robe', sway=1, pivot=(0, 18, 3.2)),     # robe, back
             B('arm', -2, -1, -2, 4, 20, 4, '#5a96a0', 'scales', front='bands'),
             B('arm', -2.5, 19, -2.5, 5, 4, 5, '#4a8690', 'web'),
             B('leg', -2, 0, -2, 4, 10, 4, '#5a96a0', 'scales'),

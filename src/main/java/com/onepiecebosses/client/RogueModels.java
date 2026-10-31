@@ -171,7 +171,7 @@ public final class RogueModels {
 	}
 
 	private static int ironTideGraves(MeshDefinition mesh) {
-		PartDefinition[] p = parts(mesh, new float[] {0F, -5F, -1F}, new float[] {0F, -4F, 0F}, new float[] {-10F, -2F, 0F}, new float[] {-2.2F, 13F, 0F});
+		PartDefinition[] p = parts(mesh, new float[] {0F, -5F, -1F}, new float[] {0F, -4F, 0F}, new float[] {-10F, -2F, 0F}, new float[] {-2.2F, 12F, 0F});
 		PartDefinition head = p[0], body = p[1], rightArm = p[2], leftArm = p[3], rightLeg = p[4], leftLeg = p[5];
 		head.addOrReplaceChild("b0", CubeListBuilder.create().texOffs(0, 0).addBox(-3F, -8F, -3.5F, 6F, 6F, 7F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
@@ -205,13 +205,13 @@ public final class RogueModels {
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
 		leftArm.addOrReplaceChild("b15", CubeListBuilder.create().texOffs(0, 64).addBox(-2F, 13F, -2F, 4F, 3F, 4F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-		rightLeg.addOrReplaceChild("b16", CubeListBuilder.create().texOffs(17, 64).addBox(-2F, 0F, -2F, 4F, 8F, 4F),
+		rightLeg.addOrReplaceChild("b16", CubeListBuilder.create().texOffs(17, 64).addBox(-2F, 0F, -2F, 4F, 9F, 4F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-		leftLeg.addOrReplaceChild("b17", CubeListBuilder.create().texOffs(34, 64).addBox(-2F, 0F, -2F, 4F, 8F, 4F),
+		leftLeg.addOrReplaceChild("b17", CubeListBuilder.create().texOffs(34, 64).addBox(-2F, 0F, -2F, 4F, 9F, 4F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-		rightLeg.addOrReplaceChild("b18", CubeListBuilder.create().texOffs(51, 64).addBox(-2.5F, 8F, -2.5F, 5F, 3F, 5F),
+		rightLeg.addOrReplaceChild("b18", CubeListBuilder.create().texOffs(51, 64).addBox(-2.5F, 9F, -2.5F, 5F, 3F, 5F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-		leftLeg.addOrReplaceChild("b19", CubeListBuilder.create().texOffs(72, 64).addBox(-2.5F, 8F, -2.5F, 5F, 3F, 5F),
+		leftLeg.addOrReplaceChild("b19", CubeListBuilder.create().texOffs(72, 64).addBox(-2.5F, 9F, -2.5F, 5F, 3F, 5F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
 		return 128;
 	}
@@ -263,7 +263,7 @@ public final class RogueModels {
 	}
 
 	private static int boilerheartGantz(MeshDefinition mesh) {
-		PartDefinition[] p = parts(mesh, new float[] {0F, -7F, -4F}, new float[] {0F, -6F, 0F}, new float[] {-11F, -2F, 0F}, new float[] {-4.5F, 19F, 0F});
+		PartDefinition[] p = parts(mesh, new float[] {0F, -7F, -4F}, new float[] {0F, -6F, 0F}, new float[] {-11F, -2F, 0F}, new float[] {-4.5F, 14F, 0F});
 		PartDefinition head = p[0], body = p[1], rightArm = p[2], leftArm = p[3], rightLeg = p[4], leftLeg = p[5];
 		head.addOrReplaceChild("b0", CubeListBuilder.create().texOffs(0, 0).addBox(-2.5F, -5F, -2.5F, 5F, 5F, 5F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
@@ -293,9 +293,13 @@ public final class RogueModels {
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
 		leftArm.addOrReplaceChild("b13", CubeListBuilder.create().texOffs(0, 94).addBox(-4F, 11F, -4F, 8F, 8F, 8F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-		rightLeg.addOrReplaceChild("b14", CubeListBuilder.create().texOffs(33, 94).addBox(-2.5F, 0F, -2.5F, 5F, 5F, 5F),
+		rightLeg.addOrReplaceChild("b14", CubeListBuilder.create().texOffs(33, 94).addBox(-1.5F, 0F, -1.5F, 3F, 5F, 3F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
-		leftLeg.addOrReplaceChild("b15", CubeListBuilder.create().texOffs(54, 94).addBox(-2.5F, 0F, -2.5F, 5F, 5F, 5F),
+		leftLeg.addOrReplaceChild("b15", CubeListBuilder.create().texOffs(46, 94).addBox(-1.5F, 0F, -1.5F, 3F, 5F, 3F),
+				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+		rightLeg.addOrReplaceChild("b16", CubeListBuilder.create().texOffs(59, 94).addBox(-3F, 5F, -3.5F, 6F, 5F, 7F),
+				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
+		leftLeg.addOrReplaceChild("b17", CubeListBuilder.create().texOffs(86, 94).addBox(-3F, 5F, -3.5F, 6F, 5F, 7F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
 		return 128;
 	}
@@ -327,7 +331,7 @@ public final class RogueModels {
 				PartPose.offsetAndRotation(0F, 1F, 3F, 0.25F, 0F, 0F));
 		PartDefinition sway1 = body.addOrReplaceChild("sway1", CubeListBuilder.create().texOffs(93, 19).addBox(-6F, 0F, 0F, 12F, 12F, 1F),
 				PartPose.offsetAndRotation(0F, 18F, -3.4F, 0F, 0F, 0F));
-		PartDefinition sway2 = body.addOrReplaceChild("sway2", CubeListBuilder.create().texOffs(0, 40).addBox(-6F, 0F, 0F, 12F, 13F, 1F),
+		PartDefinition sway2 = body.addOrReplaceChild("sway2", CubeListBuilder.create().texOffs(0, 40).addBox(-6F, 0F, 0F, 12F, 12F, 1F),
 				PartPose.offsetAndRotation(0F, 18F, 3.2F, 0F, 0F, 0F));
 		rightArm.addOrReplaceChild("b13", CubeListBuilder.create().texOffs(27, 40).addBox(-2F, -1F, -2F, 4F, 20F, 4F),
 				PartPose.offsetAndRotation(0F, 0F, 0F, 0F, 0F, 0F));
