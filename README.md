@@ -46,8 +46,24 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 | `src/main/java/com/onepiecebosses/compat/OnePieceBridge.java` | Every other call into the main mod. If it renames something, fix it here. |
 | `tools/gen_models.py` | **Each rogue's body shape and skin.** Writes `client/RogueModels.java` and the skins. |
 | `tools/gen_assets.py` | Draws the poster and trophy art and writes the item JSON. |
+| `tools/lairs/gen_lairs.py` | **Each rogue's lair:** the build, where it spawns, and its chest loot. Run `python3 tools/lairs/gen_lairs.py .` after a change. |
 
 To add a rogue: add an entry to `bosses.json` (and a crew to `crews.json` if it has one), give it a body in `ROGUES` in `tools/gen_models.py` and its trophy a look in `TROPHIES` in `tools/gen_assets.py`, then run both (`python3 tools/gen_models.py .` and `python3 tools/gen_assets.py src/main/resources`, needs Pillow).
+
+## Their lairs
+
+Every rogue has a base of their own out in the world, so you can stumble on them without a poster. Each one spawns its boss and crew once, when it's first generated, and has a chest whose loot always includes that boss's Rumor Poster for a rematch. They're rare: about one lair per 44 chunks. Find one with `/locate structure opbosses:<name>`.
+
+| Lair | Rogue | Where |
+| --- | --- | --- |
+| `scrapheap_reef`: a scrap island with beached wrecks and a salvage crane | Saltjaw Rourke | Oceans and beaches |
+| `lantern_house`: a stilt manor ringed with lanterns | Corvina | Swamps, Thriller Bark |
+| `fort_iron_tide`: a deserted Navy fort under his own flag | Iron Tide Graves | Plains, savanna, beaches, East Blue, Jaya |
+| `hollow_shrine`: a dueling ring under a torii, ringed with beaten swordsmen's blades | Hollow Ronin Tsurugi | Cherry groves, meadows, hills, taiga, Wano |
+| `shipbreakers_foundry`: a furnace hall by a warship being torn apart | Boilerheart Gantz | Stony shores, badlands, desert, Onigashima, Punk Hazard |
+| `abyssal_temple`: a prismarine arena rising out of the sea | Nereus Vane | Oceans |
+
+![The six lairs](docs/lairs.png)
 
 ## Building
 
@@ -60,6 +76,5 @@ The One Piece Mod isn't on a maven, so build against its jar, the same way as On
 
 ## Planned
 
-- Lairs: a structure for each rogue out at sea, so you can stumble on them without a poster.
 - Their own Devil Fruits (needs a small hook in the main mod, which only registers fruits from its own list).
 - Rogue-only prizes that work with Arsenal (a Boiler Core as a material, the Hollow Ronin's blade as a meito).
