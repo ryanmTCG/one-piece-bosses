@@ -87,6 +87,8 @@ Every rogue has a base of their own out in the world, so you can stumble on them
 
 ![The six lairs](docs/lairs.png)
 
+![The five film lairs](docs/film_lairs.png)
+
 ## Building
 
 The One Piece Mod isn't on a maven, so build against its jar, the same way as One Piece Arsenal:
