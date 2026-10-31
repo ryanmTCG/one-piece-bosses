@@ -10,6 +10,7 @@ import com.onepiecebosses.boss.RogueBosses;
 public class BossesClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		RogueModels.register();
 		EntityRenderers.register(RogueBosses.ROGUE_BOSS, RogueBossRenderer::new);
 	}
 }

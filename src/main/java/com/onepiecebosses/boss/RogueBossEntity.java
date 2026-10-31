@@ -9,13 +9,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -48,6 +51,7 @@ public class RogueBossEntity extends CharacterEntity {
 	private int phaseSeen = 0; // 0 = not worked out yet (fresh spawn or just loaded)
 	private boolean introDone = false;
 	private int signatureCooldown = 60;
+	private String sizedFor = "";
 
 	public RogueBossEntity(EntityType<? extends RogueBossEntity> type, Level level) {
 		super(type, level);
@@ -57,6 +61,24 @@ public class RogueBossEntity extends CharacterEntity {
 	@Override
 	public CharacterData getData() {
 		return rogue().character;
+	}
+
+	/** Each rogue's hitbox fits its own body (see RogueModels), not a player's. */
+	@Override
+	protected EntityDimensions getDefaultDimensions(Pose pose) {
+		float[] size = rogue().hitbox;
+		return EntityDimensions.scalable(size[0], size[1]);
+	}
+
+	@Override
+	public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+		super.onSyncedDataUpdated(key);
+		// Which rogue this is arrives as synced data; resize once it changes.
+		String id = getCharacterId();
+		if (!id.equals(sizedFor)) {
+			sizedFor = id;
+			refreshDimensions();
+		}
 	}
 
 	public RogueData rogue() {

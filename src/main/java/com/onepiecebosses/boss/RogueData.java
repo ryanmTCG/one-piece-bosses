@@ -24,6 +24,8 @@ public class RogueData {
 	public transient CharacterData character;
 
 	public String id;
+	/** Width and height of the boss's hitbox in blocks, before its size (scale) is applied. Fits its model. */
+	public float[] hitbox = {0.6f, 1.95f};
 	/** How much a first win raises your bounty. The main mod pays its tier value; BossRewards adds the rest. */
 	public long bountyReward;
 	/** An NPC kit from crews.json the boss calls at the start and at phase 2, or "" to fight alone. */
