@@ -210,16 +210,16 @@ def _(b):
             b.set(x, 7, z, "minecraft:stone_bricks")
     b.door(14, 1, 0, h=4, w=3); b.door(14, 1, 1, h=4, w=3)   # the gate
     b.box(13, 5, 0, 17, 5, 0, "minecraft:white_concrete")
-    # Navy-white corner towers with blue roofs: the paint is peeling.
+    # Navy-white corner towers with blue roofs (blue terracotta reads as purple): the paint is peeling.
     for cx, cz in ((2, 2), (N - 2, 2), (2, N - 2), (N - 2, N - 2)):
-        b.tower(cx, cz, 3, 11, "minecraft:white_concrete", "minecraft:blue_terracotta")
+        b.tower(cx, cz, 3, 11, "minecraft:white_concrete", "minecraft:blue_concrete")
         b.set(cx, 6, cz + (3 if cz < N // 2 else -3), "minecraft:cracked_stone_bricks")
     # Cannons on the walls, pointing out to sea.
     for x in range(6, N - 5, 6):
         b.set(x, 7, 1, "minecraft:dispenser[facing=north,triggered=false]")
         b.set(x, 7, N - 1, "minecraft:dispenser[facing=south,triggered=false]")
     # The commandant's office (Graves's) and the barracks.
-    b.house(19, 20, 8, 7, 4, "minecraft:white_concrete", "minecraft:blue_terracotta", floor="minecraft:spruce_planks", door="north")
+    b.house(19, 20, 8, 7, 4, "minecraft:white_concrete", "minecraft:blue_concrete", floor="minecraft:spruce_planks", door="north")
     b.house(4, 20, 8, 7, 4, "minecraft:stone_bricks", "minecraft:gray_terracotta", door="north")
     for x in range(5, 11, 2):
         bed("blue", x, 1, 22, b)
@@ -431,10 +431,12 @@ def main(root):
         st = {"type": "minecraft:jigsaw", "biomes": f"#opbosses:has_structure/{name}", "step": "surface_structures",
               "spawn_overrides": {"monster": {"bounding_box": "piece", "spawns": []}, "ambient": {"bounding_box": "piece", "spawns": []}},
               "terrain_adaptation": "beard_thin", "start_pool": f"opbosses:{name}", "size": 1, "max_distance_from_center": 80, "use_expansion_hack": False}
+        # The jigsaw puts a piece's lowest level 1 below surface + start_height (a single element's ground level delta is 1),
+        # so start_height 0 puts y = 0 on the top block of the ground, or of the sea for a sea lair's waterline.
         if l['place'] == "land":
-            st["project_start_to_heightmap"] = "WORLD_SURFACE_WG"; st["start_height"] = {"absolute": -1 + my}
+            st["project_start_to_heightmap"] = "WORLD_SURFACE_WG"; st["start_height"] = {"absolute": my}
         else:   # "sea": the waterline level sits at the sea's surface
-            st["project_start_to_heightmap"] = "WORLD_SURFACE_WG"; st["start_height"] = {"absolute": -1 - b.waterline + my}; st["terrain_adaptation"] = "none"
+            st["project_start_to_heightmap"] = "WORLD_SURFACE_WG"; st["start_height"] = {"absolute": -b.waterline + my}; st["terrain_adaptation"] = "none"
         write(f'{D}/worldgen/structure/{name}.json', st)
         write(f'{D}/worldgen/template_pool/{name}.json', {"fallback": "minecraft:empty", "elements": [{"weight": 1, "element": {
             "element_type": "minecraft:single_pool_element", "location": f"opbosses:{name}", "processors": {"processors": []}, "projection": "rigid"}}]})

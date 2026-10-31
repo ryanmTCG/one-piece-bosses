@@ -2,7 +2,10 @@ package com.onepiecebosses.test;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -89,23 +92,34 @@ public class LairsClientTest implements FabricClientGameTest {
 					LOG.info("LT could not hide quest panel: {}", e.toString());
 				}
 				try {
-					Field hidden = client.gui.getClass().getDeclaredField("isHidden");
+					Field hidden = client.gui.hud.getClass().getDeclaredField("isHidden");
 					hidden.setAccessible(true);
-					hidden.set(client.gui, true);
+					hidden.set(client.gui.hud, true);
 				} catch (ReflectiveOperationException e) {
 					LOG.info("LT could not hide the HUD: {}", e.toString());
 				}
 			});
 
+			Map<String, BlockPos> located = new LinkedHashMap<>();
 			server(sp, s -> {
 				for (Lair lair : LAIRS) {
-					locate(s, lair);
+					BlockPos p = locate(s, lair);
+					if (p != null) {
+						located.put(lair.name, p);
+					}
 				}
 			});
-
-			List<BlockPos> used = new ArrayList<>();
+			// The lairs the world made itself: everything is checked here, and these are the screenshots.
+			for (Lair lair : LAIRS) {
+				if (located.containsKey(lair.name)) {
+					naturalTest(context, sp, lair, located.get(lair.name));
+				}
+			}
+			// /place structure, somewhere else in a biome each spawns in. The chunks there are already decorated (trees,
+			// no terrain smoothing), so this only checks that the lair places and sets itself up, not how it looks.
+			List<BlockPos> used = new ArrayList<>(located.values());
 			for (int i = 0; i < LAIRS.size(); i++) {
-				lairTest(context, sp, LAIRS.get(i), i, used);
+				placeTest(context, sp, LAIRS.get(i), i, used);
 			}
 			LOG.info("LT DONE, {} failures", FAILURES.size());
 		}
@@ -136,7 +150,7 @@ public class LairsClientTest implements FabricClientGameTest {
 	}
 
 	/** What /locate structure does, from the world's centre. */
-	private static void locate(MinecraftServer s, Lair lair) {
+	private static BlockPos locate(MinecraftServer s, Lair lair) {
 		ServerLevel level = s.overworld();
 		BlockPos from = new BlockPos(0, 64, 0);
 		long start = System.currentTimeMillis();
@@ -144,22 +158,40 @@ public class LairsClientTest implements FabricClientGameTest {
 				.findNearestMapStructure(level, HolderSet.direct(structure(s, lair.name)), from, 100, false);
 		long ms = System.currentTimeMillis() - start;
 		if (found == null) {
-			LOG.info("LT LOCATE {} not found within 100 regions ({} ms)", lair.name, ms);
-		} else {
-			BlockPos p = found.getFirst();
-			LOG.info("LT LOCATE {} at {} {} distance {} ({} ms)", lair.name, p.getX(), p.getZ(),
-					(int) Math.sqrt(p.distSqr(new BlockPos(0, p.getY(), 0))), ms);
+			check(false, lair.name + ": /locate found none within 100 regions");
+			return null;
+		}
+		BlockPos p = found.getFirst();
+		LOG.info("LT LOCATE {} at {} {} distance {} ({} ms)", lair.name, p.getX(), p.getZ(),
+				(int) Math.sqrt(p.distSqr(new BlockPos(0, p.getY(), 0))), ms);
+		return p;
+	}
+
+	private void naturalTest(ClientGameTestContext context, TestSingleplayerContext sp, Lair lair, BlockPos pos) throws Exception {
+		server(sp, s -> player(s).teleportTo(s.overworld(), pos.getX() + 0.5, 160, pos.getZ() + 0.5, Set.of(), 0f, 60f, true));
+		context.waitTicks(60);
+		sp.getConnection().waitForChunksRender();
+		context.waitTicks(20);
+		double[] camera = new double[5];
+		server(sp, s -> inspect(s, lair, pos, "natural", camera));
+		if (camera[1] != 0) {
+			server(sp, s -> player(s).teleportTo(s.overworld(), camera[0], camera[1], camera[2], Set.of(), (float) camera[3], (float) camera[4], true));
+			context.waitTicks(30);
+			sp.getConnection().waitForChunksRender();
+			context.runOnClient(client -> client.gui.hud.getChat().clearMessages(true));
+			context.waitTicks(20);
+			context.takeScreenshot("lair_" + lair.name);
 		}
 	}
 
-	private void lairTest(ClientGameTestContext context, TestSingleplayerContext sp, Lair lair, int i, List<BlockPos> used) throws Exception {
+	private void placeTest(ClientGameTestContext context, TestSingleplayerContext sp, Lair lair, int i, List<BlockPos> used) throws Exception {
 		BlockPos[] target = new BlockPos[1];
 		server(sp, s -> {
 			ServerLevel level = s.overworld();
 			TagKey<Biome> tag = TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("opbosses", "has_structure/" + lair.name));
-			// Start each search somewhere else, and skip spots within 200 blocks of an earlier lair.
+			// Start each search somewhere else, and skip spots within 200 blocks of another lair.
 			for (int tries = 0; tries < 8 && target[0] == null; tries++) {
-				BlockPos from = new BlockPos(600 * i + 300 * tries, level.getSeaLevel(), -400 * tries);
+				BlockPos from = new BlockPos(-600 * i - 300 * tries, level.getSeaLevel(), 400 * tries - 1500);
 				Pair<BlockPos, Holder<Biome>> biome = level.findClosestBiome3d(h -> h.is(tag), from, 4000, 32, 64);
 				if (biome == null) {
 					continue;
@@ -178,103 +210,112 @@ public class LairsClientTest implements FabricClientGameTest {
 		BlockPos pos = target[0];
 		used.add(pos);
 		// /place needs the chunks loaded, so go there first.
-		server(sp, s -> player(s).teleportTo(s.overworld(), pos.getX() + 0.5, 140, pos.getZ() + 0.5, Set.of(), 0f, 60f, true));
+		server(sp, s -> player(s).teleportTo(s.overworld(), pos.getX() + 0.5, 160, pos.getZ() + 0.5, Set.of(), 0f, 60f, true));
 		context.waitTicks(40);
 		sp.getConnection().waitForChunksRender();
-
+		boolean[] placed = new boolean[1];
 		server(sp, s -> {
 			try {
 				PlaceCommand.placeStructure(s.createCommandSourceStack().withSuppressedOutput(), structure(s, lair.name), pos);
+				placed[0] = true;
 				LOG.info("LT {} placed ok", lair.name);
 			} catch (Exception e) {
 				check(false, lair.name + ": /place structure failed: " + e.getMessage());
 			}
 		});
-		context.waitTicks(40);
+		if (placed[0]) {
+			context.waitTicks(40);
+			server(sp, s -> inspect(s, lair, pos, "placed", null));
+		}
+	}
 
-		double[] camera = new double[5];
-		server(sp, s -> {
-			ServerLevel level = s.overworld();
-			AABB area = new AABB(pos).inflate(64, 80, 64);
-			List<RogueBossEntity> bosses = level.getEntitiesOfClass(RogueBossEntity.class, area, Entity::isAlive);
-			check(bosses.size() == 1, lair.name + ": " + bosses.size() + " rogue bosses nearby");
-			if (bosses.isEmpty()) {
-				return;
-			}
-			RogueBossEntity boss = bosses.get(0);
-			boolean setUp = !boss.entityTags().contains(WorldFeature.NEW_CHARACTER_TAG);
-			int sea = level.getSeaLevel();
-			String inBlock = blockedBy(level, boss);
-			LOG.info("LT {} boss id={} name='{}' boss={} setUp={} health={}/{} at {} (sea level {}, {} above it) stuckIn={}", lair.name,
-					boss.getCharacterId(), boss.getData() == null ? "?" : boss.getData().name, boss.isBoss(), setUp, boss.getHealth(),
-					boss.getMaxHealth(), boss.blockPosition(), sea, boss.getBlockY() - sea, inBlock);
-			check(boss.getCharacterId().equals(lair.boss), lair.name + ": boss is " + boss.getCharacterId() + ", not " + lair.boss);
-			check(setUp && boss.isBoss(), lair.name + ": the boss wasn't set up (setUp=" + setUp + ", boss=" + boss.isBoss() + ")");
-			check(inBlock == null, lair.name + ": the boss is stuck in " + inBlock);
+	/**
+	 * Checks the boss, crew and chest of the lair near pos. A natural lair (camera != null) is also checked for anyone
+	 * stuck in a block and for its height above the sea, and the camera is set to look down at it.
+	 */
+	private static void inspect(MinecraftServer s, Lair lair, BlockPos pos, String how, double[] camera) {
+		ServerLevel level = s.overworld();
+		String name = lair.name + " (" + how + ")";
+		AABB area = new AABB(pos).inflate(72, 100, 72);
+		RogueBossEntity boss = level.getEntitiesOfClass(RogueBossEntity.class, area, e -> e.isAlive() && e.getCharacterId().equals(lair.boss)).stream()
+				.min(Comparator.comparingDouble(e -> e.distanceToSqr(pos.getX(), e.getY(), pos.getZ()))).orElse(null);
+		if (boss == null) {
+			check(false, name + ": no " + lair.boss + " nearby");
+			return;
+		}
+		boolean setUp = !boss.entityTags().contains(WorldFeature.NEW_CHARACTER_TAG);
+		int sea = level.getSeaLevel();
+		String inBlock = blockedBy(level, boss);
+		LOG.info("LT {} boss id={} name='{}' boss={} setUp={} health={}/{} at {} (sea level {}, {} above it) stuckIn={}", name,
+				boss.getCharacterId(), boss.getData() == null ? "?" : boss.getData().name, boss.isBoss(), setUp, boss.getHealth(),
+				boss.getMaxHealth(), boss.blockPosition(), sea, boss.getBlockY() - sea, inBlock);
+		check(setUp && boss.isBoss(), name + ": the boss wasn't set up (setUp=" + setUp + ", boss=" + boss.isBoss() + ")");
+		if (camera != null) {
+			check(inBlock == null, name + ": the boss is stuck in " + inBlock);
 			if (lair.sea) {
-				check(boss.getBlockY() > sea && boss.getBlockY() < sea + 6, lair.name + ": the arena is " + (boss.getBlockY() - sea) + " blocks above the sea");
+				check(boss.getBlockY() > sea && boss.getBlockY() < sea + 6, name + ": the arena is " + (boss.getBlockY() - sea) + " blocks above the sea");
 			}
+		}
 
-			List<HumanNpc> crew = level.getEntitiesOfClass(HumanNpc.class, area, Entity::isAlive);
-			int kitted = 0;
-			for (HumanNpc npc : crew) {
-				boolean leftover = npc.entityTags().stream().anyMatch(t -> t.equals(GuardKit.GUARD_TAG) || t.startsWith(GuardKit.KIT_TAG_PREFIX));
-				LOG.info("LT {} crew {} kit={} name='{}' hand={} tagsLeft={} at {} stuckIn={}", lair.name, BuiltInRegistries.ENTITY_TYPE.getKey(npc.getType()),
-						npc.getKitId(), npc.getName().getString(), npc.getMainHandItem(), leftover, npc.blockPosition(), blockedBy(level, npc));
-				if (npc.getKitId().equals(lair.kit) && !leftover) {
-					kitted++;
+		List<HumanNpc> crew = level.getEntitiesOfClass(HumanNpc.class, boss.getBoundingBox().inflate(48, 30, 48), Entity::isAlive);
+		int kitted = 0;
+		for (HumanNpc npc : crew) {
+			boolean leftover = npc.entityTags().stream().anyMatch(t -> t.equals(GuardKit.GUARD_TAG) || t.startsWith(GuardKit.KIT_TAG_PREFIX));
+			String stuck = blockedBy(level, npc);
+			LOG.info("LT {} crew {} kit={} name='{}' hand={} tagsLeft={} at {} stuckIn={}", name, BuiltInRegistries.ENTITY_TYPE.getKey(npc.getType()),
+					npc.getKitId(), npc.getName().getString(), npc.getMainHandItem(), leftover, npc.blockPosition(), stuck);
+			if (npc.getKitId().equals(lair.kit) && !leftover) {
+				kitted++;
+				if (camera != null) {
+					check(stuck == null, name + ": crew " + npc.getName().getString() + " is stuck in " + stuck);
 				}
 			}
-			check(kitted == lair.crew, lair.name + ": " + kitted + " crew with kit " + lair.kit + ", want " + lair.crew);
+		}
+		check(kitted == lair.crew, name + ": " + kitted + " crew with kit " + lair.kit + ", want " + lair.crew);
 
-			int chests = 0;
-			String rumor = BossItems.RUMORS.get(lair.boss) == null ? "?" : new ItemStack(BossItems.RUMORS.get(lair.boss)).getItem().toString();
-			for (int cx = (pos.getX() >> 4) - 4; cx <= (pos.getX() >> 4) + 4; cx++) {
-				for (int cz = (pos.getZ() >> 4) - 4; cz <= (pos.getZ() >> 4) + 4; cz++) {
-					for (BlockPos bp : level.getChunk(cx, cz).getBlockEntitiesPos()) {
-						BlockEntity be = level.getBlockEntity(bp);
-						if (!(be instanceof ChestBlockEntity chest) || chest.getLootTable() == null) {
-							continue;
-						}
-						String table = chest.getLootTable().identifier().toString();
-						check(table.equals("opbosses:chests/" + lair.name), lair.name + ": chest at " + bp + " has loot table " + table);
-						chest.unpackLootTable(player(s));
-						List<String> items = new ArrayList<>();
-						boolean poster = false;
-						for (int slot = 0; slot < chest.getContainerSize(); slot++) {
-							ItemStack stack = chest.getItem(slot);
-							if (!stack.isEmpty()) {
-								items.add(stack.getCount() + " " + stack.getItem());
-								poster |= stack.is(BossItems.RUMORS.get(lair.boss));
-							}
-						}
-						chests++;
-						LOG.info("LT {} chest at {} ({} above the boss) items={}", lair.name, bp, bp.getY() - boss.getBlockY(), items);
-						check(!items.isEmpty(), lair.name + ": the chest is empty");
-						check(poster, lair.name + ": no " + rumor + " in the chest");
+		// Only this mod's chests: a lair may sit on top of a dungeon or next to a shipwreck.
+		int chests = 0;
+		for (int cx = (boss.getBlockX() >> 4) - 3; cx <= (boss.getBlockX() >> 4) + 3; cx++) {
+			for (int cz = (boss.getBlockZ() >> 4) - 3; cz <= (boss.getBlockZ() >> 4) + 3; cz++) {
+				for (BlockPos bp : level.getChunk(cx, cz).getBlockEntitiesPos()) {
+					BlockEntity be = level.getBlockEntity(bp);
+					if (!(be instanceof ChestBlockEntity chest) || chest.getLootTable() == null
+							|| !chest.getLootTable().identifier().getNamespace().equals("opbosses")) {
+						continue;
 					}
+					String table = chest.getLootTable().identifier().toString();
+					check(table.equals("opbosses:chests/" + lair.name), name + ": chest at " + bp + " has loot table " + table);
+					chest.unpackLootTable(player(s));
+					List<String> items = new ArrayList<>();
+					boolean poster = false;
+					for (int slot = 0; slot < chest.getContainerSize(); slot++) {
+						ItemStack stack = chest.getItem(slot);
+						if (!stack.isEmpty()) {
+							items.add(stack.getCount() + " " + stack.getItem());
+							poster |= stack.is(BossItems.RUMORS.get(lair.boss));
+						}
+					}
+					chests++;
+					LOG.info("LT {} chest {} at {} ({} above the boss) items={}", name, table, bp, bp.getY() - boss.getBlockY(), items);
+					check(!items.isEmpty(), name + ": the chest is empty");
+					check(poster, name + ": no rumor poster for " + lair.boss + " in the chest");
 				}
 			}
-			check(chests == 1, lair.name + ": " + chests + " loot chests");
+		}
+		check(chests == 1, name + ": " + chests + " loot chests");
 
-			// High up, angled down at the arena, from the south-east.
-			double dist = 26 + boss.getBbHeight() * 2;
-			camera[0] = boss.getX() + dist * 0.75;
-			camera[1] = boss.getY() + dist * 0.8;
-			camera[2] = boss.getZ() + dist * 0.75;
-			camera[3] = (float) Math.toDegrees(Math.atan2(-(boss.getX() - camera[0]), boss.getZ() - camera[2]));
-			camera[4] = (float) Math.toDegrees(Math.atan2(camera[1] - boss.getY(), Math.hypot(camera[0] - boss.getX(), camera[2] - boss.getZ())));
+		if (camera != null) {
+			// High up, looking down at the arena from the south-east.
+			double d = 36 + boss.getBbHeight() * 2;
+			camera[0] = boss.getX() + d * 0.5;
+			camera[1] = boss.getY() + d;
+			camera[2] = boss.getZ() + d * 0.5;
+			camera[3] = Math.toDegrees(Math.atan2(-(boss.getX() - camera[0]), boss.getZ() - camera[2]));
+			camera[4] = Math.toDegrees(Math.atan2(camera[1] - boss.getY(), Math.hypot(camera[0] - boss.getX(), camera[2] - boss.getZ())));
 			boss.setNoAi(true);
 			for (HumanNpc npc : crew) {
 				npc.setNoAi(true);
 			}
-		});
-		if (camera[1] != 0) {
-			server(sp, s -> player(s).teleportTo(s.overworld(), camera[0], camera[1], camera[2], Set.of(), (float) camera[3], (float) camera[4], true));
-			context.waitTicks(30);
-			sp.getConnection().waitForChunksRender();
-			context.waitTicks(10);
-			context.takeScreenshot("lair_" + lair.name);
 		}
 	}
 
