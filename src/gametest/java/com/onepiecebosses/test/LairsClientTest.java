@@ -306,7 +306,7 @@ public class LairsClientTest implements FabricClientGameTest {
 
 		if (camera != null) {
 			// High up, looking down at the arena from the south-east.
-			double d = 36 + boss.getBbHeight() * 2;
+			double d = 26 + boss.getBbHeight() * 1.5;
 			camera[0] = boss.getX() + d * 0.5;
 			camera[1] = boss.getY() + d;
 			camera[2] = boss.getZ() + d * 0.5;
