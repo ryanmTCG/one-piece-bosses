@@ -25,6 +25,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -370,6 +371,20 @@ public class LairsClientTest implements FabricClientGameTest {
 					LOG.info("LT {} chest {} at {} ({} above the boss) items={}", name, table, bp, bp.getY() - boss.getBlockY(), items);
 					check(!items.isEmpty(), name + ": the chest is empty");
 					check(poster, name + ": no rumor poster for " + lair.boss + " in the chest");
+					// Locked to the boss's key: shut without it, open with it in hand.
+					ServerPlayer p = player(s);
+					ItemStack held = p.getMainHandItem().copy();
+					p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+					boolean openWithout = chest.canOpen(p);
+					p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(BossItems.KEYS.get(lair.boss)));
+					boolean openWithKey = chest.canOpen(p);
+					p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(BossItems.KEYS.get(lair.name.equals("merveille") ? "uta_diva" : "shiki_golden_lion")));
+					boolean openWithOther = chest.canOpen(p);
+					p.setItemInHand(InteractionHand.MAIN_HAND, held);
+					LOG.info("LT {} lock: opens without key={} with key={} with another boss's key={}", name, openWithout, openWithKey, openWithOther);
+					check(!openWithout, name + ": the chest opens without a key");
+					check(openWithKey, name + ": the chest doesn't open with " + lair.boss + "'s key");
+					check(!openWithOther, name + ": the chest opens with another boss's key");
 				}
 			}
 		}

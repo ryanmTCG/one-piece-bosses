@@ -240,6 +240,9 @@ public class RogueBossEntity extends CharacterEntity {
 	@Override
 	protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
 		super.dropCustomDeathLoot(level, source, recentlyHit);
+		if (isBoss()) {
+			BossRewards.dropKey(this, level);
+		}
 		if (isBoss() && isFirstWin()) {
 			BossRewards.dropTrophy(this, level);
 		}

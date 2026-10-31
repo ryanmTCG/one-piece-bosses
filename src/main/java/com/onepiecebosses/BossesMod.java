@@ -9,6 +9,7 @@ import net.fabricmc.api.ModInitializer;
 
 import com.onepiecebosses.boss.RogueBosses;
 import com.onepiecebosses.crew.CrewKits;
+import com.onepiecebosses.loot.LairChests;
 import com.onepiecebosses.loot.RumorDrops;
 
 /**
@@ -29,6 +30,7 @@ public class BossesMod implements ModInitializer {
 		RogueBosses.initialize();
 		BossItems.initialize();
 		RumorDrops.initialize();
+		LairChests.initialize();
 		LOGGER.info("One Piece Bosses: {} rogue bosses loaded", com.onepiecebosses.boss.RogueData.all().size());
 	}
 

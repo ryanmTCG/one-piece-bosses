@@ -14,7 +14,7 @@ import com.onepiecebosses.compat.OnePieceBridge;
 
 /**
  * What a rogue boss gives on top of the main mod's boss rewards (Berries, XP, Hard and Expert prizes, bounty):
- * its trophy on a first win and the rest of its bounty.
+ * its trophy on a first win, the key to its lair's chest every time, and the rest of its bounty.
  * (The main mod's paper already reports every boss's first defeat.) RogueBossEntity calls these.
  */
 public final class BossRewards {
@@ -41,6 +41,14 @@ public final class BossRewards {
 		Item trophy = BossItems.TROPHIES.get(boss.rogue().trophy);
 		if (trophy != null) {
 			boss.spawnAtLocation(level, new ItemStack(trophy));
+		}
+	}
+
+	/** The key to the boss's lair chest, every time it's beaten as a boss. */
+	public static void dropKey(RogueBossEntity boss, ServerLevel level) {
+		Item key = BossItems.KEYS.get(boss.rogue().id);
+		if (key != null) {
+			boss.spawnAtLocation(level, new ItemStack(key));
 		}
 	}
 }

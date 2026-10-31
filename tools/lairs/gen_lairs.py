@@ -47,9 +47,12 @@ class Lair(Parts):
             x, yy, z = spot if len(spot) == 3 else (spot[0], y, spot[1])
             self.entities.append((entity_id, x, yy, z, {"PersistenceRequired": Byte(1)}))
 
+    boss = None   # the lair's boss id, set before it's built
+
     def chest(self, x, y, z, loot, facing="south"):
+        # Locked (vanilla's container lock): it only opens for someone holding the key the boss drops.
         self.set(x, y, z, f"minecraft:chest[facing={facing},type=single,waterlogged=false]",
-                 {"id": "minecraft:chest", "LootTable": f"opbosses:chests/{loot}"})
+                 {"id": "minecraft:chest", "LootTable": f"opbosses:chests/{loot}", "lock": {"items": f"opbosses:key_{self.boss}"}})
 
     def scatter(self, x0, z0, x1, z1, y, blocks, chance, rnd, only_on=None, replace=False):
         for x in range(x0, x1 + 1):
@@ -1137,6 +1140,7 @@ def main(root):
     rows = []
     for l in LAIRS:
         b = Lair()
+        b.boss = l['boss']
         l['build'](b)
         for (eid, *_r, data) in b.entities:
             if eid == "opbosses:rogue_boss":

@@ -129,6 +129,7 @@ public class BossesClientTest implements FabricClientGameTest {
 				}
 			}
 			check(BossItems.TROPHIES.containsKey(boss.trophy), boss.id + ": trophy " + boss.trophy + " is not registered");
+			check(BossItems.KEYS.containsKey(boss.id) && !boss.lair.isEmpty(), boss.id + ": no lair key or lair name");
 		}
 	}
 
@@ -247,6 +248,9 @@ public class BossesClientTest implements FabricClientGameTest {
 			LOG.info("BT {} trophy dropped={} drops={} crewLeft={}", id, trophy,
 					drops.stream().map(e -> e.getItem().toString()).toList(), crewCount(s));
 			check(trophy, id + ": no trophy");
+			net.minecraft.world.item.Item keyItem = BossItems.KEYS.get(id);
+			boolean key = drops.stream().anyMatch(e -> e.getItem().is(keyItem)) || player(s).getInventory().contains(new ItemStack(keyItem));
+			check(key, id + ": no lair key");
 			check(crewCount(s) == 0, id + ": the crew didn't scatter");
 
 			// The poster brings the boss back on Hard now.
