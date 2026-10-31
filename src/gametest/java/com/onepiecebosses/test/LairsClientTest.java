@@ -371,8 +371,9 @@ public class LairsClientTest implements FabricClientGameTest {
 					LOG.info("LT {} chest {} at {} ({} above the boss) items={}", name, table, bp, bp.getY() - boss.getBlockY(), items);
 					check(!items.isEmpty(), name + ": the chest is empty");
 					check(poster, name + ": no rumor poster for " + lair.boss + " in the chest");
-					// Locked to the boss's key: shut without it, open with it in hand.
+					// Locked to the boss's key: shut without it, open with it in hand. Spectators open every lock, so check in survival.
 					ServerPlayer p = player(s);
+					p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
 					ItemStack held = p.getMainHandItem().copy();
 					p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
 					boolean openWithout = chest.canOpen(p);
@@ -381,6 +382,7 @@ public class LairsClientTest implements FabricClientGameTest {
 					p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(BossItems.KEYS.get(lair.name.equals("merveille") ? "uta_diva" : "shiki_golden_lion")));
 					boolean openWithOther = chest.canOpen(p);
 					p.setItemInHand(InteractionHand.MAIN_HAND, held);
+					p.setGameMode(net.minecraft.world.level.GameType.SPECTATOR);
 					LOG.info("LT {} lock: opens without key={} with key={} with another boss's key={}", name, openWithout, openWithKey, openWithOther);
 					check(!openWithout, name + ": the chest opens without a key");
 					check(openWithKey, name + ": the chest doesn't open with " + lair.boss + "'s key");
