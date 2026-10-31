@@ -19,6 +19,6 @@
   "use_expansion_hack": false,
   "project_start_to_heightmap": "WORLD_SURFACE_WG",
   "start_height": {
-    "absolute": -31
+    "absolute": -22
   }
 }
