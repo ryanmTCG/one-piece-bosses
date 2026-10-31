@@ -176,22 +176,25 @@ ROGUES = {
             B('leg', -3, 0, -3, 6, 8, 6, '#3a3a44', 'cloth'),
             B('leg', -3.5, 8, -4, 7, 3, 7, '#202024', 'leather'),
         ]),
-    # Gild Tesoro: all legs and gold. A towering green pompadour, red shades, a white suit pinched to a
-    # wasp waist, a gold fur stole and cape, and hands that are nothing but gold rings.
+    # Gild Tesoro (Film Gold): very tall and muscular, built like a man. Slicked-back green hair, winged
+    # shades and star earrings; his white show jacket with gold stars and a rose over a gold shirt, gold
+    # trousers and shoes, a ring on every finger and a star on a chain at his right shoulder.
     "gild_tesoro": dict(
-        pivots=dict(head=(0, -10, 0), body=(0, -10, 0), arm=(-5.5, -8, 0), leg=(-2, 6, 0)),
+        pivots=dict(head=(0, -9, 0), body=(0, -9, 0), arm=(-6.5, -7, 0), leg=(-2.3, 6, 0)),
         boxes=[
-            B('head', -3, -7, -3, 6, 7, 6, '#a87850', None, front='face', eyes=None, brows=None, mouth='grin', shades='#d02838'),
-            B('head', -3.5, -12, -4, 7, 5, 7, '#3aa060', 'hair'),                        # pompadour
-            B('head', -3, -11, -6.5, 6, 3, 3, '#3aa060', 'hair'),                        # its quiff
-            B('body', -4, 0, -2.5, 8, 10, 5, '#f4f0e8', 'cloth', front='suit_gold'),
-            B('body', -7, -1.5, -3.5, 14, 4, 7, '#e8c040', 'fur'),                       # gold fur stole
-            B('body', -6.5, 0, 0, 13, 15, 1, '#d8b030', 'fur', sway=1, pivot=(0, 1, 3)),  # gold fur cape
-            B('body', -3.5, 10, -2, 7, 6, 4, '#f4f0e8', 'cloth', front='buckle'),
-            B('arm', -1.5, -1, -1.5, 3, 13, 3, '#f4f0e8', 'cloth', front='cuff'),
-            B('arm', -2, 12, -2, 4, 3, 4, '#e8c040', 'gold', front='rings'),            # gold-ringed hand
-            B('leg', -1.5, 0, -1.5, 3, 16, 3, '#f4f0e8', 'cloth'),
-            B('leg', -1.8, 16, -2.6, 3.6, 2, 4.2, '#e8c040', 'gold'),                   # gold shoes
+            B('head', -3.6, -8, -3.6, 7.2, 8, 7.2, '#a06e4a', None, front='face', eyes=None, brows=None, mouth='grin', shades='#e8c040'),
+            B('head', -4.4, -5.2, -3.2, 0.8, 1.6, 1.2, '#e8c040', 'gold', mirror=True),   # the shades' wings
+            B('head', -3.9, -8.8, -3.4, 7.8, 1.8, 7.8, '#3a9a50', 'hair'),               # slicked back on top
+            B('head', -3.9, -7.4, 3.4, 7.8, 6, 1, '#3a9a50', 'hair'),                    # and down the back
+            B('head', -4.1, -3, -0.5, 0.5, 1, 1, '#f0d050', 'gold', mirror=True),        # star earrings
+            B('body', -5, 0, -2.6, 10, 12, 5.2, '#f4f0e6', 'stars', front='tesoro_jacket'),
+            B('body', -4.6, 12, -2.4, 9.2, 3, 4.8, '#d8b030', 'cloth', front='buckle'),
+            B('body', -5.4, 0.5, -2.9, 0.8, 5, 0.6, '#f0d050', 'chain'),                 # chain on his right shoulder
+            B('body', -6, 5.2, -3.1, 1.6, 1.6, 0.6, '#f0d050', 'gold'),                  # and its star
+            B('arm', -2.2, -2, -2.2, 4.4, 12, 4.4, '#f4f0e6', 'stars', front='cuff'),
+            B('arm', -1.9, 10, -1.9, 3.8, 3.5, 3.8, '#a06e4a', None, front='rings'),     # a ring on every finger
+            B('leg', -2.2, 0, -2.2, 4.4, 15.5, 4.4, '#d8b030', 'cloth'),
+            B('leg', -2.4, 15.5, -3, 4.8, 2.5, 5.4, '#e8c040', 'gold'),                  # gold shoes
         ]),
     # Zephyr: a mountain of an old Admiral, lopsided by the Battle Smasher, a seastone war-arm bigger than
     # his chest on his right. Purple hair and beard, a visor, and the Neo Marines' black coat.
@@ -214,52 +217,67 @@ ROGUES = {
             B('leg', -2.5, 0, -2.5, 5, 9, 5, '#2a2a34', 'cloth'),
             B('leg', -3, 9, -3.5, 6, 3, 6, '#141418', 'leather'),
         ]),
-    # Shiki: a golden lion's mane bigger than he is, a ship's wheel stuck in his skull, a long captain's
-    # coat, and no legs at all: he stands on his two swords, Oto and Sakura Jubei.
+    # Shiki (Strong World): a huge old man with a golden mane down to the ground, bald on top where part of
+    # a ship's wheel is stuck in his skull. Gold chin tuft, black goatee, dark pointed brows and a cigar. A red
+    # kimono trimmed orange and black, a dark green sash and gold chain, a tattered yellow-striped haori over
+    # his shoulders, and from the knees down his legs are his two swords.
     "shiki_golden_lion": dict(
-        pivots=dict(head=(0, -6, 0), body=(0, -6, 0), arm=(-7, -4, 0), leg=(-2, 10, 0)),
+        pivots=dict(head=(0, -10, 0), body=(0, -10, 0), arm=(-6, -8, 0), leg=(-2.3, 6, 0)),
         boxes=[
-            B('head', -3.5, -7, -3.5, 7, 7, 7, '#d8b490', None, front='face', eyes='#2a2a2a', brows='#e8c040', mouth='smirk'),
-            B('head', -9, -12, 2, 18, 22, 4, '#f0c840', 'mane'),                          # the mane, behind
-            B('head', -6.5, -10, -4, 3, 12, 6, '#f0c840', 'mane', mirror=True),          # mane down the sides of his face
-            B('head', -6, -11, -4.5, 12, 4, 7, '#f0c840', 'mane'),                       # mane on top
-            B('head', -1, -4, -1, 2, 4, 2, '#7a4a28', 'wood', pivot=(0, -11, 0)),        # the wheel's hub, in his head
-            B('head', -4.5, -12, -0.5, 9, 9, 1, '#8a5a30', 'wheel', rot=(0, 0, 0.3), pivot=(0, -11, 0)),
-            B('body', -7, -1, -3.5, 14, 3, 7, '#f0ead8', 'coat'),                        # coat over his shoulders
-            B('body', -5, 1, -3, 10, 8, 6, '#1a2a3a', 'robe', front='kimono'),
-            B('body', -5.5, 9, -3.5, 11, 2, 7, '#c8a040', 'gold'),                       # sash
-            B('body', -4.5, 11, -3, 9, 4, 6, '#1a2a3a', 'robe'),
-            B('body', -7, 0, 0, 14, 20, 1, '#f0ead8', 'coat', sway=1, pivot=(0, 1, 3.6)),  # captain's coat
-            B('arm', -2, -1, -2, 4, 13, 4, '#1a2a3a', 'robe'),
-            B('arm', -1.8, 12, -1.8, 3.6, 3, 3.6, '#d8b490'),
-            B('leg', -1.5, 0, -1.5, 3, 3, 3, '#3a2a20', 'leather'),                      # sword hilt
-            B('leg', -2.5, 3, -2.5, 5, 1, 5, '#c8a040', 'gold'),                        # guard
-            B('leg', -0.5, 4, -1.5, 1, 10, 3, '#e0e4ec', 'blade'),                      # the blade he stands on
+            B('head', -3.6, -8, -3.6, 7.2, 8, 7.2, '#e4c09c', None, front='face', eyes='#2a2a2a', brows='#141414', mouth=None),
+            B('head', -2, -2.6, -3.9, 4, 0.8, 0.4, '#141414'),                           # moustache
+            B('head', -2.4, -2.6, -3.9, 0.8, 1.6, 0.4, '#141414', mirror=True),          # its pointed ends
+            B('head', -1.2, -1.8, -3.9, 2.4, 1, 0.4, '#141414'),                         # pointed goatee
+            B('head', -1, -0.9, -4.1, 2, 3, 1.6, '#f0c840', 'mane'),                     # golden chin tuft
+            B('head', -3.2, -2.3, -5.8, 0.8, 0.8, 2.2, '#7a5030', 'wood'),               # cigar
+            B('head', -3.2, -2.3, -6.1, 0.8, 0.8, 0.3, '#ff7a30'),
+            B('head', -6.5, -8, 3.2, 13, 13, 2, '#f0c840', 'mane'),                      # lion's mane behind the head
+            B('head', -5.2, -7, -2.8, 1.6, 11, 6, '#f0c840', 'mane', mirror=True),       # and down the sides
+            B('head', -0.5, -5.5, -5.5, 1, 11, 11, '#6a4020', 'wheel', rot=(0.3, 0, 0), pivot=(0, -7.5, 0.5)),  # the wheel in his head, like a crest
+            B('body', -5, 0, -2.8, 10, 10, 5.6, '#9a2020', 'robe', front='shiki_kimono'),
+            B('body', -5.3, 10, -3.1, 10.6, 2.5, 6.2, '#2a5a3a', 'cloth'),               # dark green sash
+            B('body', -5.4, 12.5, -3.2, 10.8, 0.8, 6.4, '#e8c040', 'chain'),             # gold chain
+            B('body', -5, 12.5, -2.8, 10, 3.5, 5.6, '#9a2020', 'robe'),
+            B('body', -6.6, -0.6, -3.3, 13.2, 3.2, 6.6, '#e8c030', 'stripes'),           # haori over his shoulders
+            B('body', -6.6, 2.6, -3.4, 2.2, 11, 0.6, '#e8c030', 'stripes', mirror=True),  # its open fronts
+            B('body', -6.6, 0, 0, 13.2, 17, 1, '#e8c030', 'stripes', sway=1, pivot=(0, 1, 3.4)),  # its tattered back
+            B('body', -5, 0, 0, 10, 30, 1.2, '#f0c840', 'mane', sway=1, pivot=(0, -1, 4.6)),     # mane to the ground
+            B('arm', -2.2, -2, -2.2, 4.4, 11.5, 4.4, '#9a2020', 'robe', front='cuff'),
+            B('arm', -1.9, 9.5, -1.9, 3.8, 3.5, 3.8, '#e4c09c'),
+            B('leg', -2.3, 0, -2.3, 4.6, 7, 4.6, '#9a2020', 'robe'),                     # kimono to the knee
+            B('leg', -1.1, 7, -1.1, 2.2, 2.5, 2.2, '#2a2020', 'leather'),                # sword hilt
+            B('leg', -2, 9.5, -2, 4, 1, 4, '#c8a040', 'gold'),                           # guard
+            B('leg', -0.5, 10.5, -1.5, 1, 7.5, 3, '#e0e4ec', 'blade'),                   # the blade he stands on
         ]),
-    # Uta: hair split red and white, looped into two great rings, headphones, a puffed white top over a
-    # wasp waist, a frilled skirt and long boots on long thin legs.
+    # Uta (Film Red): a slim young woman. Hair split red (her right) and white (her left, over that eye), two
+    # long ponytails ending in hoops and two more hoops on top, purple eyes, gold cone headphones on light-blue
+    # bands, a short white dress with a frilled neck, black bow and buttons, and a light-blue left sleeve.
     "uta_diva": dict(
-        pivots=dict(head=(0, -8, 0), body=(0, -8, 0), arm=(-4.5, -6, 0), leg=(-1.8, 8, 0)),
+        pivots=dict(head=(0, -9, 0), body=(0, -9, 0), arm=(-4, -7.5, 0), leg=(-1.7, 5, 0)),
         boxes=[
-            B('head', -3.5, -7, -3, 7, 7, 6, '#f4dcd0', None, front='face', eyes='#a070c0', brows=None, mouth='smirk', lashes=True),
-            B('head', -4, -8.5, -3.5, 4, 3, 7.5, '#d83040', 'hair'),                     # red half
-            B('head', 0, -8.5, -3.5, 4, 3, 7.5, '#f4f4f8', 'hair'),                      # white half
-            B('head', -4, 0, 0, 4, 12, 1.5, '#d83040', 'hair', sway=1, pivot=(0, -6, 2.5)),
-            B('head', 0, 0, 0, 4, 12, 1.5, '#f4f4f8', 'hair', sway=1, pivot=(0, -6, 2.5)),
-            B('head', -4.5, -4.5, -0.5, 9, 9, 1, '#d83040', 'ring', rot=(0, 0, 0.3), pivot=(-7.5, -7, 0.5)),   # the hair loops
-            B('head', -4.5, -4.5, -0.5, 9, 9, 1, '#f4f4f8', 'ring', rot=(0, 0, -0.3), pivot=(7.5, -7, 0.5)),
-            B('head', -4.5, -5, -1.5, 9, 3, 3, '#f4f4f8', 'cloth', front='phones'),      # headphones
-            B('head', -4, -9.2, -0.5, 8, 1, 1, '#f4f4f8', 'cloth'),
-            B('body', -3, 0, -2, 6, 6, 4, '#f4f0f4', 'cloth', front='uta_top'),
-            B('body', -2, 6, -1.5, 4, 3, 3, '#2a2030', 'cloth'),                         # waist
-            B('body', -4, 9, -3, 8, 4, 6, '#d8d0e0', 'frills'),
-            B('body', -4.5, 0, 0, 9, 7, 1, '#e890b8', 'frills', sway=-1, pivot=(0, 13, -3.3)),
-            B('body', -4.5, 0, 0, 9, 7, 1, '#e890b8', 'frills', sway=1, pivot=(0, 13, 3.3)),
-            B('arm', -2, -1.5, -2, 4, 4, 4, '#f4f0f4', 'ruff'),                          # puffed sleeves
-            B('arm', -1, 2.5, -1, 2, 10, 2, '#f4dcd0'),
-            B('arm', -1.2, 12, -1.2, 2.4, 2, 2.4, '#2a2030', 'leather'),
-            B('leg', -1, 0, -1, 2, 10, 2, '#f4dcd0'),
-            B('leg', -1.3, 10, -1.6, 2.6, 6, 3.2, '#2a2030', 'leather'),                 # long boots
+            B('head', -3.5, -7, -3.25, 7, 7, 6.5, '#f6e0d4', None, front='face', eyes='#9a5ac8', brows=None, mouth='smirk', lashes=True),
+            B('head', -3.8, -7.6, -3.6, 3.8, 2.2, 7.4, '#d83040', 'hair'),               # red half
+            B('head', 0, -7.6, -3.6, 3.8, 2.2, 7.4, '#f4f4f8', 'hair'),                  # white half
+            B('head', -3.8, -6, 2.9, 3.8, 7, 1, '#d83040', 'hair'),
+            B('head', 0, -6, 2.9, 3.8, 7, 1, '#f4f4f8', 'hair'),
+            B('head', 0.2, -6.2, -3.7, 3.4, 3.2, 0.5, '#f4f4f8', 'hair'),                # white fringe over her left eye
+            B('head', -2.5, -4, -0.5, 5, 5, 1, '#d83040', 'ring', rot=(0, 0, 0.3), pivot=(-2.6, -7.5, 0)),    # hoops on top
+            B('head', -2.5, -4, -0.5, 5, 5, 1, '#f4f4f8', 'ring', rot=(0, 0, -0.3), pivot=(2.6, -7.5, 0)),
+            B('head', -4.6, -6, 3, 1.6, 10, 1.6, '#d83040', 'hair'),                     # ponytails
+            B('head', 3, -6, 3, 1.6, 10, 1.6, '#f4f4f8', 'hair'),
+            B('head', -0.5, -3.5, -3.5, 1, 7, 7, '#d83040', 'ring', pivot=(-3.8, 7, 4)),  # ending in hoops, behind her
+            B('head', -0.5, -3.5, -3.5, 1, 7, 7, '#f4f4f8', 'ring', pivot=(3.8, 7, 4)),
+            B('head', -4.6, -5, -1.5, 1.2, 3, 3, '#e8c040', 'gold', mirror=True),         # cone headphones
+            B('head', -4.4, -8.2, -0.8, 8.8, 0.8, 1.6, '#8ad0f0', 'cloth'),              # their light-blue band
+            B('body', -3, 0, -1.75, 6, 6, 3.5, '#f8f6f8', 'cloth', front='uta_dress'),
+            B('body', -2.6, 6, -1.6, 5.2, 3, 3.2, '#f8f6f8', 'cloth'),
+            B('body', -3.6, 9, -2.3, 7.2, 8, 4.6, '#f8f6f8', 'frills'),                  # short dress
+            B('arm', -1.4, -1, -1.4, 2.8, 3, 2.8, '#f8f6f8', 'frills', only='right'),
+            B('arm', -1.2, 2, -1.2, 2.4, 9.5, 2.4, '#f6e0d4', None, only='right'),
+            B('arm', -1.3, -1.2, -1.3, 2.6, 12.7, 2.6, '#8ad0f0', 'cloth', front='strawhat', only='left'),  # light-blue sleeve
+            B('arm', -1.25, 11.5, -1.25, 2.5, 2, 2.5, '#f6e0d4'),
+            B('leg', -1.2, 0, -1.2, 2.4, 15, 2.4, '#f6e0d4'),
+            B('leg', -1.4, 15, -1.7, 2.8, 4, 3.2, '#f4f4f8', 'leather'),                 # boots
         ]),
 }
 
@@ -359,6 +377,14 @@ def paint_face_texture(img, x0, y0, w, h, colour, pattern, rnd, face):
                 c = shade(base, 1.12) if y % 3 == 0 else shade(base, 0.95 + 0.06 * n)
                 if y == h - 1 and x % 2:
                     c = (0, 0, 0)   # scalloped hem (cut out)
+            elif pattern == 'stripes':
+                c = shade(base, 0.62) if x % 3 == 0 else shade(base, 0.95 + 0.1 * n)
+                if y == h - 1 and (x * 7) % 3 == 0:
+                    c = (0, 0, 0)   # tattered hem (cut out)
+            elif pattern == 'stars':
+                c = shade(base, 0.96 + 0.05 * n)
+                if (x * 3 + y * 5) % 11 == 0:
+                    c = (232, 192, 64)   # gold stars
             elif pattern == 'wood':
                 c = shade(base, 0.85 + 0.2 * ((x + int(n * 2)) % 3) / 3)
             elif pattern == 'smasher':
@@ -551,6 +577,30 @@ def decorate_front(img, x0, y0, w, h, box):
         for x in (0, 1, w - 2, w - 1):
             for y in range(h):
                 dot(img, x0 + x, y0 + y, '#e890b8' if y == 1 else '#d8d8e0')
+    elif kind == 'tesoro_jacket':
+        for y in range(h):
+            o = max(0, 2 - y // 3)
+            for x in range(cx - 1 - o, cx + 1 + o):
+                dot(img, x, y0 + y, '#e8c040' if y < 9 else '#f4f0e6')   # gold shirt in the open jacket
+        dot(img, x0 + w - 3, y0 + 2, '#c81830'); dot(img, x0 + w - 2, y0 + 2, '#c81830'); dot(img, x0 + w - 3, y0 + 3, '#2a7a30')   # rose
+    elif kind == 'uta_dress':
+        for x in range(w):
+            dot(img, x0 + x, y0, '#ffffff' if x % 2 else '#d8d4dc')   # frilled neck
+        for x in range(cx - 2, cx + 2):
+            dot(img, x, y0 + 1, '#141418')   # black bow
+        for y in range(3, h, 2):
+            dot(img, cx - 1, y0 + y, '#141418')   # buttons
+    elif kind == 'shiki_kimono':
+        for y in range(h):
+            o = min(y // 3, 2)
+            for x in range(cx - 1 - o, cx + 1 + o):
+                dot(img, x, y0 + y, '#1a1414' if y < 7 else '#9a2020')   # black under-kimono
+            dot(img, cx - 2 - o, y0 + y, '#e87a20'); dot(img, cx + 1 + o, y0 + y, '#e87a20')   # orange trim
+    elif kind == 'strawhat':
+        for x in range(w):
+            dot(img, x0 + x, y0 + 4, '#e8c860')   # the drawing of a straw hat
+        dot(img, cx - 1, y0 + 3, '#c83030'); dot(img, cx, y0 + 3, '#c83030')
+        dot(img, cx - 1, y0 + 2, '#e8c860'); dot(img, cx, y0 + 2, '#e8c860')
     elif kind == 'bands':
         for y in range(2, h, 5):
             for x in range(w):

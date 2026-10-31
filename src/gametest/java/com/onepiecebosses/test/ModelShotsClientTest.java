@@ -55,7 +55,16 @@ public class ModelShotsClientTest implements FabricClientGameTest {
 			sp.getServer().runCommand("gamemode spectator @a");
 			context.waitTicks(10);
 			context.setScreen(() -> null);
-			context.runOnClient(client -> client.options.hideGui = true);
+			// Hide the HUD (26.3 keeps it in a private field on gui.hud, not in options.hideGui).
+			context.runOnClient(client -> {
+				try {
+					java.lang.reflect.Field hidden = client.gui.hud.getClass().getDeclaredField("isHidden");
+					hidden.setAccessible(true);
+					hidden.set(client.gui.hud, true);
+				} catch (ReflectiveOperationException e) {
+					throw new RuntimeException(e);
+				}
+			});
 			sp.getServer().runOnServer(s -> floor(s.overworld()));
 			context.waitTicks(20);
 
@@ -101,7 +110,7 @@ public class ModelShotsClientTest implements FabricClientGameTest {
 		context.waitTicks(6);
 		sp.getServer().runOnServer(s -> {
 			for (RogueBossEntity boss : s.overworld().getEntitiesOfClass(RogueBossEntity.class, new AABB(BX, BY, BZ, BX, BY, BZ).inflate(5))) {
-				boss.swing(InteractionHand.MAIN_HAND);
+				boss.swing(InteractionHand.MAIN_HAND, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 			}
 		});
 		context.waitTicks(3);
