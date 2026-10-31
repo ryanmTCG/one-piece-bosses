@@ -58,12 +58,12 @@ public class LairsClientTest implements FabricClientGameTest {
 	private record Lair(String name, String boss, String kit, int crew, boolean sea) {}
 
 	private static final List<Lair> LAIRS = List.of(
-			new Lair("scrapheap_reef", "saltjaw_rourke", "scrapdeck_raider", 3, true),
-			new Lair("lantern_house", "corvina_fog_widow", "lantern_smuggler", 4, false),
-			new Lair("fort_iron_tide", "iron_tide_graves", "deserter_marine", 5, false),
+			new Lair("scrapheap_reef", "saltjaw_rourke", "scrapdeck_raider", 7, true),
+			new Lair("lantern_house", "corvina_fog_widow", "lantern_smuggler", 7, false),
+			new Lair("fort_iron_tide", "iron_tide_graves", "deserter_marine", 7, false),
 			new Lair("hollow_shrine", "hollow_ronin_tsurugi", "", 0, false),
-			new Lair("shipbreakers_foundry", "boilerheart_gantz", "boiler_stoker", 4, false),
-			new Lair("abyssal_temple", "nereus_vane", "abyssal_cultist", 4, true));
+			new Lair("shipbreakers_foundry", "boilerheart_gantz", "boiler_stoker", 7, false),
+			new Lair("abyssal_temple", "nereus_vane", "abyssal_cultist", 7, true));
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
@@ -100,6 +100,7 @@ public class LairsClientTest implements FabricClientGameTest {
 				}
 			});
 
+			server(sp, LairsClientTest::checkPalettes);
 			Map<String, BlockPos> located = new LinkedHashMap<>();
 			server(sp, s -> {
 				for (Lair lair : LAIRS) {
@@ -125,6 +126,34 @@ public class LairsClientTest implements FabricClientGameTest {
 		}
 		if (!FAILURES.isEmpty()) {
 			throw new AssertionError("One Piece Bosses lair test failures:\n" + String.join("\n", FAILURES));
+		}
+	}
+
+	/** Every block id in each lair's .nbt palette is a real block: a bad id would silently place as air. */
+	private static void checkPalettes(MinecraftServer s) {
+		for (Lair lair : LAIRS) {
+			String path = "data/opbosses/structure/" + lair.name + ".nbt";
+			try (var in = LairsClientTest.class.getClassLoader().getResourceAsStream(path)) {
+				if (in == null) {
+					check(false, lair.name + ": no " + path);
+					continue;
+				}
+				var nbt = net.minecraft.nbt.NbtIo.readCompressed(in, net.minecraft.nbt.NbtAccounter.unlimitedHeap());
+				var palette = nbt.getListOrEmpty("palette");
+				int bad = 0;
+				for (int i = 0; i < palette.size(); i++) {
+					var entry = palette.getCompoundOrEmpty(i);
+					String id = entry.getStringOr("Name", entry.getStringOr("id", ""));
+					Identifier key = Identifier.tryParse(id);
+					if (key == null || !BuiltInRegistries.BLOCK.containsKey(key)) {
+						bad++;
+						check(false, lair.name + ": unknown block " + id + " in the structure");
+					}
+				}
+				LOG.info("LT {} palette {} block states, {} unknown, {} blocks", lair.name, palette.size(), bad, nbt.getListOrEmpty("blocks").size());
+			} catch (java.io.IOException e) {
+				check(false, lair.name + ": can't read " + path + ": " + e);
+			}
 		}
 	}
 
@@ -172,16 +201,25 @@ public class LairsClientTest implements FabricClientGameTest {
 		context.waitTicks(60);
 		sp.getConnection().waitForChunksRender();
 		context.waitTicks(20);
-		double[] camera = new double[5];
-		server(sp, s -> inspect(s, lair, pos, "natural", camera));
-		if (camera[1] != 0) {
-			server(sp, s -> player(s).teleportTo(s.overworld(), camera[0], camera[1], camera[2], Set.of(), (float) camera[3], (float) camera[4], true));
+		List<double[]> cameras = new ArrayList<>();
+		server(sp, s -> inspect(s, lair, pos, "natural", cameras));
+		String[] shots = {"", "_ground", "_inside", "_north"};
+		for (int i = 0; i < cameras.size(); i++) {
+			double[] c = cameras.get(i);
+			server(sp, s -> player(s).teleportTo(s.overworld(), c[0], c[1], c[2], Set.of(), (float) c[3], (float) c[4], true));
 			context.waitTicks(30);
 			sp.getConnection().waitForChunksRender();
 			context.runOnClient(client -> client.gui.hud.getChat().clearMessages(true));
 			context.waitTicks(20);
-			context.takeScreenshot("lair_" + lair.name);
+			context.takeScreenshot("lair_" + lair.name + shots[i]);
 		}
+	}
+
+	/** A camera at (x, y, z) looking at (tx, ty, tz), as {x, y, z, yaw, pitch}. */
+	private static double[] look(double x, double y, double z, double tx, double ty, double tz) {
+		double yaw = Math.toDegrees(Math.atan2(-(tx - x), tz - z));
+		double pitch = Math.toDegrees(Math.atan2(y - ty, Math.hypot(tx - x, tz - z)));
+		return new double[] {x, y, z, yaw, pitch};
 	}
 
 	private void placeTest(ClientGameTestContext context, TestSingleplayerContext sp, Lair lair, int i, List<BlockPos> used) throws Exception {
@@ -233,13 +271,21 @@ public class LairsClientTest implements FabricClientGameTest {
 	 * Checks the boss, crew and chest of the lair near pos. A natural lair (camera != null) is also checked for anyone
 	 * stuck in a block and for its height above the sea, and the camera is set to look down at it.
 	 */
-	private static void inspect(MinecraftServer s, Lair lair, BlockPos pos, String how, double[] camera) {
+	private static void inspect(MinecraftServer s, Lair lair, BlockPos pos, String how, List<double[]> camera) {
 		ServerLevel level = s.overworld();
 		String name = lair.name + " (" + how + ")";
-		AABB area = new AABB(pos).inflate(72, 100, 72);
+		// The lair's own bounds: the /locate spot is just its start chunk, and the compounds are up to 100 blocks across.
+		var start = level.getChunk(pos).getStartForStructure(structure(s, lair.name).value());
+		var bb = start != null && start.isValid() ? start.getBoundingBox() : new net.minecraft.world.level.levelgen.structure.BoundingBox(pos).inflatedBy(72);
+		LOG.info("LT {} bounds {} {} {} .. {} {} {} ({} x {} x {}) start found={}", name, bb.minX(), bb.minY(), bb.minZ(), bb.maxX(), bb.maxY(),
+				bb.maxZ(), bb.getXSpan(), bb.getYSpan(), bb.getZSpan(), start != null && start.isValid());
+		AABB area = AABB.of(bb).inflate(16);
 		RogueBossEntity boss = level.getEntitiesOfClass(RogueBossEntity.class, area, e -> e.isAlive() && e.getCharacterId().equals(lair.boss)).stream()
 				.min(Comparator.comparingDouble(e -> e.distanceToSqr(pos.getX(), e.getY(), pos.getZ()))).orElse(null);
 		if (boss == null) {
+			for (RogueBossEntity e : level.getEntitiesOfClass(RogueBossEntity.class, area.inflate(200), e -> true)) {
+				LOG.info("LT {} other boss {} alive={} at {}", name, e.getCharacterId(), e.isAlive(), e.blockPosition());
+			}
 			check(false, name + ": no " + lair.boss + " nearby");
 			return;
 		}
@@ -275,6 +321,7 @@ public class LairsClientTest implements FabricClientGameTest {
 
 		// Only this mod's chests: a lair may sit on top of a dungeon or next to a shipwreck.
 		int chests = 0;
+		BlockPos chestAt = null;
 		for (int cx = (boss.getBlockX() >> 4) - 3; cx <= (boss.getBlockX() >> 4) + 3; cx++) {
 			for (int cz = (boss.getBlockZ() >> 4) - 3; cz <= (boss.getBlockZ() >> 4) + 3; cz++) {
 				for (BlockPos bp : level.getChunk(cx, cz).getBlockEntitiesPos()) {
@@ -296,6 +343,7 @@ public class LairsClientTest implements FabricClientGameTest {
 						}
 					}
 					chests++;
+					chestAt = bp.immutable();
 					LOG.info("LT {} chest {} at {} ({} above the boss) items={}", name, table, bp, bp.getY() - boss.getBlockY(), items);
 					check(!items.isEmpty(), name + ": the chest is empty");
 					check(poster, name + ": no rumor poster for " + lair.boss + " in the chest");
@@ -305,18 +353,67 @@ public class LairsClientTest implements FabricClientGameTest {
 		check(chests == 1, name + ": " + chests + " loot chests");
 
 		if (camera != null) {
-			// High up, looking down at the arena from the south-east.
-			double d = 26 + boss.getBbHeight() * 1.5;
-			camera[0] = boss.getX() + d * 0.5;
-			camera[1] = boss.getY() + d;
-			camera[2] = boss.getZ() + d * 0.5;
-			camera[3] = Math.toDegrees(Math.atan2(-(boss.getX() - camera[0]), boss.getZ() - camera[2]));
-			camera[4] = Math.toDegrees(Math.atan2(camera[1] - boss.getY(), Math.hypot(camera[0] - boss.getX(), camera[2] - boss.getZ())));
+			double cx = (bb.minX() + bb.maxX() + 1) / 2.0, cz = (bb.minZ() + bb.maxZ() + 1) / 2.0;
+			double span = Math.max(bb.getXSpan(), bb.getZSpan());
+			double ty = boss.getY();
+			// 1. overview: high up from the south-east, far enough out for the whole compound.
+			double d = span * 0.6;
+			camera.add(look(cx + d * 0.55, ty + d * 0.8, cz + d * 0.55, cx, ty, cz));
+			// 2. ground level, 14 blocks from the boss on the first side with a clear view of the arena.
+			double[] ground = null;
+			for (int a = 0; a < 16 && ground == null; a++) {
+				double ang = Math.toRadians(a * 22.5), gx = boss.getX() + Math.sin(ang) * 14, gz = boss.getZ() + Math.cos(ang) * 14, gy = boss.getY() + 1.5;
+				BlockPos gp = BlockPos.containing(gx, gy, gz);
+				if (!level.getBlockState(gp).getCollisionShape(level, gp).isEmpty() || !level.getBlockState(gp.above()).getCollisionShape(level, gp.above()).isEmpty()) {
+					continue;
+				}
+				var eye = new net.minecraft.world.phys.Vec3(gx, gy + 1.62, gz);
+				var hit = level.clip(new net.minecraft.world.level.ClipContext(eye, boss.getEyePosition(), net.minecraft.world.level.ClipContext.Block.VISUAL,
+						net.minecraft.world.level.ClipContext.Fluid.NONE, net.minecraft.world.phys.shapes.CollisionContext.empty()));
+				if (hit.getType() == net.minecraft.world.phys.HitResult.Type.MISS) {
+					ground = look(gx, gy, gz, boss.getX(), boss.getY(), boss.getZ());
+				}
+			}
+			camera.add(ground != null ? ground : look(boss.getX() + 4, boss.getY() + 2.5, boss.getZ() + 14, boss.getX(), boss.getY() + 1.5, boss.getZ()));
+			// 3. inside the boss's quarters: the side of the chest with the most room, backed off up to 6 blocks, looking at it.
+			if (chestAt != null) {
+				BlockPos best = null;
+				int bestRoom = -1;
+				for (var dir : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+					BlockPos at = chestAt.relative(dir);
+					if (!passable(level, at)) {
+						continue;
+					}
+					int room = 0;
+					while (room < 6 && passable(level, at.relative(dir))) {
+						at = at.relative(dir);
+						room++;
+					}
+					if (room > bestRoom) {
+						bestRoom = room;
+						best = at;
+					}
+				}
+				if (best != null) {
+					int light = level.getBrightness(net.minecraft.world.level.LightLayer.BLOCK, chestAt.above());
+					int sky = level.getBrightness(net.minecraft.world.level.LightLayer.SKY, chestAt.above());
+					LOG.info("LT {} quarters: block light {} sky light {} at the chest, camera {} blocks back", name, light, sky, bestRoom + 1);
+					camera.add(look(best.getX() + 0.5, best.getY() + 0.1, best.getZ() + 0.5, chestAt.getX() + 0.5, chestAt.getY() - 1.4, chestAt.getZ() + 0.5));
+				}
+			}
+			// 4. overview from the north-west, the other side.
+			camera.add(look(cx - d * 0.55, ty + d * 0.6, cz - d * 0.55, cx, ty, cz));
 			boss.setNoAi(true);
 			for (HumanNpc npc : crew) {
 				npc.setNoAi(true);
 			}
 		}
+	}
+
+	/** A spot a player could stand in: low or no block at the feet, nothing at the head. */
+	private static boolean passable(ServerLevel level, BlockPos p) {
+		var feet = level.getBlockState(p).getCollisionShape(level, p);
+		return (feet.isEmpty() || feet.max(net.minecraft.core.Direction.Axis.Y) <= 0.5) && level.getBlockState(p.above()).getCollisionShape(level, p.above()).isEmpty();
 	}
 
 	/** The first solid block inside the entity's box, or null if it's standing free. */
