@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "opbosses-gametest",
+  "version": "${version}",
+  "name": "One Piece Bosses Game Tests",
+  "description": "In-world tests for One Piece Bosses. Not part of the release jar.",
+  "environment": "*",
+  "entrypoints": {
+    "fabric-client-gametest": [
+      "com.onepiecebosses.test.BossesClientTest"
+    ]
+  },
+  "depends": {
+    "opbosses": "*"
+  }
+}

@@ -54,3 +54,14 @@ jar {
 		rename { "${it}_${projectName}" }
 	}
 }
+
+// In-world tests (src/gametest). They never ship in the mod jar.
+// Run them with `gradlew runClientGameTest`: a game window opens, plays through every boss and closes.
+fabricApi {
+	configureTests {
+		createSourceSet = true
+		modId = "opbosses-gametest"
+		enableGameTests = false
+		enableClientGameTests = true
+	}
+}
