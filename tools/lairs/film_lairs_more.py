@@ -801,7 +801,7 @@ def add(lair, OCEANS, DEEP):
         for x in range(0, W + 1):
             for z in range(0, D + 1):
                 b.set(x, -1, z, "minecraft:stone"); b.set(x, 0, z, rnd.choice(ground))
-        SCORCH = ["minecraft:blackstone", "minecraft:basalt[axis=y]", "minecraft:smooth_basalt", "minecraft:magma_block", "minecraft:blackstone", "minecraft:coal_block"]
+        SCORCH = ["minecraft:blackstone", "minecraft:basalt[axis=y]", "minecraft:smooth_basalt", "minecraft:crying_obsidian", "minecraft:blackstone", "minecraft:coal_block"]
         # --- The Groseade (the landmark, north): the World Pirates' warship hauled up on a stone slipway, its bow cannon
         # (the gun that can sink an island) raised at the sky.
         sx, sz, L, SW = 10, 6, 58, 17
@@ -813,6 +813,12 @@ def add(lair, OCEANS, DEEP):
         b.mast_yard(sx, deck, sz, SW, ((14, 20), (28, 24), (42, 20)))
         b.support(sx - 2, sz - 1, sx + L + 2, sz + SW, 3, ["minecraft:stone_bricks"], rnd, down_to=1)
         cz = sz + SW // 2
+        # Keep the ship and slipway clear of whatever hillside the site had: nothing of the land pokes through the deck.
+        for x in range(sx - 3, sx + L + 4):
+            for z in range(sz - 2, sz + SW + 2):
+                for y in range(1, deck + 30):
+                    if b.get(x, y, z) is None:
+                        b.set(x, y, z, AIR)
         for x in range(sx + 2, sx + L - 6):   # a purple stripe along the hull
             for z in range(sz, sz + SW):
                 if b.get(x, deck - 2, z) == "minecraft:black_concrete" and (b.get(x, deck - 2, z - 1) in (None, AIR) or b.get(x, deck - 2, z + 1) in (None, AIR)):
@@ -860,7 +866,7 @@ def add(lair, OCEANS, DEEP):
             for z in range(AZ - R - 4, AZ + R + 5):
                 d = math.hypot(x - AX, z - AZ) + rnd.random() * 0.8
                 if d <= R:
-                    b.set(x, 0, z, rnd.choice(SCORCH) if d > 3 else "minecraft:magma_block")
+                    b.set(x, 0, z, rnd.choice(SCORCH) if d > 3 else "minecraft:shroomlight")   # the glowing heart of the impact
                     b.set(x, -1, z, "minecraft:blackstone")
                 elif d <= R + 3.5:
                     h = round(3 * (1 - abs(d - (R + 1.2)) / 2.4))
@@ -944,7 +950,7 @@ def add(lair, OCEANS, DEEP):
             b.sphere(x, 0, z, 2.6, "minecraft:andesite", upper=True, ry=2.2)
 
         b.rogue(AX, 1, AZ, "byrnndi_world")
-        b.crew("world_pirate", ((AX - 8, AZ - 7), (AX + 8, AZ - 7), (AX - 8, AZ + 7), (AX + 8, AZ + 7), (84, 43), (sx + 24, deck + 1, cz)))
+        b.crew("world_pirate", ((AX - 8, AZ - 7), (AX + 8, AZ - 7), (AX - 8, AZ + 7), (AX + 8, AZ + 7), (84, 43), (sx + 34, deck + 1, cz + 3)))
         clear_spawns(b)
 
 
