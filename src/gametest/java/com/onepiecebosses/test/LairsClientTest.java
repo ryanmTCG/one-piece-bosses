@@ -294,19 +294,33 @@ public class LairsClientTest implements FabricClientGameTest {
 	}
 
 	/**
-	 * The charter on one of the main mod's boss structures: /place it far out, then the same as resetTest without the
+	 * The charter on one of the main mod's boss structures, as the world made it (/place only builds a main-mod
+	 * structure's start tile, so its boss, saved in another tile, never appears). Then the same as resetTest without the
 	 * chest: refused while the boss lives; with the boss beaten and a block broken, the boss, the block and the same
 	 * number of crew come back.
 	 */
 	private void mainModResetTest(ClientGameTestContext context, TestSingleplayerContext sp, String structure, String boss) throws Exception {
 		String name = structure + " (main mod reset)";
-		int x = 6000, z = 6000;
+		BlockPos[] located = new BlockPos[1];
+		server(sp, s -> {
+			ServerLevel level = s.overworld();
+			Holder<Structure> st = level.registryAccess().lookupOrThrow(Registries.STRUCTURE)
+					.getOrThrow(net.minecraft.resources.ResourceKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath("onepiece", structure)));
+			Pair<BlockPos, Holder<Structure>> found = level.getChunkSource().getGenerator()
+					.findNearestMapStructure(level, HolderSet.direct(st), new BlockPos(0, 64, 0), 100, false);
+			located[0] = found == null ? null : found.getFirst();
+			LOG.info("LT {} located at {}", name, located[0]);
+		});
+		if (located[0] == null) {
+			check(false, name + ": /locate found none");
+			return;
+		}
+		int x = located[0].getX(), z = located[0].getZ();
 		server(sp, s -> player(s).teleportTo(s.overworld(), x + 0.5, 200, z + 0.5, Set.of(), 0f, 60f, true));
 		context.waitTicks(40);
-		cmd(sp, "forceload add " + (x - 144) + " " + (z - 144) + " " + (x + 144) + " " + (z + 144));
-		context.waitTicks(40);
-		cmd(sp, "place structure onepiece:" + structure + " " + x + " 64 " + z);
-		context.waitTicks(60);
+		// The tiles spread about 100 blocks either side of the start; 15x15 chunks stays under forceload's 256.
+		cmd(sp, "forceload add " + (x - 112) + " " + (z - 112) + " " + (x + 112) + " " + (z + 112));
+		context.waitTicks(200);
 		BlockPos[] hole = new BlockPos[1];
 		net.minecraft.world.level.block.state.BlockState[] holeWas = new net.minecraft.world.level.block.state.BlockState[1];
 		int[] crewBefore = new int[1];
