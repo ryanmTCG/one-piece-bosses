@@ -37,6 +37,9 @@ public class ModelShotsClientTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		if (!TestFilter.runs("models")) {
+			return;
+		}
 		try {
 			run(context);
 		} catch (Exception e) {
@@ -69,6 +72,9 @@ public class ModelShotsClientTest implements FabricClientGameTest {
 			context.waitTicks(20);
 
 			for (String id : RogueData.all().keySet()) {
+				if (!TestFilter.picks(id)) {
+					continue;
+				}
 				shoot(context, sp, id);
 			}
 			LOG.info("MS DONE");

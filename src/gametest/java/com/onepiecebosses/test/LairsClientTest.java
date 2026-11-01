@@ -74,6 +74,9 @@ public class LairsClientTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		if (!TestFilter.runs("lairs")) {
+			return;
+		}
 		try {
 			run(context);
 		} catch (Exception e) {
@@ -82,6 +85,7 @@ public class LairsClientTest implements FabricClientGameTest {
 	}
 
 	private void run(ClientGameTestContext context) throws Exception {
+		List<Lair> picked = LAIRS.stream().filter(l -> TestFilter.picks(l.name, l.boss)).toList();
 		try (TestSingleplayerContext sp = context.worldBuilder().adjustSettings(LairsClientTest::defaultWorld).create()) {
 			sp.getConnection().waitForChunksRender();
 			cmd(sp, "race set @p human");
@@ -110,7 +114,7 @@ public class LairsClientTest implements FabricClientGameTest {
 			server(sp, LairsClientTest::checkPalettes);
 			Map<String, BlockPos> located = new LinkedHashMap<>();
 			server(sp, s -> {
-				for (Lair lair : LAIRS) {
+				for (Lair lair : picked) {
 					BlockPos p = locate(s, lair);
 					if (p != null) {
 						located.put(lair.name, p);
@@ -118,7 +122,7 @@ public class LairsClientTest implements FabricClientGameTest {
 				}
 			});
 			// The lairs the world made itself: everything is checked here, and these are the screenshots.
-			for (Lair lair : LAIRS) {
+			for (Lair lair : picked) {
 				if (located.containsKey(lair.name)) {
 					naturalTest(context, sp, lair, located.get(lair.name));
 				}
@@ -126,8 +130,8 @@ public class LairsClientTest implements FabricClientGameTest {
 			// /place structure, somewhere else in a biome each spawns in. The chunks there are already decorated (trees,
 			// no terrain smoothing), so this only checks that the lair places and sets itself up, not how it looks.
 			List<BlockPos> used = new ArrayList<>(located.values());
-			for (int i = 0; i < LAIRS.size(); i++) {
-				placeTest(context, sp, LAIRS.get(i), i, used);
+			for (int i = 0; i < picked.size(); i++) {
+				placeTest(context, sp, picked.get(i), i, used);
 			}
 			LOG.info("LT DONE, {} failures", FAILURES.size());
 		}

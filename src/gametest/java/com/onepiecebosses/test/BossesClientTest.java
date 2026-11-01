@@ -51,6 +51,9 @@ public class BossesClientTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		if (!TestFilter.runs("bosses")) {
+			return;
+		}
 		try {
 			run(context);
 		} catch (Exception e) {
@@ -92,6 +95,9 @@ public class BossesClientTest implements FabricClientGameTest {
 			context.setScreen(() -> null);
 
 			for (String id : RogueData.all().keySet()) {
+				if (!TestFilter.picks(id)) {
+					continue;
+				}
 				bossTest(context, sp, id);
 			}
 			rumorDropTest(sp);

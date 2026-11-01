@@ -98,7 +98,7 @@ The One Piece Mod isn't on a maven, so build against its jar, the same way as On
 1. In the One Piece Mod, run `./gradlew build`.
 2. Copy `build/libs/onepiece-0.1.0.jar` into this repo's `libs/` folder (change `onepiece_jar` in `gradle.properties` if the name differs).
 3. Run `./gradlew build` here. The jar lands in `build/libs/`; put it in your `mods/` folder next to the One Piece Mod.
-4. To test, run `./gradlew runClientGameTest`. A game window opens, fights every boss in a test world and closes: Rumor Poster spawn, crew waves, phase lines, signature moves, trophy, bounty (including a long-range kill), the Hard rematch and Rumor Poster drops. It fails with a list of what went wrong, and saves screenshots to `build/run/clientGameTest/screenshots`. The tests are in `src/gametest` and never go into the mod jar.
+4. To test, run `./gradlew runClientGameTest`. A game window opens, fights every boss in a test world and closes: Rumor Poster spawn, crew waves, phase lines, signature moves, trophy, bounty (including a long-range kill), the Hard rematch and Rumor Poster drops. It fails with a list of what went wrong, and saves screenshots to `build/run/clientGameTest/screenshots`. The tests are in `src/gametest` and never go into the mod jar, and a normal `runClient` or modpack launch never runs them. To replay only what a change touches, add `-Dopbosses.tests=bosses` or `lairs` (or `models` for model portraits) and `-Dopbosses.only=<boss ids or lair names>`.
 
 ## Planned
 
