@@ -37,6 +37,8 @@ public final class LairChests {
 	static {
 		String[][] pairs = {{"scrapheap_reef", "saltjaw_rourke"}, {"lantern_house", "corvina_fog_widow"}, {"fort_iron_tide", "iron_tide_graves"},
 				{"hollow_shrine", "hollow_ronin_tsurugi"}, {"shipbreakers_foundry", "boilerheart_gantz"}, {"abyssal_temple", "nereus_vane"},
+				{"sunken_kasbah", "khamsin_sandshackle"}, {"gilded_wake", "mortimer_gale"}, {"leviathan_pens", "vasco_tidebreaker"},
+				{"laboratory_null", "doctor_kreuz"},
 				{"gran_tesoro", "gild_tesoro"}, {"elegia_stage", "uta_diva"}, {"end_point", "zephyr_z"},
 				{"ironclad_colosseum", "douglas_bullet"}, {"merveille", "shiki_golden_lion"}};
 		for (String[] pair : pairs) {

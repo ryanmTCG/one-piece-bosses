@@ -297,6 +297,151 @@ def _():
     return tex, boxes
 
 
+@chest("sunken_kasbah", "Rahd's Plunder Coffer")
+def _():
+    # A sandstone-and-brass coffer bound in his chains, a heavy padlock on the front and gold coins heaped on the lid.
+    sand = new('#d8b880', 0.12, 70)
+    for y in (3, 8, 13):
+        for x in range(S):
+            put(sand, x, y, '#b89860')   # courses of carved stone
+    front = new('#d8b880', 0.12, 71)
+    for x in range(S):
+        put(front, x, 2, '#b89860'); put(front, x, 13, '#b89860')
+    for x in range(3, 13):
+        put(front, x, 5 + (x % 2), '#8a6a3a')   # a zigzag carved band
+    brass = metal('#c8a040', '#fff0a0', 72)
+    chain = new('#6a6a72', 0.1, 73)
+    for y in range(S):
+        for x in range(S):
+            if (x + y) % 3 == 0:
+                put(chain, x, y, '#3a3a40')
+    lock = new('#5a5a62', 0.1, 74)
+    rect(lock, 6, 6, 9, 9, '#2a2a30'); put(lock, 7, 8, '#c8a040')
+    coins = new('#f0c840', 0.3, 75)
+    for (x, y) in ((2, 3), (7, 9), (12, 5), (4, 12), (10, 13)):
+        put(coins, x, y, '#a07a20')
+    tex = dict(sand=sand, front=front, brass=brass, chain=chain, lock=lock, coins=coins)
+    boxes = [
+        box([1, 0, 2], [15, 9, 14], dict(all='sand', front='front')),
+        box([0.6, 9, 1.6], [15.4, 12, 14.4], 'brass'),
+        box([1.5, 12, 2.5], [14.5, 13, 13.5], 'sand'),
+        box([3, 13, 4], [9, 14.2, 10], 'coins'),                  # coins heaped on the lid
+        box([8, 13, 7], [12, 13.8, 11], 'coins'),
+        box([4, -0.01, 1.4], [5.5, 13.2, 14.6], 'chain'),         # his chains around it
+        box([10.5, -0.01, 1.4], [12, 13.2, 14.6], 'chain'),
+        box([6, 4.5, 0.6], [10, 9.5, 1.6], 'lock', full=True),    # padlock
+        box([7, 9.5, 1], [9, 11, 1.4], 'chain'),
+        box([0.5, -0.01, 1.5], [2, 2, 3], 'brass'), box([14, -0.01, 1.5], [15.5, 2, 3], 'brass'),
+        box([0.5, -0.01, 13], [2, 2, 14.5], 'brass'), box([14, -0.01, 13], [15.5, 2, 14.5], 'brass'),
+    ]
+    return tex, boxes
+
+
+@chest("gilded_wake", "The Cursed Hoard")
+def _():
+    # A sea-rotted black chest with gold bands, barnacles and weed, overflowing gold, and the curse glowing out of the lock.
+    wood = planks('#2a2620', '#141210', 76)
+    for (x, y) in ((1, 14), (6, 12), (11, 15), (14, 10)):
+        put(wood, x, y, '#3a6a3a'); put(wood, x, y - 1, '#3a6a3a')   # weed
+    front = planks('#2a2620', '#141210', 77)
+    gold = new('#e8c040', 0.2, 78)
+    hoard = new('#f0c840', 0.35, 79)
+    for (x, y) in ((3, 4), (8, 2), (12, 9), (5, 11), (10, 13), (14, 3)):
+        put(hoard, x, y, '#ffffff' if (x + y) % 2 else '#40f0d0')   # glints and a cursed shimmer
+    glow = new('#40f0d0', 0.15, 80)
+    barn = new('#c8c0a8', 0.25, 81)
+    put(barn, 7, 7, '#504840')
+    tex = dict(wood=wood, front=front, gold=gold, hoard=hoard, glow=glow, barn=barn)
+    boxes = [
+        box([1, 0, 2], [15, 8, 14], dict(all='wood', front='front')),
+        box([1, 8, 2], [15, 11, 14], dict(all='wood', front='front')),
+        box([0.8, 11, 1.8], [15.2, 11.6, 14.2], 'gold'),
+        box([2, 11, 3], [14, 13.5, 13], 'hoard'),                 # the lid can't shut over the gold
+        box([4, 13.5, 5], [11, 14.8, 11], 'hoard'),
+        box([7, 14.8, 7], [9.5, 15.6, 9.5], 'hoard'),
+        box([0.8, -0.01, 4], [15.2, 11.2, 5], 'gold'),            # gold bands
+        box([0.8, -0.01, 11], [15.2, 11.2, 12], 'gold'),
+        box([6.5, 5, 1.4], [9.5, 9, 2], 'gold'),
+        box([7.3, 5.6, 1.1], [8.7, 7.6, 1.5], 'glow', light=10),  # the curse through the keyhole
+        box([12.5, 1, 1.3], [14.5, 3, 2], 'barn'), box([1.5, 6, 1.3], [3, 7.5, 2], 'barn'),
+        box([14.6, 3, 8], [15.5, 5, 10], 'barn'),
+    ]
+    return tex, boxes
+
+
+@chest("leviathan_pens", "Sea King Skull Chest")
+def _():
+    # The skull of a Sea King the tamer couldn't break, hollowed into a chest: bone jaws with fangs, a red crest, scales.
+    bone = new('#e4dcc4', 0.12, 82)
+    for (x, y) in ((3, 4), (11, 9), (6, 13)):
+        put(bone, x, y, '#b0a890')
+    front = new('#e4dcc4', 0.12, 83)
+    for x in range(S):
+        put(front, x, 8, '#3a2a20')                              # where the jaws close
+    for x in range(1, 15, 2):
+        put(front, x, 7, '#ffffff'); put(front, x + 1, 9, '#ffffff')   # fangs
+    rect(front, 3, 2, 5, 4, '#202020'); rect(front, 10, 2, 12, 4, '#202020')   # eye sockets
+    put(front, 4, 3, '#f8e040'); put(front, 11, 3, '#f8e040')
+    scales = new('#3a7a8a', 0.1, 84)
+    for y in range(S):
+        for x in range(S):
+            if (x + (y % 2) * 2) % 4 == 0:
+                put(scales, x, y, '#2a5a68')
+    crest = new('#d84a3a', 0.15, 85)
+    rope = new('#8a6a40', 0.15, 86)
+    for i in range(S):
+        put(rope, i, i, '#5a4020')
+    tex = dict(bone=bone, front=front, scales=scales, crest=crest, rope=rope)
+    boxes = [
+        box([1, 0, 1], [15, 8, 15], dict(all='bone', front='front')),
+        box([0.5, 8, 0.5], [15.5, 12, 15.5], dict(all='bone', front='front')),
+        box([2, 12, 3], [14, 13, 14], 'scales'),
+        box([7.5, 12, 2], [8.5, 16, 14], 'crest'),               # the crest along the top
+        box([-0.3, 9, 5], [0.7, 13, 9], 'crest'), box([15.3, 9, 5], [16.3, 13, 9], 'crest'),   # fin ears
+        box([2, 0, 0.2], [3, 6, 1], 'bone'), box([13, 0, 0.2], [14, 6, 1], 'bone'),           # tusks
+        box([0.8, 3, 0.8], [15.2, 4, 15.2], 'rope'),             # his rope still lashed round it
+    ]
+    return tex, boxes
+
+
+@chest("laboratory_null", "Prototype Containment Pod")
+def _():
+    # A steel pod with hazard stripes and a round window on a glowing Pacifista core, cables on the sides.
+    steel = metal('#8a96a4', '#d8e0e8', 87, edge='#5a6676')
+    front = metal('#8a96a4', '#d8e0e8', 88)
+    for x in range(S):
+        put(front, x, 14, '#202020' if (x // 2) % 2 else '#f0c020'); put(front, x, 15, '#202020' if (x // 2) % 2 == 0 else '#f0c020')
+    window = new('#204050', 0.1, 89)
+    for y in range(S):
+        for x in range(S):
+            r = math.hypot(x - 7.5, y - 7.5)
+            if r < 7.5:
+                put(window, x, y, '#a8f0ff' if r < 3 else '#60e0ff' if r < 5.5 else '#3a6a7a')
+            else:
+                put(window, x, y, '#5a6676')
+    stripes = new('#f0c020', 0.05, 90)
+    for y in range(S):
+        for x in range(S):
+            if ((x + y) // 3) % 2:
+                put(stripes, x, y, '#202020')
+    cable = new('#2a2a30', 0.1, 91)
+    for y in range(0, S, 3):
+        for x in range(S):
+            put(cable, x, y, '#c83a3a')
+    lamp = new('#ff3030', 0.1, 92)
+    tex = dict(steel=steel, front=front, window=window, stripes=stripes, cable=cable, lamp=lamp)
+    boxes = [
+        box([1.5, 0, 1.5], [14.5, 1.5, 14.5], 'stripes'),
+        box([2, 1.5, 2], [14, 12, 14], dict(all='steel', front='front')),
+        box([1, 12, 1], [15, 13.5, 15], 'steel'),
+        box([4, 13.5, 4], [12, 14.5, 12], 'steel'),
+        box([4, 4, 1.4], [12, 12, 2], 'window', full=True, light=12),   # the core behind the glass
+        box([0.4, 2, 6], [2, 11, 8], 'cable'), box([14, 2, 8], [15.6, 11, 10], 'cable'),
+        box([7, 14.5, 7], [9, 15.5, 9], 'lamp', light=8),               # warning light on top
+    ]
+    return tex, boxes
+
+
 @chest("gran_tesoro", "Tesoro's Gold Vault")
 def _():
     # Solid gold, a roulette wheel for a lock, gold bars and a stack of casino chips on the lid.

@@ -85,6 +85,77 @@
 			"berries": 8
 		},
 		{
+			"id": "sandshackle_raider",
+			"faction": "pirate",
+			"crews": ["Sandshackle Caravan"],
+			"name": "{rank} {name}",
+			"ranks": ["Whip-hand", "Dune Raider", "Overseer"],
+			"skins": ["bandit", "bounty_hunter"],
+			"loadouts": [
+				{"style": "sword", "weight": 2, "weapons": ["minecraft:iron_sword"]},
+				{"style": "heavy", "weight": 1, "weapons": ["minecraft:iron_axe"]},
+				{"style": "gunner", "weight": 1, "weapons": ["onepiece:flintlock_pistol"]}
+			],
+			"health": 38,
+			"damage": 7,
+			"armor": 3,
+			"berries": 3
+		},
+		{
+			"id": "cursed_deckhand",
+			"faction": "pirate",
+			"crews": ["Crew of the Gilded Wake"],
+			"name": "{rank} {name}",
+			"ranks": ["Drowned Deckhand", "Cursed Gunner", "Bosun's Ghost"],
+			"skins": ["deckhand", "bandit"],
+			"loadouts": [
+				{"style": "sword", "weight": 2, "weapons": ["minecraft:iron_sword", "minecraft:stone_sword"]},
+				{"style": "gunner", "weight": 2, "weapons": ["onepiece:flintlock_pistol"]},
+				{"style": "bomber", "weight": 1, "weapons": []}
+			],
+			"health": 50,
+			"damage": 9,
+			"armor": 4,
+			"berries": 5
+		},
+		{
+			"id": "sea_king_wrangler",
+			"faction": "pirate",
+			"crews": ["Leviathan Riders"],
+			"name": "{rank} {name}",
+			"ranks": ["Wrangler", "Harpooner", "Beastmaster"],
+			"skins": ["fishman", "deckhand"],
+			"loadouts": [
+				{"style": "fishman", "weight": 2, "weapons": ["minecraft:trident"]},
+				{"style": "heavy", "weight": 1, "weapons": ["minecraft:iron_axe"]},
+				{"style": "sniper", "weight": 1, "weapons": ["onepiece:marine_rifle"]}
+			],
+			"health": 72,
+			"damage": 11,
+			"armor": 6,
+			"knockbackResistance": 0.3,
+			"berries": 6
+		},
+		{
+			"id": "pacifista_prototype",
+			"faction": "pirate",
+			"crews": ["Laboratory Null"],
+			"name": "Prototype PX-0{num}",
+			"ranks": ["Prototype"],
+			"skins": ["pacifista"],
+			"loadouts": [
+				{"style": "beam", "weight": 3, "weapons": []},
+				{"style": "heavy", "weight": 1, "weapons": ["minecraft:iron_axe"]}
+			],
+			"health": 110,
+			"damage": 14,
+			"armor": 10,
+			"knockbackResistance": 0.8,
+			"speed": 0.24,
+			"scale": 1.8,
+			"berries": 10
+		},
+		{
 			"id": "gran_tesoro_guard",
 			"faction": "pirate",
 			"crews": ["Gran Tesoro Security"],

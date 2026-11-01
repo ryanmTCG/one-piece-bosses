@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "opbosses:block/leviathan_pens_chest"
+    },
+    "facing=east": {
+      "model": "opbosses:block/leviathan_pens_chest",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "opbosses:block/leviathan_pens_chest",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "opbosses:block/leviathan_pens_chest",
+      "y": 270
+    }
+  }
+}
