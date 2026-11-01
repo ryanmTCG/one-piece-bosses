@@ -31,6 +31,16 @@ def banner(color, f):
     return f"minecraft:{color}_wall_banner[facing={f}]"
 
 
+def clear_air(b, W, D, top):
+    """Saves air in every empty spot over the ground, so a hill the land already had there (badlands, snowy slopes)
+    can't poke through the yard and bury the crew."""
+    for x in range(0, W + 1):
+        for z in range(0, D + 1):
+            for y in range(1, top + 1):
+                if b.get(x, y, z) is None:
+                    b.set(x, y, z, AIR)
+
+
 def add(lair, OCEANS, DEEP):
     """Registers the four lairs with gen_lairs's @lair decorator."""
 
@@ -374,6 +384,7 @@ def add(lair, OCEANS, DEEP):
                     else:
                         b.set(x, y, z, rnd.choice(["minecraft:dead_bush", "minecraft:dead_bush", "onepiece:sand_rose", BONE]))
 
+        clear_air(b, W, D, 12)
         b.rogue(AX, 1, AZ, "khamsin_sandshackle")
         b.crew("sandshackle_raider", ((AX - 8, AZ - 7), (AX + 8, AZ - 7), (AX - 8, AZ + 7), (AX + 8, AZ + 7), (CX, Z1 - 5), (17, 51), (64, 60)))
         b.beast("onepiece:sand_scorpion", ((PX - 1, PZ + 1), (PX + 1, PZ - 1)), y=PB + 1)
@@ -1075,6 +1086,7 @@ def add(lair, OCEANS, DEEP):
         b.scatter(0, 0, W, D, 1, ["minecraft:snow[layers=1]", "minecraft:snow[layers=2]"], 0.12, rnd,
                   only_on=["minecraft:snow_block", "minecraft:gravel", "minecraft:stone", "minecraft:andesite", "minecraft:polished_andesite", "minecraft:smooth_stone"])
 
+        clear_air(b, W, D, 12)
         b.rogue(CX, 1, AZ, "doctor_kreuz")
         b.crew("pacifista_prototype", ((AX0 + 9, AZ0 + 4), (AX1 - 5, AZ0 + 4), (AX1 - 5, AZ1 - 4), (AX0 + 9, AZ1 - 4), (CX, AZ0 - 4), (BX0 + 6, BZ0 + 10), (CX + 10, FZ1 - 6)))
 
