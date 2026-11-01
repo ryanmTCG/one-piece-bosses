@@ -14,6 +14,10 @@ Requires the One Piece Mod (Fabric, Minecraft 26.3, Java 25).
 | **Tsurugi, the Hollow Ronin**, an empty suit of samurai armor that still duels | 3 | Sword, then curses | none (duels alone) | **Hollow Cut**: a flying cut, and the armor's curse withers anyone close | Hollow Menpo |
 | **Boilerheart Gantz**, a shipbreaker built around a ship's boiler | 4 | Fire, then quakes | Boiler Stokers | **Boiler Burst**: a scalding wave all around, then he slows down to cool (hit him then) | Cracked Boiler Core |
 | **Nereus Vane, Herald of the Deep**, a fishman prophet of something far below | 5 | Pulls, then quakes | Abyssal Cultists | **Tidal Judgment**: a whirlpool drags everything in while freezing water rains down | Abyssal Conch |
+| **Khamsin "Sandshackle" Rahd**, a desert warlord who chains caravans to dig for a buried city's gold | 2 | Sand, then chains that pull | Sandshackle Caravan, and his sand scorpions | **Sandshackle Storm**: a sandstorm blinds and dries you out, his chain drags you in and the irons go on (heavy slowness), sand twisters fall | Broken Sandshackle |
+| **Captain Mortimer Gale of the Gilded Wake**, a treasure hunter who sank with a cursed hoard | 3 | Shadows that blind, then he steals your years | Crew of the Gilded Wake | **The Doubloon's Curse**: withers and weakens everyone near, and the years he takes mend him; cursed gold rains down | Cursed Doubloon |
+| **"Tidebreaker" Vasco Morrow**, a Sea King tamer who rides one into battle | 4 | Pounces, then quakes | Leviathan Riders, and kung-fu dugongs and bananawani | **Leviathan Charge**: his Sea King lunges, throws you back in a wall of seawater, the ground bucks and freezing spray falls | Sea King Bridle |
+| **Dr. Aldous Kreuz, the Prototype Doctor**, a disgraced Navy scientist with stolen Pacifista plans | 5 | Lightning, then paw-pad blasts | Pacifista Prototypes (3.5-block Pacifista with beams) | **Prototype Barrage**: a paw-pad blast throws off anyone close, a deflector shield goes up and every prototype's laser rains down | Prototype Core |
 
 ## The film villains
 
@@ -33,7 +37,7 @@ Their looks: Bullet is a gorilla of a man with arms thicker than his body in fus
 
 ## Their looks
 
-Each rogue has their own body, with wild One Piece proportions instead of the player shape: Rourke is all barrel chest and ground-scraping forearms on tiny legs with his anchor on his back, Corvina is a stilt-legged shadow under a table-wide hat trailing a fog-grey train, Graves is a V-shaped slab with a ship's-prow chin and a torn Justice coat, Tsurugi is floating samurai armour with nothing inside, Gantz is a riveted boiler with a firebox belly, smokestacks and piston arms, and Nereus is a long-armed fishman with a dorsal fin, fin ears and a shark's jaw. They still walk, swing and look around like any mob, and coats, trains and skirts swing as they move. Each one's hitbox is sized to their body (`hitbox` in `bosses.json`).
+Each rogue has their own body, with wild One Piece proportions instead of the player shape: Rourke is all barrel chest and ground-scraping forearms on tiny legs with his anchor on his back, Corvina is a stilt-legged shadow under a table-wide hat trailing a fog-grey train, Graves is a V-shaped slab with a ship's-prow chin and a torn Justice coat, Tsurugi is floating samurai armour with nothing inside, Gantz is a riveted boiler with a firebox belly, smokestacks and piston arms, and Nereus is a long-armed fishman with a dorsal fin, fin ears and a shark's jaw. Khamsin is a dune of a torso with a little turbaned head sunk between gorilla arms wrapped in chain and broken shackles; Gale is a skeleton under a tricorne twice his width, coins stuck in his ribs, a gold hook and a peg leg; Vasco rides a young Sea King (its neck and fanged head rear in front of him, its flippers walk it, its tail trails behind); and Kreuz is a shrivelled old man with a cranium three sizes too big, his brain in a glass dome on top, a stolen Pacifista arm, walker stilts for legs and two mechanical arms reaching over his head. They still walk, swing and look around like any mob, and coats, trains and skirts swing as they move. Each one's hitbox is sized to their body (`hitbox` in `bosses.json`).
 
 The models and their skins come from `tools/gen_models.py` (needs Pillow): change a box or colour there and run `python3 tools/gen_models.py .`. It writes `client/RogueModels.java` and the 128x128 skins together, so they always match.
 
@@ -66,6 +70,7 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 | `tools/gen_chests.py` | **Each lair's own chest:** the model, textures and name. Run `python3 tools/gen_chests.py src/main/resources` after a change (then `gen_assets.py` for the names). |
 | `tools/gen_assets.py` | Draws the poster, trophy and key art and writes the item JSON. |
 | `tools/lairs/gen_lairs.py` | **Each rogue's lair:** the build, where it spawns, and its chest loot. Run `python3 tools/lairs/gen_lairs.py .` after a change. |
+| `tools/lairs/more_rogue_lairs.py` | Khamsin's, Gale's, Vasco's and Kreuz's lairs and their chest loot (gen_lairs.py builds them too). |
 | `tools/lairs/film_lairs.py` | The film villains' lairs and their chest loot (gen_lairs.py builds them too). |
 
 To add a rogue: add an entry to `bosses.json` (and a crew to `crews.json` if it has one), give it a body in `ROGUES` in `tools/gen_models.py` and its trophy a look in `TROPHIES` in `tools/gen_assets.py`, then run both (`python3 tools/gen_models.py .` and `python3 tools/gen_assets.py src/main/resources`, needs Pillow).
@@ -82,13 +87,17 @@ Every rogue has a base of their own out in the world, so you can stumble on them
 | `hollow_shrine`: a dueling ring under a torii, ringed with beaten swordsmen's blades | Hollow Ronin Tsurugi | Cherry groves, meadows, hills, taiga, Wano |
 | `shipbreakers_foundry`: a furnace hall by a warship being torn apart | Boilerheart Gantz | Stony shores, badlands, desert, Onigashima, Punk Hazard |
 | `abyssal_temple`: a prismarine arena rising out of the sea | Nereus Vane | Oceans |
+| `sunken_kasbah`: a walled desert fortress half buried in dunes: corner towers, a gatehouse, the Chain Ring arena, a dig pit down to a buried city's gold columns with a crane over it, empty cages, a caravan camp, an oasis, Khamsin's domed palace (his throne, and the chest behind it) and a 36-block minaret | Khamsin | Desert, badlands, savanna, Alabasta |
+| `gilded_wake`: a black and gold galleon run aground on a reef, rag sails on three masts with green fire in the crow's nests, the captain's cabin on a bed of gold (the chest), a cursed hold, the Hoard Cave in the reef, and her sister ship sunk alongside with one mast out of the water | Captain Gale | Oceans, beaches, Thriller Bark |
+| `leviathan_pens`: a rocky islet with four stone sea pens (a Sea Cat or a Megalo in each), the Breaking Ring with its grandstand, Vasco's lodge (the chest) under the arching ribs of a Sea King skeleton 30 blocks high, a bunkhouse, tack shed, drying racks and a dock with his whaleboat | Vasco | Oceans, beaches, Fishman Reef |
+| `laboratory_null`: a fenced research compound with watchtowers: the Proving Ground arena with blast walls and a wrecked prototype, a long lab under a glass dome full of specimen tanks (Kreuz's office and the chest in the east wing), a generator hall with tesla coils, prototype charging bays, and an assembly gantry holding an unfinished Pacifista 37 blocks tall | Dr. Kreuz | Snowy plains, ice spikes, stony shores, windswept hills, Punk Hazard (frozen) |
 | `gran_tesoro`: a gold casino-ship 100 blocks long: a domed casino with roulette tables, slot machines and a gallery, the gold vault in the hull (the chest), a hotel tower, and a 45-block gold statue of Tesoro on the bow | Gild Tesoro | Oceans, New World sea |
 | `elegia_stage`: a concert stage under a great shell, speaker stacks, a runway into an amphitheatre for hundreds, Uta's dressing room (the chest), and ruined Elegia's broken castle tower | Uta | Meadows, flower forests, plains, Dressrosa |
 | `end_point`: a volcano with a glowing crater and a Dyna Stone vault inside, the Neo Marine HQ (Zephyr's office and the chest on the top floor), a training ground, a battleship in dry dock, watchtowers and cannons | Zephyr | Badlands, savanna plateaus, stony shores, Punk Hazard, Marineford |
 | `ironclad_colosseum`: an oval colosseum of fused scrap with an arena floor, and Bullet's Gashapon war machine slumped against its wall; his camp (the chest), wrecked ships and scrap heaps outside | Douglas Bullet | Desert, savanna, plains, Alabasta |
 | `merveille`: a jungle court ringed with lions, cages of mutated beasts, a rock spire with a stair to a floating island where Shiki's palace has a lion's head for a gate (the chest), more floating islets and his flagship hanging in the sky | Shiki | Jungles, Little Garden |
 
-![The six lairs](docs/lairs.png)
+![The first six rogue lairs](docs/lairs.png)
 
 ![The five film lairs](docs/film_lairs.png)
 

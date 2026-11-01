@@ -1062,6 +1062,11 @@ def _(b):
     b.crew("abyssal_cultist", ((C - 7, C - 6), (C + 7, C - 6), (C - 7, C + 7), (C + 7, C + 7), (C, SZ + 2), (C - R - 4, C), (C + R + 4, C)), y=F + 1)
 
 
+# ============================================================ the second band of rogues (more_rogue_lairs.py)
+import more_rogue_lairs  # noqa: E402
+more_rogue_lairs.add(lair, OCEANS, DEEP)
+
+
 # ============================================================ the film villains (film_lairs.py)
 import film_lairs  # noqa: E402
 film_lairs.add(lair, OCEANS, DEEP)
@@ -1120,6 +1125,7 @@ LOOT = {
 SPACING, SEPARATION, SALT = 44, 16, 1408172101
 # The film villains' lairs are their own set, so adding them didn't make the rogue lairs any rarer.
 GROUPS = {"rogue_lairs": (SPACING, SEPARATION, SALT), "film_lairs": (52, 18, 1408172177)}
+LOOT.update(more_rogue_lairs.LOOT)
 LOOT.update(film_lairs.LOOT)
 # ...and never right next to one: a film lair stays at least 10 chunks from any rogue lair.
 EXCLUDE = {"film_lairs": {"exclusion_zone": {"other_set": "opbosses:rogue_lairs", "chunk_count": 10}}}

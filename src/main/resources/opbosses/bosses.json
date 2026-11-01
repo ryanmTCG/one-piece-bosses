@@ -1,5 +1,5 @@
 {
-	"_help": "Every rogue boss. The first block of fields is the One Piece Mod's own character format (see its characters.json): health, damage, Berries dropped (bounty), size, the two special attacks (power, hardPower: any of the main mod's BossAbility powers) and the Hard/Expert prizes. The rest is this mod's: hitbox ([width, height] in blocks before the size is applied, to fit its model), bountyReward (how much a first win raises your bounty), crew (an NPC kit from crews.json, or \"\" to fight alone), signature (the phase 3 move, see RogueSignatures.java), the lines it shouts, where its rumor drops (rumorFrom: main mod NPC kit ids) and its trophy. Optional: fruitItem (a main mod Devil Fruit dropped on a win, like its story bosses) and beasts (entity ids, one or two called with each crew wave).",
+	"_help": "Every rogue boss. The first block of fields is the One Piece Mod's own character format (see its characters.json): health, damage, Berries dropped (bounty), size, the two special attacks (power, hardPower: any of the main mod's BossAbility powers) and the Hard/Expert prizes. The rest is this mod's: hitbox ([width, height] in blocks before the size is applied, to fit its model), bountyReward (how much a first win raises your bounty), crew (an NPC kit from crews.json, or \"\" to fight alone), signature (the phase 3 move, see RogueSignatures.java), the lines it shouts, where its rumor drops (rumorFrom: main mod NPC kit ids) and its trophy. Optional: fruitItem (a main mod Devil Fruit dropped on a win, like its story bosses), beasts (entity ids, one or two called with each crew wave) and lairBeasts (creatures that live in its lair without joining the fight).",
 	"bosses": [
 		{
 			"id": "saltjaw_rourke",
@@ -240,6 +240,7 @@
 			"bountyReward": 220000000,
 			"crew": "sea_king_wrangler",
 			"beasts": ["onepiece:kung_fu_dugong", "onepiece:bananawani"],
+			"lairBeasts": ["onepiece:sea_cat", "onepiece:megalo"],
 			"signature": "leviathan_charge",
 			"lore": "A pirate who broke a young Sea King to the saddle and rides it into battle. His pens hold monsters the Navy still calls legends.",
 			"intro": "Easy, girl... Looks like supper swam right up to us!",

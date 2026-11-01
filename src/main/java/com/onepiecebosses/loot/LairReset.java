@@ -58,7 +58,9 @@ public final class LairReset {
 			for (Map.Entry<String, String> lair : LairChests.LAIR_BOSSES.entrySet()) {
 				RogueData boss = RogueData.get(lair.getValue());
 				Identifier id = BossesMod.id(lair.getKey());
-				SITES.put(id, new Site(id, boss.lair.isEmpty() ? "The lair" : boss.lair, Set.of(boss.id), boss.beasts));
+				List<String> beasts = new ArrayList<>(boss.beasts);
+				beasts.addAll(boss.lairBeasts);
+				SITES.put(id, new Site(id, boss.lair.isEmpty() ? "The lair" : boss.lair, Set.of(boss.id), List.copyOf(beasts)));
 			}
 			try (InputStream in = LairReset.class.getResourceAsStream("/opbosses/rebuildable.json")) {
 				JsonObject file = JsonParser.parseReader(new InputStreamReader(in, StandardCharsets.UTF_8)).getAsJsonObject();

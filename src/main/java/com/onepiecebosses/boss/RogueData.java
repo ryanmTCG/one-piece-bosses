@@ -44,6 +44,8 @@ public class RogueData {
 	public String trophy = "";
 	/** Creatures (entity ids, like "onepiece:manticore") that come with each crew wave. Shiki's mutated beasts. */
 	public List<String> beasts = List.of();
+	/** Creatures that live in the boss's lair but don't join the fight (Vasco's penned Sea Kings). The charter clears them before a rebuild. */
+	public List<String> lairBeasts = List.of();
 	/** The name of the boss's lair (like "The Scrapheap Reef"). Its chest only opens with the key this boss drops. */
 	public String lair = "";
 
