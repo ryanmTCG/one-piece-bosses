@@ -3,6 +3,7 @@
   "values": [
     "minecraft:badlands",
     "minecraft:savanna_plateau",
+    "minecraft:savanna",
     {
       "id": "onepiece:punk_hazard_burning",
       "required": false

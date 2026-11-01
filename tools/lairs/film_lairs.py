@@ -472,7 +472,7 @@ def add(lair, OCEANS, DEEP):
 
     # ============================================================ Zephyr: the End Point
     @lair("end_point", "The End Point", "zephyr_z",
-          ["minecraft:badlands", "minecraft:savanna_plateau", "onepiece:punk_hazard_burning", "onepiece:marineford"],
+          ["minecraft:badlands", "minecraft:savanna_plateau", "minecraft:savanna", "onepiece:punk_hazard_burning", "onepiece:marineford"],
           "land", group="film_lairs")
     def _(b):
         rnd = random.Random(13)

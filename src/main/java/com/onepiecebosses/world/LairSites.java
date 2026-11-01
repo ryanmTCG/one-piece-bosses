@@ -39,7 +39,7 @@ public final class LairSites {
 	/** Samples per side: 7 x 7 over the footprint and its margin, about one every 15 blocks on our biggest lair. */
 	private static final int GRID = 7;
 	/** Most a land lair's ground may rise and fall across its footprint (the highest and lowest samples are ignored). */
-	public static final int MAX_SPREAD = 6;
+	public static final int MAX_SPREAD = 8;
 	/** How far past the lair's edge the grid reaches, so a cliff right at its wall counts too. */
 	private static final int MARGIN = 12;
 	/** Most even the single highest sample may stand over the lair's floor: one tall hill at the wall is enough to say no. */

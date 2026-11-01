@@ -4,7 +4,9 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"LairSiteMixin",
-		"PlaceCommandMixin"
+		"PlaceCommandMixin",
+		"ChunkGeneratorMixin",
+		"ConfiguredFeatureMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
