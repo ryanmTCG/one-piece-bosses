@@ -164,6 +164,6 @@ public final class OnePieceBridge {
 		if (town == null) {
 			return null;
 		}
-		return new TownSpot(town.plaza != null ? town.plaza : new BlockPos(town.box.getCenter()), town.name());
+		return new TownSpot(town.plaza != null ? town.plaza : town.box.getCenter(), town.name());
 	}
 }

@@ -195,7 +195,7 @@ public class WorldMobsClientTest implements FabricClientGameTest {
 			ServerPlayer p = player(s);
 			List<RookieRaiderEntity> raiders = raiders(s);
 			long fighting = raiders.stream().filter(r -> r.getTarget() != null).count();
-			double closest = raiders.stream().mapToDouble(r -> Math.sqrt(r.distanceToSqr(r.getRaidTarget().getCenter()))).min().orElse(-1);
+			double closest = raiders.stream().mapToDouble(r -> Math.sqrt(r.distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(r.getRaidTarget())))).min().orElse(-1);
 			LOG.info("WM RAID {} raiders fighting, closest to the village {}", fighting, String.format("%.1f", closest));
 			check(fighting > 0 || (closest >= 0 && closest < 20), "the raiders neither fought nor marched on the village");
 			int berriesBefore = p.getInventory().countItem(OnePieceBridge.berries(1).getItem());

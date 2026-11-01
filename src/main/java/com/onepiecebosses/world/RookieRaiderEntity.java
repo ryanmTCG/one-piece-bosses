@@ -86,7 +86,7 @@ public class RookieRaiderEntity extends HumanNpc {
 
 		@Override
 		public boolean canUse() {
-			return raidTarget != null && getTarget() == null && distanceToSqr(raidTarget.getCenter()) > 8 * 8;
+			return raidTarget != null && getTarget() == null && distanceToSqr(net.minecraft.world.phys.Vec3.atCenterOf(raidTarget)) > 8 * 8;
 		}
 
 		@Override

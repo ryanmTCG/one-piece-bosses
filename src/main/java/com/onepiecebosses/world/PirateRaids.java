@@ -23,7 +23,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -206,15 +205,6 @@ public final class PirateRaids {
 			return null;
 		}
 		raid.total = raid.raiders.size();
-		// The rowboat they came in, pulled up on the shore.
-		BlockPos water = WorldMobs.waterNextTo(level, landing);
-		if (water != null) {
-			Entity boat = EntityType.OAK_BOAT.create(level, EntitySpawnReason.EVENT);
-			if (boat != null) {
-				boat.snapTo(water.getX() + 0.5, water.getY() + 1, water.getZ() + 0.5, random.nextFloat() * 360f, 0f);
-				level.addFreshEntity(boat);
-			}
-		}
 		RAIDS.add(raid);
 		Component news = Component.literal("Pirates! The " + raid.crew + " are raiding " + raid.place + "!").withStyle(ChatFormatting.RED);
 		for (ServerPlayer defender : raid.defenders(BAR_RANGE)) {
@@ -278,7 +268,7 @@ public final class PirateRaids {
 			net.minecraft.world.item.ItemStack reward = OnePieceBridge.berries(berries);
 			player.getInventory().add(reward);
 			if (!reward.isEmpty()) {
-				player.drop(reward, false);
+				raid.level.addFreshEntity(new net.minecraft.world.entity.item.ItemEntity(raid.level, player.getX(), player.getY(), player.getZ(), reward));
 			}
 			if (raid.village) {
 				player.addEffect(new MobEffectInstance(MobEffects.HERO_OF_THE_VILLAGE, 20 * 60 * 10, 0));
