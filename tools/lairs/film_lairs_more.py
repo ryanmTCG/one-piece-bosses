@@ -35,7 +35,7 @@ def add(lair, OCEANS, DEEP):
 
     # ============================================================ El Drago: Gold Island
     @lair("gold_island", "Gold Island", "el_drago",
-          ["#minecraft:is_beach", "minecraft:stony_shore", "minecraft:jungle", "minecraft:sparse_jungle"], "land", group="film_lairs")
+          ["#minecraft:is_beach", "minecraft:jungle", "minecraft:sparse_jungle"], "land", group="film_lairs")
     def _(b):
         rnd = random.Random(21)
         W, D = 96, 92
@@ -792,7 +792,7 @@ def add(lair, OCEANS, DEEP):
 
     # ============================================================ Byrnndi World: the Groseade
     @lair("groseade", "The Groseade", "byrnndi_world",
-          ["minecraft:stony_shore", "minecraft:snowy_beach", "minecraft:beach", "minecraft:snowy_plains", "minecraft:plains"],
+          ["minecraft:snowy_beach", "minecraft:beach", "minecraft:snowy_plains", "minecraft:plains"],
           "land", group="film_lairs")
     def _(b):
         rnd = random.Random(25)
