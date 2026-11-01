@@ -142,7 +142,7 @@ def _():
 
 @chest("lantern_house", "The Widow's Casket")
 def _():
-    # A narrow black casket with silver fittings and a cross on the lid; a lantern-lit keyhole glows on the front.
+    # A narrow black casket with silver fittings, her wide-brimmed hat on the lid and her lantern hanging off the corner.
     black = lacquer('#1e1a24', 6)
     front = lacquer('#1e1a24', 7)
     for x in range(2, 14):
@@ -150,13 +150,19 @@ def _():
     silver = metal('#b8b8c4', '#ffffff', 8)
     glow = new('#ffe8a0', 0.1, 9)
     rect(glow, 6, 4, 9, 11, '#fff8d0')
-    tex = dict(black=black, front=front, silver=silver, glow=glow)
+    violet = new('#6a5a8a', 0.1, 60)
+    tex = dict(black=black, front=front, silver=silver, glow=glow, violet=violet)
     boxes = [
         box([2, 0, 1], [14, 8, 15], dict(all='black', front='front')),
         box([1.5, 8, 0.5], [14.5, 11, 15.5], dict(all='black', front='front')),
         box([3, 11, 2], [13, 12, 14], 'black'),
-        box([7.4, 12, 3.5], [8.6, 12.4, 12.5], 'silver'),
-        box([5, 12, 5.5], [11, 12.4, 6.7], 'silver'),
+        box([2.5, 12, 2.5], [13.5, 12.6, 13.5], 'black'),        # her wide-brimmed hat on the lid
+        box([5, 12.6, 5], [11, 15.5, 11], 'black'),
+        box([4.9, 12.6, 4.9], [11.1, 13.6, 11.1], 'violet'),     # hatband
+        box([13.6, 9.5, 0.2], [14.4, 10.3, 1.2], 'silver'),       # lantern bracket on the corner
+        box([12.8, 5.5, -0.6], [15.2, 9.5, 1.8], 'glow', light=14),  # her lantern
+        box([12.6, 9.3, -0.8], [15.4, 9.8, 2], 'silver'),
+        box([12.6, 5.2, -0.8], [15.4, 5.7, 2], 'silver'),
         box([1.6, 0, 0.6], [2.6, 8, 1.6], 'silver'),
         box([13.4, 0, 0.6], [14.4, 8, 1.6], 'silver'),
         box([1.6, 0, 14.4], [2.6, 8, 15.4], 'silver'),
@@ -337,8 +343,11 @@ def _():
     front = lacquer('#f4f0f4', 36)
     for x in range(S):
         put(front, x, 9, '#d83040'); put(front, x, 15, '#d83040')
-    for (x, y) in ((3, 12), (7, 11), (11, 13)):
-        put(front, x, y, '#e890b8'); put(front, x, y - 1, '#e890b8'); put(front, x + 1, y - 2, '#e890b8')   # little notes
+    for (x, y) in ((2, 11), (7, 10), (12, 11)):   # eighth notes: a round head, a stem and a flag
+        rect(front, x, y + 2, x + 1, y + 3, '#d84890')
+        for yy in range(y - 1, y + 3):
+            put(front, x + 1, yy, '#d84890')
+        put(front, x + 2, y - 1, '#d84890'); put(front, x + 2, y, '#d84890')
     red = lacquer('#c82838', 37)
     gold = new('#e8c040', 0.15, 38)
     tex = dict(white=white, front=front, red=red, gold=gold)
@@ -346,9 +355,10 @@ def _():
         box([1, 0, 2], [15, 8, 14], dict(all='white', front='front')),
         box([0.5, 8, 1.5], [15.5, 11, 14.5], 'red'),
         box([2, 11, 3], [14, 11.5, 13], 'white'),
-        box([9, 11.5, 7], [10, 16, 8], 'gold'),
-        box([6.5, 11.5, 6.5], [9.5, 13.5, 8.5], 'gold'),
-        box([10, 14, 7], [12, 16, 8], 'gold'),
+        box([5, 11.5, 6.5], [8.5, 14, 9.5], 'gold'),          # a big gold eighth note: head,
+        box([7.5, 14, 7.5], [8.5, 19, 8.5], 'gold'),          # stem
+        box([8.5, 18, 7.5], [11, 19, 8.5], 'gold'),           # and flag
+        box([10, 16.5, 7.5], [11, 18, 8.5], 'gold'),
         box([15, 4, 7.5], [16, 5, 8.5], 'gold'),
         box([16, 2, 7.5], [17, 5, 8.5], 'gold'),
         box([1.5, -0.01, 2.5], [3, 0.6, 4], 'gold'),
@@ -365,12 +375,13 @@ def _():
     black = metal('#1e2028', '#5a5a68', 39)
     front = metal('#1e2028', '#5a5a68', 40)
     P = '#9a6ad0'
-    for (cx, letter) in ((2, 'N'), (6, 'E'), (10, 'O')):   # 3x5 letters, rows 8..12
-        rows = {'N': ['X.X', 'XXX', 'XXX', 'X.X', 'X.X'], 'E': ['XXX', 'X..', 'XX.', 'X..', 'XXX'], 'O': ['XXX', 'X.X', 'X.X', 'X.X', 'XXX']}[letter]
-        for dy, row in enumerate(rows):
+    letters = {'N': ['X..X', 'XX.X', 'X.XX', 'X..X', 'X..X'], 'E': ['XXX', 'X..', 'XX.', 'X..', 'XXX'],
+               'O': ['XXX', 'X.X', 'X.X', 'X.X', 'XXX']}
+    for (cx, letter) in ((2, 'N'), (7, 'E'), (11, 'O')):   # rows 8..12, under the clasp
+        for dy, row in enumerate(letters[letter]):
             for dx, ch in enumerate(row):
                 if ch == 'X':
-                    put(front, cx + dx + (1 if letter != 'N' else 0), 8 + dy, P)
+                    put(front, cx + dx, 8 + dy, P)
     lid = metal('#1e2028', '#5a5a68', 41)
     for x in range(S):
         put(lid, x, 6, P); put(lid, x, 7, P); put(lid, 6, x, P); put(lid, 7, x, P)
@@ -384,7 +395,7 @@ def _():
     boxes += [box([x, 0, z], [x + 2, 11, z + 2], 'stone') for x in (0.5, 13.5) for z in (0.5, 13.5)]
     boxes += [
         box([5, 13, 7], [11, 14, 9], 'stone'),
-        box([7, 7.5, 0.4], [9, 10.5, 0.9], 'stone'),
+        box([7, 10, 0.4], [9, 12.5, 0.9], 'stone'),
     ]
     return tex, boxes
 
@@ -408,8 +419,10 @@ def _():
         box([0.7, 10, 0.7], [15.3, 12, 15.3], 'iron'),
         box([2, 2, 0.4], [7, 7, 1], 'copper', full=True),
         box([9, 4, 0.4], [14, 9, 1], 'grey', full=True),
-        box([4, 12, 4], [12, 14, 12], 'cwhite'),
-        box([5, 14, 5], [11, 16, 11], 'cred'),
+        box([3, 12, 3], [13, 14.5, 13], 'cwhite'),            # a big gashapon capsule: white base,
+        box([2.7, 14.2, 2.7], [13.3, 14.9, 13.3], 'iron'),    # seam,
+        box([3.5, 14.9, 3.5], [12.5, 17.5, 12.5], 'cred'),    # red dome
+        box([5, 17.5, 5], [11, 18.5, 11], 'cred'),
         box([15, 6, 3], [16.5, 8, 5], 'iron'),
         box([0.3, 3, 9], [1, 8, 14], 'copper', full=True),
     ]

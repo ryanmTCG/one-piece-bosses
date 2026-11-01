@@ -5,6 +5,7 @@
     "front": "opbosses:block/chest/lantern_house/front",
     "silver": "opbosses:block/chest/lantern_house/silver",
     "glow": "opbosses:block/chest/lantern_house/glow",
+    "violet": "opbosses:block/chest/lantern_house/violet",
     "particle": "opbosses:block/chest/lantern_house/black"
   },
   "elements": [
@@ -107,14 +108,110 @@
     },
     {
       "from": [
-        7.4,
+        2.5,
         12,
-        3.5
+        2.5
       ],
       "to": [
-        8.6,
-        12.4,
-        12.5
+        13.5,
+        12.6,
+        13.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#black"
+        },
+        "south": {
+          "texture": "#black"
+        },
+        "east": {
+          "texture": "#black"
+        },
+        "west": {
+          "texture": "#black"
+        },
+        "up": {
+          "texture": "#black"
+        },
+        "down": {
+          "texture": "#black"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        12.6,
+        5
+      ],
+      "to": [
+        11,
+        15.5,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#black"
+        },
+        "south": {
+          "texture": "#black"
+        },
+        "east": {
+          "texture": "#black"
+        },
+        "west": {
+          "texture": "#black"
+        },
+        "up": {
+          "texture": "#black"
+        },
+        "down": {
+          "texture": "#black"
+        }
+      }
+    },
+    {
+      "from": [
+        4.9,
+        12.6,
+        4.9
+      ],
+      "to": [
+        11.1,
+        13.6,
+        11.1
+      ],
+      "faces": {
+        "north": {
+          "texture": "#violet"
+        },
+        "south": {
+          "texture": "#violet"
+        },
+        "east": {
+          "texture": "#violet"
+        },
+        "west": {
+          "texture": "#violet"
+        },
+        "up": {
+          "texture": "#violet"
+        },
+        "down": {
+          "texture": "#violet"
+        }
+      }
+    },
+    {
+      "from": [
+        13.6,
+        9.5,
+        0.2
+      ],
+      "to": [
+        14.4,
+        10.3,
+        1.2
       ],
       "faces": {
         "north": {
@@ -139,14 +236,79 @@
     },
     {
       "from": [
-        5,
-        12,
-        5.5
+        12.8,
+        5.5,
+        -0.6
       ],
       "to": [
-        11,
-        12.4,
-        6.7
+        15.2,
+        9.5,
+        1.8
+      ],
+      "faces": {
+        "north": {
+          "texture": "#glow"
+        },
+        "south": {
+          "texture": "#glow"
+        },
+        "east": {
+          "texture": "#glow"
+        },
+        "west": {
+          "texture": "#glow"
+        },
+        "up": {
+          "texture": "#glow"
+        },
+        "down": {
+          "texture": "#glow"
+        }
+      },
+      "light_emission": 14
+    },
+    {
+      "from": [
+        12.6,
+        9.3,
+        -0.8
+      ],
+      "to": [
+        15.4,
+        9.8,
+        2
+      ],
+      "faces": {
+        "north": {
+          "texture": "#silver"
+        },
+        "south": {
+          "texture": "#silver"
+        },
+        "east": {
+          "texture": "#silver"
+        },
+        "west": {
+          "texture": "#silver"
+        },
+        "up": {
+          "texture": "#silver"
+        },
+        "down": {
+          "texture": "#silver"
+        }
+      }
+    },
+    {
+      "from": [
+        12.6,
+        5.2,
+        -0.8
+      ],
+      "to": [
+        15.4,
+        5.7,
+        2
       ],
       "faces": {
         "north": {
