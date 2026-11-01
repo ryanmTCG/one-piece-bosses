@@ -11,6 +11,7 @@ import com.onepiecebosses.boss.RogueBosses;
 import com.onepiecebosses.crew.CrewKits;
 import com.onepiecebosses.loot.LairChests;
 import com.onepiecebosses.loot.RumorDrops;
+import com.onepiecebosses.world.WorldMobs;
 
 /**
  * The starting point of One Piece Bosses. Minecraft calls onInitialize() once while the game is loading,
@@ -31,6 +32,7 @@ public class BossesMod implements ModInitializer {
 		LairChests.initialize();
 		BossItems.initialize();
 		RumorDrops.initialize();
+		WorldMobs.initialize(); // Wandering bounty hunters and rookie pirate raids.
 		LOGGER.info("One Piece Bosses: {} rogue bosses loaded", com.onepiecebosses.boss.RogueData.all().size());
 	}
 

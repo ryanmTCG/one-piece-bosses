@@ -10,6 +10,8 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 
 import com.onepiecemod.bounty.Bounty;
 import com.onepiecemod.character.BossStrikes;
@@ -19,6 +21,11 @@ import com.onepiecemod.npc.HumanNpc;
 import com.onepiecemod.npc.NpcFeature;
 import com.onepiecemod.npc.NpcKit;
 import com.onepiecemod.world.SeastoneEffects;
+import com.onepiecemod.bounty.NavyCalm;
+import com.onepiecemod.character.CharacterFeature;
+import com.onepiecemod.npc.NpcNames;
+import com.onepiecemod.town.Town;
+import com.onepiecemod.town.Towns;
 
 /**
  * Every static call into the One Piece Mod goes through here (RogueBossEntity also extends its CharacterEntity).
@@ -105,5 +112,58 @@ public final class OnePieceBridge {
 		}
 		com.onepiecemod.character.CharacterData data = com.onepiecemod.character.CharacterData.get(id);
 		return data != null && data.name != null ? data.name : id.replace('_', ' ');
+	}
+
+	// ---- For the world mobs (world package) ----
+
+	/** A player's bounty in Berries. */
+	public static long bounty(Player player) {
+		return Bounty.get(player);
+	}
+
+	/** The main mod's threat level for a player's bounty: 0 none, 1 from 1 Berry, 2 from 50M, 3 from 100M... */
+	public static int threatLevel(Player player) {
+		return Bounty.threatLevel(player);
+	}
+
+	/** A bounty written the main mod's way ("12,000,000"). */
+	public static String formatBerries(long amount) {
+		return Bounty.format(amount);
+	}
+
+	/** True if the main mod would let a new hunt start on this player now (not in a boss fight or raid, not lying low at home). */
+	public static boolean navyCanStart(ServerPlayer player) {
+		return NavyCalm.canStart(player);
+	}
+
+	/** In the middle of something big: a story event, a raid, a boss fight... */
+	public static boolean isBusy(ServerPlayer player) {
+		return NavyCalm.isBusy(player);
+	}
+
+	/** Adds a "busy" check, so the main mod holds back its Marine hunts and Navy raids meanwhile. */
+	public static void registerBusy(java.util.function.Predicate<ServerPlayer> busy) {
+		NavyCalm.register(busy);
+	}
+
+	/** A made-up pirate crew name ("Red Gull Pirates"). */
+	public static String pirateCrewName(RandomSource random) {
+		return NpcNames.crew(random);
+	}
+
+	public static ItemStack berries(int count) {
+		return new ItemStack(CharacterFeature.BERRY, count);
+	}
+
+	/** One of the main mod's towns: where its plaza is and its name. */
+	public record TownSpot(BlockPos center, String name) {}
+
+	/** The main mod town a position is in (or within 16 blocks of), or null. */
+	public static TownSpot townAt(ServerLevel level, BlockPos pos) {
+		Town town = Towns.at(level, pos, 16);
+		if (town == null) {
+			return null;
+		}
+		return new TownSpot(town.plaza != null ? town.plaza : new BlockPos(town.box.getCenter()), town.name());
 	}
 }

@@ -5,6 +5,8 @@ import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.fabricmc.api.ClientModInitializer;
 
 import com.onepiecebosses.boss.RogueBosses;
+import com.onepiecebosses.world.WorldMobs;
+import com.onepiecemod.npc.client.NpcRenderer;
 
 /** The client-only start of One Piece Bosses. */
 public class BossesClient implements ClientModInitializer {
@@ -12,5 +14,8 @@ public class BossesClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		RogueModels.register();
 		EntityRenderers.register(RogueBosses.ROGUE_BOSS, RogueBossRenderer::new);
+		// The world mobs are the main mod's pirate NPCs underneath, so they wear its NPC skins.
+		EntityRenderers.register(WorldMobs.WANDERING_HUNTER, NpcRenderer::new);
+		EntityRenderers.register(WorldMobs.ROOKIE_RAIDER, NpcRenderer::new);
 	}
 }
