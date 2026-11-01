@@ -19,6 +19,17 @@ PAPER_LANTERN = "onepiece:paper_lantern[hanging=false]"
 PAPER_HANG = "onepiece:paper_lantern[hanging=true]"
 
 
+def clear_spawns(b):
+    """Natural terrain stays wherever a lair has no block of its own, so a hill can poke up through it: make sure every
+    spawn has a clear 3x3 column three blocks high round it, whatever the ground was."""
+    for (_eid, x, y, z, _data) in b.entities:
+        for dx in (-1, 0, 1):
+            for dz in (-1, 0, 1):
+                for yy in range(y, y + 3):
+                    if b.get(x + dx, yy, z + dz) is None:
+                        b.set(x + dx, yy, z + dz, AIR)
+
+
 def add(lair, OCEANS, DEEP):
     """Registers the five lairs with gen_lairs's @lair decorator."""
 
@@ -193,8 +204,9 @@ def add(lair, OCEANS, DEEP):
                 b.set(x, 0, z, "minecraft:gravel" if abs(x - AX - 18) < 2 else "minecraft:cobblestone")
         b.scatter(0, 0, W, D, 1, ["minecraft:short_grass", "minecraft:fern", "minecraft:dead_bush"], 0.06, rnd, only_on=grass + sand)
 
-        b.rogue(AX, 1, AZ - 3, "el_drago")
+        b.rogue(AX, 1, AZ - 6, "el_drago")
         b.crew("el_drago_pirate", ((AX - 8, AZ - 4), (AX + 8, AZ - 4), (AX - 7, AZ + 8), (AX + 7, AZ + 8), (CX0 + 14, CZ0 + 6), (54, 36), (sx + 16, deck + 1, cz)))
+        clear_spawns(b)
 
     # ============================================================ Gasparde: the Salamander
     @lair("salamander", "The Salamander", "gasparde", OCEANS, "sea", group="film_lairs")
@@ -243,7 +255,7 @@ def add(lair, OCEANS, DEEP):
                 if b.get(x, 0, z) == "minecraft:dark_oak_planks":
                     b.set(x, 0, z, "minecraft:spruce_planks")
         # --- The paddle wheels, one each side amidships (the Salamander is a steam racer).
-        PX = 54
+        PX = 62
         for side in (-1, 1):
             zw = CZ + side * (half(PX, 0) + 2)
             for a in range(0, 360, 6):
@@ -262,7 +274,7 @@ def add(lair, OCEANS, DEEP):
                 b.set(x, 6, zw, "minecraft:green_terracotta")
             b.box(PX - 1, -2, zw - side if side > 0 else zw + 1, PX + 1, -2, zw - side if side > 0 else zw + 1, RIVET)
         # --- Three funnels (the landmark), striped with the race's colours and smoking.
-        for (fx, fh) in ((44, 26), (54, 30), (64, 26)):
+        for (fx, fh) in ((58, 26), (66, 30), (74, 26)):
             b.cyl(fx, CZ, 2.2, 1, fh, "minecraft:black_concrete", hollow=True)
             for y in range(fh - 6, fh - 3):
                 b.cyl(fx, CZ, 2.2, y, y, "minecraft:red_concrete", hollow=True)
@@ -271,7 +283,7 @@ def add(lair, OCEANS, DEEP):
             b.box(fx - 1, fh - 2, CZ - 1, fx + 1, fh - 2, CZ + 1, "minecraft:polished_blackstone")
             b.set(fx, fh - 1, CZ, SMOKE)
         # --- The racing deck (the arena, foredeck): open planks in a ring of rails, the Dead End's chequered finish line.
-        AX, AZ = 78, CZ
+        AX, AZ = 40, CZ
         for x in range(AX - 9, AX + 10):
             for z in range(AZ - 9, AZ + 10):
                 if b.get(x, 0, z) in ("minecraft:dark_oak_planks", "minecraft:spruce_planks"):
@@ -282,13 +294,14 @@ def add(lair, OCEANS, DEEP):
                 b.set(cx2, 1, cz2, facing("cannon", "north" if cz2 < AZ else "south")); b.set(cx2 + 1, 1, cz2, facing("cannonball_pile", "north"))
         b.set(L - 3, 1, CZ, facing("capstan", "west")); b.set(L - 6, 1, CZ - 2, facing("anchor", "north")); b.set(L - 6, 1, CZ + 2, facing("rope_coil", "north"))
         # foremast with the Dead End flag
-        b.box(AX + 10, 1, CZ, AX + 10, 22, CZ, log("spruce"))
-        b.box(AX + 10, 18, CZ + 1, AX + 10, 21, CZ + 6, "minecraft:white_wool")
+        MAST = 88
+        b.box(MAST, 1, CZ, MAST, 22, CZ, log("spruce"))
+        b.box(MAST, 18, CZ + 1, MAST, 21, CZ + 6, "minecraft:white_wool")
         for z in range(CZ + 1, CZ + 7):
             for y in range(18, 22):
                 if (y + z) % 2 == 0:
-                    b.set(AX + 10, y, z, "minecraft:black_wool")
-        b.set(AX + 10, 14, CZ, log("spruce", "z")); b.set(AX + 10, 14, CZ - 1, log("spruce", "z")); b.set(AX + 10, 14, CZ + 1, log("spruce", "z"))
+                    b.set(MAST, y, z, "minecraft:black_wool")
+        b.set(MAST, 14, CZ, log("spruce", "z")); b.set(MAST, 14, CZ - 1, log("spruce", "z")); b.set(MAST, 14, CZ + 1, log("spruce", "z"))
         # --- The bridge and Gasparde's cabin (stern, two decks): the chest is in his cabin.
         SX0, SX1, SZ0, SZ1 = 6, 28, CZ - 9, CZ + 9
         b.hall(SX0, SZ0, SX1, SZ1, 0, 6, "minecraft:green_terracotta", RIVET, "minecraft:polished_deepslate", trim="minecraft:gold_block" if False else GOLD_BRICK,
@@ -367,6 +380,7 @@ def add(lair, OCEANS, DEEP):
 
         b.rogue(AX, 1, AZ, "gasparde")
         b.crew("gasparde_pirate", ((AX - 6, AZ - 5), (AX - 6, AZ + 5), (AX + 4, AZ - 6), (AX + 4, AZ + 6), (SX0 + 14, CZ), (LX0 + 10, -7, CZ), (LX0 + 22, -7, CZ)))
+        clear_spawns(b)
 
     # ============================================================ Baron Omatsuri: Omatsuri Island
     @lair("omatsuri_island", "Omatsuri Island", "baron_omatsuri",
@@ -589,6 +603,7 @@ def add(lair, OCEANS, DEEP):
 
         b.rogue(AX, 2, AZ - 3, "baron_omatsuri")
         b.crew("red_arrows_pirate", ((AX - 6, 2, AZ - 6), (AX + 6, 2, AZ - 6), (AX - 6, 2, AZ + 6), (AX + 6, 2, AZ + 6), (JX, 9, JZ + 2), (LX - 4, 1, QZ1 + 3), (16, 1, 82)))
+        clear_spawns(b)
 
     # ============================================================ Dr. Ratchet: Karakuri Castle on Mecha Island
     @lair("karakuri_castle", "Karakuri Castle", "ratchet", OCEANS + DEEP, "sea", group="film_lairs")
@@ -773,6 +788,7 @@ def add(lair, OCEANS, DEEP):
         b.rogue(AX, 1, AZ, "ratchet")
         b.crew("karakuri_soldier", ((AX - 7, AZ - 6), (AX + 7, AZ - 6), (AX - 7, AZ + 6), (AX + 7, AZ + 6), (KX + 12, KZ - 4)))
         b.crew("karakuri_soldier", ((KX + 3, KZ + 3),), y=6)
+        clear_spawns(b)
 
     # ============================================================ Byrnndi World: the Groseade
     @lair("groseade", "The Groseade", "byrnndi_world",
@@ -850,7 +866,7 @@ def add(lair, OCEANS, DEEP):
                     h = round(3 * (1 - abs(d - (R + 1.2)) / 2.4))
                     for y in range(1, h + 1):
                         b.set(x, y, z, rnd.choice(["minecraft:cobblestone", "minecraft:gravel", "minecraft:tuff", "minecraft:blackstone"]))
-        for (bx2, bz2, br) in ((AX - 9, AZ - 6, 1.8), (AX + 10, AZ + 4, 2.2), (AX + 3, AZ + 11, 1.5)):   # thrown boulders
+        for (bx2, bz2, br) in ((AX - 11, AZ + 1, 1.8), (AX + 3, AZ - 11, 2.0), (AX + 2, AZ + 11, 1.5)):   # thrown boulders
             b.sphere(bx2, 1, bz2, br, "minecraft:tuff", ry=br)
         b.set(AX, 1, AZ, AIR)
         for i in range(0, 360, 60):   # the openings in the rim
@@ -929,6 +945,7 @@ def add(lair, OCEANS, DEEP):
 
         b.rogue(AX, 1, AZ, "byrnndi_world")
         b.crew("world_pirate", ((AX - 8, AZ - 7), (AX + 8, AZ - 7), (AX - 8, AZ + 7), (AX + 8, AZ + 7), (84, 43), (sx + 24, deck + 1, cz)))
+        clear_spawns(b)
 
 
 LOOT = {
