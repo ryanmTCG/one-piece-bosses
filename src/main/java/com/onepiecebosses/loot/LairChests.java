@@ -1,0 +1,62 @@
+package com.onepiecebosses.loot;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.PushReaction;
+
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+
+import com.onepiecebosses.BossesMod;
+
+/**
+ * Each lair's own chest block (opbosses:&lt;lair&gt;_chest; models and names from tools/gen_chests.py), and the rule that
+ * keeps a locked chest shut: vanilla stops you opening a locked chest, but not breaking it and picking up what spills,
+ * so a locked chest only breaks for someone who could open it (holding the key) or in creative.
+ */
+public final class LairChests {
+	private LairChests() {
+	}
+
+	/** The lairs, by structure name. Their chests are "<lair>_chest". */
+	public static final List<String> LAIRS = List.of("scrapheap_reef", "lantern_house", "fort_iron_tide", "hollow_shrine",
+			"shipbreakers_foundry", "abyssal_temple", "gran_tesoro", "elegia_stage", "end_point", "ironclad_colosseum", "merveille");
+
+	/** Lair name -> its chest block. */
+	public static final Map<String, Block> BLOCKS = new LinkedHashMap<>();
+	public static final Map<String, Item> ITEMS = new LinkedHashMap<>();
+	public static BlockEntityType<LairChestBlockEntity> ENTITY;
+
+	public static void initialize() {
+		for (String lair : LAIRS) {
+			ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, BossesMod.id(lair + "_chest"));
+			// Blast-proof and immovable, so the loot can't be blown or pushed out of a lair.
+			Block block = Registry.register(BuiltInRegistries.BLOCK, key, new LairChestBlock(BlockBehaviour.Properties.of()
+					.strength(2.5f, 3600000.0f).sound(SoundType.WOOD).noOcclusion().pushReaction(PushReaction.IMMOVEABLE)
+					.lightLevel(state -> 4).setId(key)));
+			BLOCKS.put(lair, block);
+			ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, BossesMod.id(lair + "_chest"));
+			ITEMS.put(lair, Registry.register(BuiltInRegistries.ITEM, itemKey,
+					new BlockItem(block, new Item.Properties().rarity(Rarity.RARE).useBlockDescriptionPrefix().setId(itemKey))));
+		}
+		ENTITY = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, BossesMod.id("lair_chest"),
+				FabricBlockEntityTypeBuilder.create(LairChestBlockEntity::new, BLOCKS.values().toArray(new Block[0])).build());
+
+		PlayerBlockBreakEvents.BEFORE.register((level, player, pos, state, blockEntity) ->
+				player.isCreative() || !(blockEntity instanceof BaseContainerBlockEntity container) || container.canOpen(player));
+	}
+}

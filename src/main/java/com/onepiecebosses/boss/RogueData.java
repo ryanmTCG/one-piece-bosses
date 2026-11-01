@@ -44,6 +44,8 @@ public class RogueData {
 	public String trophy = "";
 	/** Creatures (entity ids, like "onepiece:manticore") that come with each crew wave. Shiki's mutated beasts. */
 	public List<String> beasts = List.of();
+	/** The name of the boss's lair (like "The Scrapheap Reef"). Its chest only opens with the key this boss drops. */
+	public String lair = "";
 
 	public int tier() {
 		return character.tier;

@@ -44,12 +44,13 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 - **Their lines**: each rogue has something to say when the fight starts, at each phase and when beaten.
 - **Bounty**: a first win raises your bounty by the rogue's own amount (12M for Rourke up to 600M for Nereus Vane). Rematches add 10% of the tier value, like any boss. The paper reports first wins, and Arsenal's meito count rogues as named bosses.
 - **Trophy**: each rogue drops their trophy the first time someone nearby beats them at that difficulty.
+- **Lair key**: each rogue drops the key to their lair's chest every time they're beaten ("Key to The Gran Tesoro" and so on). The chest is locked: hold the key in your main hand to open it. Without it the chest won't open or break, except in creative.
 
 ## Finding them
 
 - **Rumor Posters** are the rogues' Wanted Posters. Use one on a block to call the rogue out. Beat them and the poster brings them back on Hard, then Expert; sneak while using it for a Normal fight.
 - The main mod's pirates and Marines sometimes carry a Rumor Poster when beaten (4% for a tier 1 rogue down to 0.6% for tier 5). Which NPCs know about which rogue is `rumorFrom` in `bosses.json`.
-- Creative: the **One Piece: Rogue Bosses** tab has every poster and trophy.
+- Creative: the **One Piece: Rogue Bosses** tab has every poster, trophy, key and lair chest (a chest you place yourself is plain storage, with no lock).
 
 ## Changing or adding a rogue
 
@@ -61,7 +62,8 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 | `src/main/java/com/onepiecebosses/boss/RogueBossEntity.java` | The boss mob: the main mod's boss with our data, plus crew, lines and signature. |
 | `src/main/java/com/onepiecebosses/compat/OnePieceBridge.java` | Every other call into the main mod. If it renames something, fix it here. |
 | `tools/gen_models.py` | **Each rogue's body shape and skin.** Writes `client/RogueModels.java` and the skins. |
-| `tools/gen_assets.py` | Draws the poster and trophy art and writes the item JSON. |
+| `tools/gen_chests.py` | **Each lair's own chest:** the model, textures and name. Run `python3 tools/gen_chests.py src/main/resources` after a change (then `gen_assets.py` for the names). |
+| `tools/gen_assets.py` | Draws the poster, trophy and key art and writes the item JSON. |
 | `tools/lairs/gen_lairs.py` | **Each rogue's lair:** the build, where it spawns, and its chest loot. Run `python3 tools/lairs/gen_lairs.py .` after a change. |
 | `tools/lairs/film_lairs.py` | The film villains' lairs and their chest loot (gen_lairs.py builds them too). |
 
@@ -69,7 +71,7 @@ To add a rogue: add an entry to `bosses.json` (and a crew to `crews.json` if it 
 
 ## Their lairs
 
-Every rogue has a base of their own out in the world, so you can stumble on them without a poster. Each one spawns its boss and crew once, when it's first generated, and has a chest whose loot always includes that boss's Rumor Poster for a rematch. They're rare: about one rogue lair per 44 chunks, and separately one film lair per 52 chunks. Find one with `/locate structure opbosses:<name>`.
+Every rogue has a base of their own out in the world, so you can stumble on them without a poster. Each one spawns its boss and crew once, when it's first generated, and has a chest of its own design (Tesoro's gold vault with a roulette lock, Uta's music box, a giant clam, a lion-faced chest for Shiki...), locked to the key that boss drops, whose loot always includes that boss's Rumor Poster for a rematch. They're rare: about one rogue lair per 44 chunks, and separately one film lair per 52 chunks. Find one with `/locate structure opbosses:<name>`.
 
 | Lair | Rogue | Where |
 | --- | --- | --- |
@@ -96,7 +98,7 @@ The One Piece Mod isn't on a maven, so build against its jar, the same way as On
 1. In the One Piece Mod, run `./gradlew build`.
 2. Copy `build/libs/onepiece-0.1.0.jar` into this repo's `libs/` folder (change `onepiece_jar` in `gradle.properties` if the name differs).
 3. Run `./gradlew build` here. The jar lands in `build/libs/`; put it in your `mods/` folder next to the One Piece Mod.
-4. To test, run `./gradlew runClientGameTest`. A game window opens, fights every boss in a test world and closes: Rumor Poster spawn, crew waves, phase lines, signature moves, trophy, bounty (including a long-range kill), the Hard rematch and Rumor Poster drops. It fails with a list of what went wrong, and saves screenshots to `build/run/clientGameTest/screenshots`. The tests are in `src/gametest` and never go into the mod jar.
+4. To test, run `./gradlew runClientGameTest`. A game window opens, fights every boss in a test world and closes: Rumor Poster spawn, crew waves, phase lines, signature moves, trophy, bounty (including a long-range kill), the Hard rematch and Rumor Poster drops. It fails with a list of what went wrong, and saves screenshots to `build/run/clientGameTest/screenshots`. The tests are in `src/gametest` and never go into the mod jar, and a normal `runClient` or modpack launch never runs them. To replay only what a change touches, add `-Dopbosses.tests=bosses` or `lairs` (or `models` for model portraits) and `-Dopbosses.only=<boss ids or lair names>`.
 
 ## Planned
 

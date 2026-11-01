@@ -11,5 +11,16 @@
   "item.opbosses.diva_headphones": "Diva's Headphones",
   "item.opbosses.smasher_knuckle": "Battle Smasher Knuckle",
   "item.opbosses.clank_clank_rivet": "Clank-Clank Rivet",
-  "item.opbosses.golden_lion_helm": "Golden Lion's Helm"
+  "item.opbosses.golden_lion_helm": "Golden Lion's Helm",
+  "block.opbosses.scrapheap_reef_chest": "Rourke's Sea Chest",
+  "block.opbosses.lantern_house_chest": "The Widow's Casket",
+  "block.opbosses.fort_iron_tide_chest": "Marine Strongbox",
+  "block.opbosses.hollow_shrine_chest": "Karabitsu Armour Chest",
+  "block.opbosses.shipbreakers_foundry_chest": "Boiler Safe",
+  "block.opbosses.abyssal_temple_chest": "Abyssal Clam",
+  "block.opbosses.gran_tesoro_chest": "Tesoro's Gold Vault",
+  "block.opbosses.elegia_stage_chest": "Uta's Music Box",
+  "block.opbosses.end_point_chest": "Neo Marine Arms Crate",
+  "block.opbosses.ironclad_colosseum_chest": "Gashapon Scrap Crate",
+  "block.opbosses.merveille_chest": "Golden Lion's Chest"
 }

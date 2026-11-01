@@ -9,6 +9,7 @@ import net.fabricmc.api.ModInitializer;
 
 import com.onepiecebosses.boss.RogueBosses;
 import com.onepiecebosses.crew.CrewKits;
+import com.onepiecebosses.loot.LairChests;
 import com.onepiecebosses.loot.RumorDrops;
 
 /**
@@ -27,6 +28,7 @@ public class BossesMod implements ModInitializer {
 	public void onInitialize() {
 		CrewKits.initialize(); // Before the bosses, so their crews exist when a saved boss loads.
 		RogueBosses.initialize();
+		LairChests.initialize();
 		BossItems.initialize();
 		RumorDrops.initialize();
 		LOGGER.info("One Piece Bosses: {} rogue bosses loaded", com.onepiecebosses.boss.RogueData.all().size());

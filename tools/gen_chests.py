@@ -1,0 +1,523 @@
+#!/usr/bin/env python3
+"""Draws each lair's own chest: the block model, its textures, blockstate and item model.
+
+    python3 tools/gen_chests.py src/main/resources
+
+One chest per lair (the block is opbosses:<lair>_chest, registered from LairChests.CHESTS in Java). They're static
+models (no opening lid) made of boxes, like any block model: 16 units = 1 block, x east, y up, z south, and the
+front faces north (z = 0); the blockstate turns it to face the player. Textures are 16x16 and painted where the boxes
+sit: a face shows the part of its texture under it, so a front texture is a picture of the chest's front (row 0 is
+the top, y = 16). A box with full=True shows the whole texture on each face instead (dials, emblems).
+Nothing is see-through, so the blocks need no special render layer.
+"""
+import json
+import math
+import os
+import random
+import sys
+
+from PIL import Image
+
+S = 16
+
+
+def rgb(h):
+    h = h.lstrip('#')
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def shade(c, f):
+    return tuple(max(0, min(255, int(v * f))) for v in c)
+
+
+def new(base, noise=0.08, seed=0):
+    rnd = random.Random(seed)
+    img = Image.new('RGBA', (S, S))
+    c = rgb(base)
+    for y in range(S):
+        for x in range(S):
+            img.putpixel((x, y), shade(c, 1 - noise / 2 + noise * rnd.random()) + (255,))
+    return img
+
+
+def put(img, x, y, c):
+    if 0 <= x < S and 0 <= y < S:
+        img.putpixel((int(x), int(y)), (rgb(c) if isinstance(c, str) else c) + (255,))
+
+
+def rect(img, x0, y0, x1, y1, c):
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            put(img, x, y, c)
+
+
+def frame(img, x0, y0, x1, y1, c):
+    for x in range(x0, x1 + 1):
+        put(img, x, y0, c); put(img, x, y1, c)
+    for y in range(y0, y1 + 1):
+        put(img, x0, y, c); put(img, x1, y, c)
+
+
+def planks(base, seam, seed=0, rows=4):
+    img = new(base, 0.14, seed)
+    rnd = random.Random(seed)
+    for y in range(S):
+        if y % rows == rows - 1:
+            for x in range(S):
+                put(img, x, y, seam)
+        elif rnd.random() < 0.15:
+            put(img, rnd.randrange(S), y, shade(rgb(base), 0.8))
+    return img
+
+
+def metal(base, rivet, seed=0, edge=None):
+    img = new(base, 0.1, seed)
+    for (x, y) in ((1, 1), (14, 1), (1, 14), (14, 14), (7, 1), (7, 14), (1, 7), (14, 7)):
+        put(img, x, y, rivet)
+    if edge:
+        frame(img, 0, 0, 15, 15, edge)
+    return img
+
+
+def lacquer(base, seed=0):
+    img = new(base, 0.04, seed)
+    for i in range(S):
+        put(img, i, i // 3, shade(rgb(base), 1.25))   # a shine across it
+    return img
+
+
+# ---------------------------------------------------------------- the chests
+# Each chest: name (shown in game), textures {key: Image}, boxes [(from, to, faces, extras)].
+# faces is one texture key for every face, or a dict of front/back/side/top/bottom (missing ones use 'all').
+CHESTS = {}
+
+
+def chest(cid, name):
+    def deco(fn):
+        CHESTS[cid] = dict(name=name, build=fn)
+        return fn
+    return deco
+
+
+def box(f, t, faces, **extra):
+    return (f, t, faces, extra)
+
+
+@chest("scrapheap_reef", "Rourke's Sea Chest")
+def _():
+    # A weathered sea chest hauled off the reef: green-slimed planks, rusted iron straps, barnacles, a chain lock.
+    wood = planks('#5a4630', '#2e2418', 1)
+    for (x, y) in ((2, 13), (3, 14), (9, 15), (12, 12), (5, 10), (13, 6)):
+        put(wood, x, y, '#4a6a48'); put(wood, x + 1, y, '#3e5a3c')   # algae
+    front = planks('#5a4630', '#2e2418', 2)
+    for x in range(S):
+        put(front, x, 15, '#4a6a48')
+    rust = metal('#7a4a2a', '#c08050', 3)
+    for (x, y) in ((3, 5), (9, 11), (12, 3)):
+        put(rust, x, y, '#a85a28')
+    barn = new('#d8d0bc', 0.2, 4)
+    put(barn, 7, 7, '#5a5048'); put(barn, 8, 8, '#5a5048')
+    chain = new('#4a4a50', 0.1, 5)
+    for y in range(0, S, 2):
+        for x in range(S):
+            put(chain, x, y, '#2a2a30')
+    tex = dict(wood=wood, front=front, rust=rust, barn=barn, chain=chain)
+    boxes = [
+        box([1, 0, 1], [15, 9, 15], dict(all='wood', front='front')),
+        box([1, 9, 1], [15, 13, 15], dict(all='wood', front='front')),
+        box([2, 13, 2], [14, 14.5, 14], 'wood'),
+        box([3, -0.01, 0.5], [5, 14, 15.5], 'rust'),
+        box([11, -0.01, 0.5], [13, 14, 15.5], 'rust'),
+        box([2, 14.5, 3], [5, 15, 13], 'rust'),
+        box([11, 14.5, 3], [14, 15, 13], 'rust'),
+        box([6.5, 7, 0.3], [9.5, 11, 1], 'rust'),
+        box([7.5, 3.5, 0.1], [8.5, 7, 0.6], 'chain'),
+        box([14.6, 2, 4], [15.6, 4, 6], 'barn'),
+        box([0.4, 5, 9], [1.4, 6.5, 10.5], 'barn'),
+        box([9, 14.5, 9], [10.5, 15.5, 10.5], 'barn'),
+        box([2, 0.5, 0.6], [3.5, 2, 1.1], 'barn'),
+    ]
+    return tex, boxes
+
+
+@chest("lantern_house", "The Widow's Casket")
+def _():
+    # A narrow black casket with silver fittings, her wide-brimmed hat on the lid and her lantern hanging off the corner.
+    black = lacquer('#1e1a24', 6)
+    front = lacquer('#1e1a24', 7)
+    for x in range(2, 14):
+        put(front, x, 8, '#6a5a8a')   # violet piping where the lid meets the body
+    silver = metal('#b8b8c4', '#ffffff', 8)
+    glow = new('#ffe8a0', 0.1, 9)
+    rect(glow, 6, 4, 9, 11, '#fff8d0')
+    violet = new('#6a5a8a', 0.1, 60)
+    tex = dict(black=black, front=front, silver=silver, glow=glow, violet=violet)
+    boxes = [
+        box([2, 0, 1], [14, 8, 15], dict(all='black', front='front')),
+        box([1.5, 8, 0.5], [14.5, 11, 15.5], dict(all='black', front='front')),
+        box([3, 11, 2], [13, 12, 14], 'black'),
+        box([-0.5, 12, -0.5], [16.5, 12.6, 16.5], 'black'),      # her wide-brimmed hat on the lid, brim past the edges
+        box([5, 12.6, 5], [11, 15.5, 11], 'black'),
+        box([4.9, 12.6, 4.9], [11.1, 13.6, 11.1], 'violet'),     # hatband
+        box([13.6, 9.5, 0.2], [14.4, 10.3, 1.2], 'silver'),       # lantern bracket on the corner
+        box([12.8, 5.5, -0.6], [15.2, 9.5, 1.8], 'glow', light=14),  # her lantern
+        box([12.6, 9.3, -0.8], [15.4, 9.8, 2], 'silver'),
+        box([12.6, 5.2, -0.8], [15.4, 5.7, 2], 'silver'),
+        box([1.6, 0, 0.6], [2.6, 8, 1.6], 'silver'),
+        box([13.4, 0, 0.6], [14.4, 8, 1.6], 'silver'),
+        box([1.6, 0, 14.4], [2.6, 8, 15.4], 'silver'),
+        box([13.4, 0, 14.4], [14.4, 8, 15.4], 'silver'),
+        box([6.5, 4.5, 0.4], [9.5, 8.5, 1], 'silver'),
+        box([7.2, 5.2, 0.2], [8.8, 7.6, 0.5], 'glow', light=12),
+    ]
+    return tex, boxes
+
+
+@chest("fort_iron_tide", "Marine Strongbox")
+def _():
+    # A Navy strongbox: white steel, navy bands, a gold anchor badge and gold handles.
+    white = metal('#e8e8ec', '#9a9aa8', 10, edge='#b8b8c4')
+    front = metal('#e8e8ec', '#9a9aa8', 11)
+    for y in range(6, 16):
+        put(front, 1, y, '#28304a'); put(front, 14, y, '#28304a')
+    gold = '#d8b040'
+    for y in range(8, 14):
+        put(front, 7, y, gold); put(front, 8, y, gold)        # anchor shank
+    for x in range(5, 11):
+        put(front, x, 9, gold)                                 # stock
+    for x in (5, 6, 9, 10):
+        put(front, x, 13 - abs(x - 7.5) // 2, gold)            # arms
+    put(front, 4, 12, gold); put(front, 11, 12, gold)
+    rect(front, 7, 7, 8, 7, gold)                              # ring
+    navy = metal('#28304a', '#c8c8d0', 12)
+    goldt = new('#d8b040', 0.2, 13)
+    tex = dict(white=white, front=front, navy=navy, gold=goldt)
+    boxes = [
+        box([1, 0, 1], [15, 10, 15], dict(all='white', front='front')),
+        box([0.8, 10, 0.8], [15.2, 13, 15.2], 'navy'),
+        box([1, 13, 1], [15, 13.6, 15], 'white'),
+        box([15, 5, 6], [15.8, 6, 10], 'gold'),
+        box([0.2, 5, 6], [1, 6, 10], 'gold'),
+        box([7, 9.5, 0.4], [9, 12, 0.8], 'gold'),
+    ]
+    return tex, boxes
+
+
+@chest("hollow_shrine", "Karabitsu Armour Chest")
+def _():
+    # A samurai's armour chest: red lacquer on short black legs, a black lid with a gold crest, gold corner fittings.
+    red = lacquer('#a01e1e', 14)
+    black = lacquer('#1a1414', 15)
+    lidtop = lacquer('#1a1414', 16)
+    for a in range(0, 360, 30):
+        put(lidtop, 8 + 3 * math.cos(math.radians(a)), 8 + 3 * math.sin(math.radians(a)), '#d8b048')   # mon
+    put(lidtop, 8, 8, '#d8b048'); put(lidtop, 7, 7, '#d8b048')
+    gold = new('#d8b048', 0.2, 17)
+    rope = new('#c83030', 0.2, 18)
+    for y in range(0, S, 3):
+        for x in range(S):
+            put(rope, x, y, '#e8c060')
+    tex = dict(red=red, black=black, lidtop=lidtop, gold=gold, rope=rope)
+    boxes = [box([x, 0, z], [x + 2, 3, z + 2], 'black') for x in (1.5, 12.5) for z in (1.5, 12.5)]
+    boxes += [
+        box([1, 3, 1], [15, 11, 15], 'red'),
+        box([0.5, 11, 0.5], [15.5, 14, 15.5], dict(all='black', top='lidtop')),
+    ]
+    boxes += [box([x, 3, z], [x + 1.6, 11.2, z + 1.6], 'gold') for x in (0.8, 13.6) for z in (0.8, 13.6)]
+    boxes += [
+        box([7, 9, 0.2], [9, 12.5, 0.6], 'gold'),
+        box([15.4, 7, 7.5], [16, 10.5, 8.5], 'rope'),
+        box([0, 7, 7.5], [0.6, 10.5, 8.5], 'rope'),
+    ]
+    return tex, boxes
+
+
+@chest("shipbreakers_foundry", "Boiler Safe")
+def _():
+    # A riveted boiler-iron safe with a brass combination dial, a glowing firebox slot, a steam pipe and a gauge.
+    iron = metal('#3a3a40', '#8a8a90', 19)
+    front = metal('#3a3a40', '#8a8a90', 20)
+    frame(front, 2, 2, 13, 13, '#26262a')     # the door
+    dial = new('#c89838', 0.12, 21)
+    for a in range(0, 360, 15):
+        r = 7 if a % 45 else 6
+        put(dial, 7.5 + r * math.cos(math.radians(a)), 7.5 + r * math.sin(math.radians(a)), '#5a4010')
+    rect(dial, 6, 6, 9, 9, '#8a6820'); rect(dial, 7, 2, 8, 6, '#5a4010')
+    fire = new('#ff8a20', 0.3, 22)
+    for x in range(0, S, 3):
+        for y in range(S):
+            put(fire, x, y, '#2a1a10')
+    brass = new('#c89838', 0.15, 23)
+    gauge = new('#f0ece0', 0.05, 24)
+    frame(gauge, 0, 0, 15, 15, '#c89838'); frame(gauge, 1, 1, 14, 14, '#c89838')
+    for i in range(6):
+        put(gauge, 8 + i, 8 - i, '#c02020')
+    tex = dict(iron=iron, front=front, dial=dial, fire=fire, brass=brass, gauge=gauge)
+    boxes = [
+        box([1, 0, 1], [15, 13, 15], dict(all='iron', front='front')),
+        box([5.5, 5.5, 0.3], [10.5, 10.5, 1], dict(all='brass', front='dial'), full=True),
+        box([4, 1.5, 0.5], [12, 3.5, 1.05], 'fire', full=True, light=10),
+        box([13.4, 2.5, 0.4], [14.6, 5, 1], 'brass'),
+        box([13.4, 8.5, 0.4], [14.6, 11, 1], 'brass'),
+        box([10, 13, 9], [12, 16, 11], 'iron'),
+        box([9.5, 15.5, 8.5], [12.5, 16.5, 11.5], 'brass'),
+        box([3, 13, 3.5], [6.5, 16, 4.5], dict(all='brass', front='gauge'), full=True),
+    ]
+    return tex, boxes
+
+
+@chest("abyssal_temple", "Abyssal Clam")
+def _():
+    # A giant clam: ridged teal shells, a pearl peeking out of the lip, coral growing on its sides.
+    shell = new('#3a8a8a', 0.1, 25)
+    for x in range(0, S, 3):
+        for y in range(S):
+            put(shell, x, y, '#2a6a70')
+            put(shell, x + 1, y, '#5ab0a8')
+    top = new('#3a8a8a', 0.1, 26)
+    for a in range(-60, 61, 20):
+        for r in range(2, 16):
+            put(top, 8 + r * math.sin(math.radians(a)) * 0.6, 15 - r * math.cos(math.radians(a)), '#2a6a70')
+    pearl = new('#f4f0ec', 0.06, 27)
+    rect(pearl, 3, 3, 6, 6, '#ffffff')
+    lip = new('#f0b8c0', 0.1, 28)
+    coral = new('#e86a7a', 0.25, 29)
+    tex = dict(shell=shell, top=top, pearl=pearl, lip=lip, coral=coral)
+    boxes = [
+        box([0.5, 0, 1], [15.5, 5.5, 15.5], dict(all='shell', top='top')),
+        box([1, 5.5, 0.8], [15, 6.5, 15.2], 'lip'),
+        box([1, 6.5, 1.5], [15, 10, 15.5], dict(all='shell', top='top')),
+        box([3, 10, 3], [13, 11.5, 14.5], dict(all='shell', top='top')),
+        box([6.5, 5, 0.3], [9.5, 7.5, 1.6], 'pearl', full=True),
+        box([14.6, 0, 10], [16, 4.5, 11.4], 'coral'),
+        box([13.8, 3.5, 11.4], [15.2, 6, 12.6], 'coral'),
+        box([0, 0, 3], [1.4, 3, 4.4], 'coral'),
+        box([0.6, 2.5, 4.4], [1.6, 4.5, 5.4], 'coral'),
+    ]
+    return tex, boxes
+
+
+@chest("gran_tesoro", "Tesoro's Gold Vault")
+def _():
+    # Solid gold, a roulette wheel for a lock, gold bars and a stack of casino chips on the lid.
+    gold = new('#e8c040', 0.18, 30)
+    for i in range(S):
+        put(gold, i, (i * 5) % S, '#fff0a0')
+    bright = new('#f4d050', 0.15, 31)
+    frame(bright, 0, 0, 15, 15, '#c8a030')
+    wheel = new('#e8c040', 0.05, 32)
+    for y in range(S):
+        for x in range(S):
+            dx, dy = x - 7.5, y - 7.5
+            r = math.hypot(dx, dy)
+            if 2.5 < r < 7.2:
+                seg = int((math.degrees(math.atan2(dy, dx)) + 180) // 30)
+                put(wheel, x, y, '#c01e28' if seg % 2 else '#1a1a1e')
+            elif r <= 2.5:
+                put(wheel, x, y, '#f4d050')
+    rect(wheel, 7, 0, 8, 2, '#ffffff')   # the ball
+    bar = new('#f0c838', 0.1, 33)
+    frame(bar, 0, 0, 15, 15, '#c09020')
+    chip = new('#c01e28', 0.05, 34)
+    for y in range(0, S, 4):
+        for x in range(S):
+            put(chip, x, y, '#ffffff')
+    tex = dict(gold=gold, bright=bright, wheel=wheel, bar=bar, chip=chip)
+    boxes = [
+        box([1, 0, 1], [15, 10, 15], 'gold'),
+        box([0.7, 10, 0.7], [15.3, 13, 15.3], 'bright'),
+        box([4.5, 2.5, 0.3], [11.5, 9.5, 1], dict(all='gold', front='wheel'), full=True),
+        box([3, 13, 4], [7, 14.5, 7], 'bar'),
+        box([8, 13, 4], [12, 14.5, 7], 'bar'),
+        box([5.5, 14.5, 4.5], [9.5, 16, 6.5], 'bar'),
+        box([10, 13, 9.5], [12.5, 15.5, 12], 'chip'),
+        box([6, 13, 10], [8.5, 14, 12.5], 'chip'),
+    ]
+    return tex, boxes
+
+
+@chest("elegia_stage", "Uta's Music Box")
+def _():
+    # A white-and-red music box: gold music note on the lid, a crank on the side, pink notes along the front.
+    white = lacquer('#f4f0f4', 35)
+    front = lacquer('#f4f0f4', 36)
+    for x in range(S):
+        put(front, x, 9, '#d83040'); put(front, x, 15, '#d83040')
+    for (x, y) in ((2, 11), (7, 10), (12, 11)):   # eighth notes: a round head, a stem and a flag
+        rect(front, x, y + 2, x + 1, y + 3, '#c02860')
+        for yy in range(y - 1, y + 3):
+            put(front, x + 1, yy, '#c02860')
+        put(front, x + 2, y - 1, '#c02860'); put(front, x + 2, y, '#c02860')
+    red = lacquer('#c82838', 37)
+    gold = new('#e8c040', 0.15, 38)
+    tex = dict(white=white, front=front, red=red, gold=gold)
+    boxes = [
+        box([1, 0, 2], [15, 8, 14], dict(all='white', front='front')),
+        box([0.5, 8, 1.5], [15.5, 11, 14.5], 'red'),
+        box([2, 11, 3], [14, 11.5, 13], 'white'),
+        box([7.5, 11.5, 6.5], [11, 14, 9.5], 'gold'),          # a big gold eighth note: head,
+        box([7.5, 14, 7.5], [8.5, 19, 8.5], 'gold'),          # stem
+        box([5, 18, 7.5], [7.5, 19, 8.5], 'gold'),             # and flag (to the viewer's right: -x)
+        box([5, 16.5, 7.5], [6, 18, 8.5], 'gold'),
+        box([15, 4, 7.5], [16, 5, 8.5], 'gold'),
+        box([16, 2, 7.5], [17, 5, 8.5], 'gold'),
+        box([1.5, -0.01, 2.5], [3, 0.6, 4], 'gold'),
+        box([13, -0.01, 2.5], [14.5, 0.6, 4], 'gold'),
+        box([1.5, -0.01, 12], [3, 0.6, 13.5], 'gold'),
+        box([13, -0.01, 12], [14.5, 0.6, 13.5], 'gold'),
+    ]
+    return tex, boxes
+
+
+@chest("end_point", "Neo Marine Arms Crate")
+def _():
+    # A black steel arms crate with seastone corners, purple bands and a NEO stencil.
+    black = metal('#1e2028', '#5a5a68', 39)
+    front = metal('#1e2028', '#5a5a68', 40)
+    P = '#9a6ad0'
+    letters = {'N': ['X..X', 'XX.X', 'X.XX', 'X..X', 'X..X'], 'E': ['XXX', 'X..', 'XX.', 'X..', 'XXX'],
+               'O': ['XXX', 'X.X', 'X.X', 'X.X', 'XXX']}
+    for (cx, letter) in ((2, 'N'), (7, 'E'), (11, 'O')):   # rows 8..12, under the clasp
+        for dy, row in enumerate(letters[letter]):
+            for dx, ch in enumerate(row):
+                if ch == 'X':
+                    put(front, cx + dx, 8 + dy, P)
+    lid = metal('#1e2028', '#5a5a68', 41)
+    for x in range(S):
+        put(lid, x, 6, P); put(lid, x, 7, P); put(lid, 6, x, P); put(lid, 7, x, P)
+    stone = new('#3a4a4a', 0.2, 42)
+    band = new('#8a5ab8', 0.12, 43)
+    tex = dict(black=black, front=front, lid=lid, stone=stone, band=band)
+    boxes = [
+        box([1, 0, 1], [15, 11, 15], dict(all='black', front='front')),
+        box([0.6, 11, 0.6], [15.4, 13, 15.4], dict(all='band', top='lid')),
+    ]
+    boxes += [box([x, 0, z], [x + 2, 11, z + 2], 'stone') for x in (0.5, 13.5) for z in (0.5, 13.5)]
+    boxes += [
+        box([5, 13, 7], [11, 14, 9], 'stone'),
+        box([7, 10, 0.4], [9, 12.5, 0.9], 'stone'),
+    ]
+    return tex, boxes
+
+
+@chest("ironclad_colosseum", "Gashapon Scrap Crate")
+def _():
+    # A crate welded from scrap plates, bolted patches, a pipe, and a gashapon capsule on top.
+    scrap = metal('#6a6a70', '#c0c0c8', 44)
+    rect(scrap, 0, 0, 6, 5, '#7a4a2a'); rect(scrap, 9, 9, 15, 15, '#8a6a40')
+    for x in range(S):
+        put(scrap, x, 8, '#3a3a40')
+    iron = metal('#4a4a52', '#a0a0a8', 45)
+    copper = metal('#b06a3a', '#e0b080', 46)
+    grey = metal('#8a8a90', '#d0d0d8', 47)
+    cwhite = new('#f0f0f0', 0.05, 48)
+    cred = new('#d82828', 0.08, 49)
+    put(cred, 4, 4, '#ff9090'); put(cred, 5, 4, '#ff9090')
+    tex = dict(scrap=scrap, iron=iron, copper=copper, grey=grey, cwhite=cwhite, cred=cred)
+    boxes = [
+        box([1, 0, 1], [15, 10, 15], 'scrap'),
+        box([0.7, 10, 0.7], [15.3, 12, 15.3], 'iron'),
+        box([2, 2, 0.4], [7, 7, 1], 'copper', full=True),
+        box([9, 4, 0.4], [14, 9, 1], 'grey', full=True),
+        box([3, 12, 3], [13, 14.5, 13], 'cwhite'),            # a big gashapon capsule: white base,
+        box([2.7, 14.2, 2.7], [13.3, 14.9, 13.3], 'iron'),    # seam,
+        box([3.5, 14.9, 3.5], [12.5, 17.5, 12.5], 'cred'),    # red dome
+        box([5, 17.5, 5], [11, 18.5, 11], 'cred'),
+        box([15, 6, 3], [16.5, 8, 5], 'iron'),
+        box([0.3, 3, 9], [1, 8, 14], 'copper', full=True),
+    ]
+    return tex, boxes
+
+
+@chest("merveille", "Golden Lion's Chest")
+def _():
+    # Navy and gold, with a golden lion's head on the front and Shiki's crossed swords on the lid.
+    navy = lacquer('#1a2a44', 50)
+    frame(navy, 0, 0, 15, 15, '#d8b040')
+    lid = lacquer('#1a2a44', 51)
+    frame(lid, 0, 0, 15, 15, '#d8b040')
+    for i in range(2, 14):
+        put(lid, i, i, '#e8ecf4'); put(lid, 15 - i, i, '#e8ecf4')   # crossed swords
+    rect(lid, 2, 2, 3, 3, '#8a5a30'); rect(lid, 12, 2, 13, 3, '#8a5a30')   # hilts
+    mane = new('#f0c040', 0.3, 52)
+    for y in range(S):
+        for x in range(S):
+            if (x + 2 * y) % 5 == 0:
+                put(mane, x, y, '#c89020')
+    face = new('#f0c848', 0.08, 53)
+    rect(face, 4, 4, 5, 5, '#2a2010'); rect(face, 10, 4, 11, 5, '#2a2010')     # eyes
+    rect(face, 7, 8, 8, 9, '#6a3a20')                                           # nose
+    for x in range(5, 11):
+        put(face, x, 12, '#6a3a20')                                             # mouth
+    rect(face, 3, 2, 6, 2, '#c89020'); rect(face, 9, 2, 12, 2, '#c89020')       # brows
+    gold = new('#d8b040', 0.15, 54)
+    tex = dict(navy=navy, lid=lid, mane=mane, face=face, gold=gold)
+    boxes = [
+        box([1, 0, 1], [15, 9, 15], 'navy'),
+        box([0.7, 9, 0.7], [15.3, 13, 15.3], dict(all='navy', top='lid')),
+        box([3.5, 1, 0.2], [12.5, 10, 1], 'mane', full=True),
+        box([5, 2.5, -0.3], [11, 8.5, 0.2], dict(all='mane', front='face'), full=True),
+        box([1.5, -0.01, 1.5], [3, 1, 3], 'gold'),
+        box([13, -0.01, 1.5], [14.5, 1, 3], 'gold'),
+        box([1.5, -0.01, 13], [3, 1, 14.5], 'gold'),
+        box([13, -0.01, 13], [14.5, 1, 14.5], 'gold'),
+    ]
+    return tex, boxes
+
+
+# ---------------------------------------------------------------- writing
+
+FACE = dict(north='front', south='back', east='side', west='side', up='top', down='bottom')
+
+
+def model_json(cid, tex, boxes):
+    elements = []
+    for f, t, faces, extra in boxes:
+        fm = faces if isinstance(faces, dict) else {'all': faces}
+        el = {"from": f, "to": t, "faces": {}}
+        for face, key in FACE.items():
+            k = fm.get(key, fm.get('all'))
+            d = {"texture": "#" + k}
+            if extra.get('full'):
+                d["uv"] = [0, 0, 16, 16]
+            if face == 'down' and f[1] <= 0:
+                d["cullface"] = "down"
+            el["faces"][face] = d
+        if extra.get('light'):
+            el["light_emission"] = extra['light']
+        elements.append(el)
+    first = boxes[0][2] if isinstance(boxes[0][2], str) else boxes[0][2]['all']
+    textures = {k: f"opbosses:block/chest/{cid}/{k}" for k in tex}
+    textures["particle"] = textures[first]
+    return {"parent": "minecraft:block/block", "textures": textures, "elements": elements}
+
+
+def write(path, obj):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w') as fh:
+        json.dump(obj, fh, indent=2)
+        fh.write('\n')
+
+
+def main(res):
+    A = os.path.join(res, 'assets/opbosses')
+    for cid, c in CHESTS.items():
+        tex, boxes = c['build']()
+        block = cid + "_chest"
+        for k, img in tex.items():
+            p = os.path.join(A, 'textures/block/chest', cid, k + '.png')
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            img.save(p)
+        write(os.path.join(A, 'models/block', block + '.json'), model_json(cid, tex, boxes))
+        write(os.path.join(A, 'blockstates', block + '.json'), {"variants": {
+            f"facing={d}": {"model": f"opbosses:block/{block}", **({"y": y} if y else {})}
+            for d, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270))}})
+        write(os.path.join(A, 'items', block + '.json'), {"model": {"type": "minecraft:model", "model": f"opbosses:block/{block}"}})
+        write(os.path.join(res, 'data/opbosses/loot_table/blocks', block + '.json'), {
+            "type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": f"opbosses:{block}"}],
+                                                  "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+        print('%-34s %-26s %d boxes, %d textures' % (block, c['name'], len(boxes), len(tex)))
+
+
+if __name__ == '__main__':
+    main(sys.argv[1] if len(sys.argv) > 1 else 'src/main/resources')

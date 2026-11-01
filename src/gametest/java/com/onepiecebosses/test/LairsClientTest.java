@@ -25,10 +25,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.AABB;
@@ -41,6 +41,8 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 
 import com.onepiecebosses.BossItems;
+import com.onepiecebosses.loot.LairChestBlockEntity;
+import com.onepiecebosses.loot.LairChests;
 import com.onepiecebosses.boss.RogueBossEntity;
 import com.onepiecemod.npc.HumanNpc;
 import com.onepiecemod.world.GuardKit;
@@ -72,6 +74,9 @@ public class LairsClientTest implements FabricClientGameTest {
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
+		if (!TestFilter.runs("lairs")) {
+			return;
+		}
 		try {
 			run(context);
 		} catch (Exception e) {
@@ -80,6 +85,7 @@ public class LairsClientTest implements FabricClientGameTest {
 	}
 
 	private void run(ClientGameTestContext context) throws Exception {
+		List<Lair> picked = LAIRS.stream().filter(l -> TestFilter.picks(l.name, l.boss)).toList();
 		try (TestSingleplayerContext sp = context.worldBuilder().adjustSettings(LairsClientTest::defaultWorld).create()) {
 			sp.getConnection().waitForChunksRender();
 			cmd(sp, "race set @p human");
@@ -108,7 +114,7 @@ public class LairsClientTest implements FabricClientGameTest {
 			server(sp, LairsClientTest::checkPalettes);
 			Map<String, BlockPos> located = new LinkedHashMap<>();
 			server(sp, s -> {
-				for (Lair lair : LAIRS) {
+				for (Lair lair : picked) {
 					BlockPos p = locate(s, lair);
 					if (p != null) {
 						located.put(lair.name, p);
@@ -116,7 +122,7 @@ public class LairsClientTest implements FabricClientGameTest {
 				}
 			});
 			// The lairs the world made itself: everything is checked here, and these are the screenshots.
-			for (Lair lair : LAIRS) {
+			for (Lair lair : picked) {
 				if (located.containsKey(lair.name)) {
 					naturalTest(context, sp, lair, located.get(lair.name));
 				}
@@ -124,8 +130,8 @@ public class LairsClientTest implements FabricClientGameTest {
 			// /place structure, somewhere else in a biome each spawns in. The chunks there are already decorated (trees,
 			// no terrain smoothing), so this only checks that the lair places and sets itself up, not how it looks.
 			List<BlockPos> used = new ArrayList<>(located.values());
-			for (int i = 0; i < LAIRS.size(); i++) {
-				placeTest(context, sp, LAIRS.get(i), i, used);
+			for (int i = 0; i < picked.size(); i++) {
+				placeTest(context, sp, picked.get(i), i, used);
 			}
 			LOG.info("LT DONE, {} failures", FAILURES.size());
 		}
@@ -349,12 +355,14 @@ public class LairsClientTest implements FabricClientGameTest {
 			for (int cz = (boss.getBlockZ() >> 4) - 3; cz <= (boss.getBlockZ() >> 4) + 3; cz++) {
 				for (BlockPos bp : level.getChunk(cx, cz).getBlockEntitiesPos()) {
 					BlockEntity be = level.getBlockEntity(bp);
-					if (!(be instanceof ChestBlockEntity chest) || chest.getLootTable() == null
+					if (!(be instanceof LairChestBlockEntity chest) || chest.getLootTable() == null
 							|| !chest.getLootTable().identifier().getNamespace().equals("opbosses")) {
 						continue;
 					}
 					String table = chest.getLootTable().identifier().toString();
 					check(table.equals("opbosses:chests/" + lair.name), name + ": chest at " + bp + " has loot table " + table);
+					check(level.getBlockState(bp).is(LairChests.BLOCKS.get(lair.name)),
+							name + ": the chest at " + bp + " is " + level.getBlockState(bp) + ", not the lair's own chest");
 					chest.unpackLootTable(player(s));
 					List<String> items = new ArrayList<>();
 					boolean poster = false;
@@ -370,6 +378,22 @@ public class LairsClientTest implements FabricClientGameTest {
 					LOG.info("LT {} chest {} at {} ({} above the boss) items={}", name, table, bp, bp.getY() - boss.getBlockY(), items);
 					check(!items.isEmpty(), name + ": the chest is empty");
 					check(poster, name + ": no rumor poster for " + lair.boss + " in the chest");
+					// Locked to the boss's key: shut without it, open with it in hand. Spectators open every lock, so check in survival.
+					ServerPlayer p = player(s);
+					p.setGameMode(net.minecraft.world.level.GameType.SURVIVAL);
+					ItemStack held = p.getMainHandItem().copy();
+					p.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+					boolean openWithout = chest.canOpen(p);
+					p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(BossItems.KEYS.get(lair.boss)));
+					boolean openWithKey = chest.canOpen(p);
+					p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(BossItems.KEYS.get(lair.name.equals("merveille") ? "uta_diva" : "shiki_golden_lion")));
+					boolean openWithOther = chest.canOpen(p);
+					p.setItemInHand(InteractionHand.MAIN_HAND, held);
+					p.setGameMode(net.minecraft.world.level.GameType.SPECTATOR);
+					LOG.info("LT {} lock: opens without key={} with key={} with another boss's key={}", name, openWithout, openWithKey, openWithOther);
+					check(!openWithout, name + ": the chest opens without a key");
+					check(openWithKey, name + ": the chest doesn't open with " + lair.boss + "'s key");
+					check(!openWithOther, name + ": the chest opens with another boss's key");
 				}
 			}
 		}

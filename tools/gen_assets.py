@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws the poster and trophy art and writes the item JSON and names for every rogue boss in bosses.json.
+"""Draws the poster, trophy and lair key art and writes the item JSON and names for every rogue boss in bosses.json.
 (The bosses' bodies and skins are tools/gen_models.py.)
 
     python3 tools/gen_assets.py src/main/resources
@@ -11,6 +11,9 @@ import os
 import sys
 
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from gen_chests import CHESTS  # noqa: E402  (the lair chests' names)
 
 # Trophy item: (main colour, shade, shape).
 TROPHIES = {
@@ -86,6 +89,11 @@ def item_texture(main, dark, shape):
         d.line([(8, 0), (8, 15)], fill=main + (255,)); d.line([(0, 8), (15, 8)], fill=main + (255,))
         d.line([(3, 3), (12, 12)], fill=main + (255,)); d.line([(12, 3), (3, 12)], fill=main + (255,))
         d.ellipse([6, 6, 9, 9], fill=dark + (255,))
+    elif shape == "key":
+        # An old iron-bound key: a ring bow in the boss's colour, a long shaft and a toothed bit.
+        d.ellipse([1, 1, 7, 7], outline=main + (255,), width=2); d.point([(4, 4)], fill=dark + (255,))
+        d.line([(6, 6), (13, 13)], fill=shade(main, 0.8) + (255,), width=2)
+        box(d, 10, 12, 2, 3, dark); box(d, 12, 10, 3, 2, dark); box(d, 13, 13, 2, 2, dark)
     elif shape == "poster":
         box(d, 2, 1, 12, 14, (215, 190, 140)); box(d, 3, 2, 10, 2, (90, 40, 30))
         box(d, 5, 5, 6, 5, (120, 110, 100)); box(d, 7, 6, 2, 1, (40, 30, 30))   # a figure in shadow
@@ -113,6 +121,8 @@ def main(res):
     lang = {"itemGroup.opbosses.bosses": "One Piece: Rogue Bosses", "entity.opbosses.rogue_boss": "Rogue Boss"}
     for b in bosses:
         items = [("rumor_" + b["id"], item_texture(POSTER_SEAL[b["tier"]], None, "poster"))]
+        key_c, key_d = (TROPHIES[b["trophy"]][:2] if b.get("trophy") else ((200, 170, 70), (70, 60, 50)))
+        items.append(("key_" + b["id"], item_texture(key_c, key_d, "key")))
         if b.get("trophy"):
             main_c, dark, shape = TROPHIES[b["trophy"]]
             items.append((b["trophy"], item_texture(main_c, dark, shape)))
@@ -124,6 +134,8 @@ def main(res):
                        {"parent": "minecraft:item/generated", "textures": {"layer0": "opbosses:item/" + name}})
             write_json(os.path.join(assets, "items", name + ".json"),
                        {"model": {"type": "minecraft:model", "model": "opbosses:item/" + name}})
+    for cid, c in CHESTS.items():
+        lang["block.opbosses." + cid + "_chest"] = c["name"]
     write_json(os.path.join(assets, "lang/en_us.json"), lang)
     print("Drew %d bosses" % len(bosses))
 

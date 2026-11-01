@@ -56,7 +56,8 @@ jar {
 }
 
 // In-world tests (src/gametest). They never ship in the mod jar.
-// Run them with `gradlew runClientGameTest`: a game window opens, plays through every boss and closes.
+// Run them with `gradlew runClientGameTest`: a game window opens, plays through the bosses and lairs and closes.
+// Only `runClientGameTest` runs them; `runClient` and the mod jar never do.
 fabricApi {
 	configureTests {
 		createSourceSet = true
@@ -64,4 +65,10 @@ fabricApi {
 		enableGameTests = false
 		enableClientGameTests = true
 	}
+}
+
+// Pick what the in-world test plays (see src/gametest/.../TestFilter.java), e.g.
+// `gradlew runClientGameTest -Dopbosses.tests=lairs -Dopbosses.only=gran_tesoro`. By default it runs bosses and lairs.
+tasks.matching { it.name == "runClientGameTest" }.configureEach {
+	System.properties.each { k, v -> if (k.toString().startsWith("opbosses.")) systemProperty k.toString(), v }
 }
