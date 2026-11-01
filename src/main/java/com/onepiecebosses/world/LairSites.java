@@ -22,7 +22,8 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilde
  * run up the side of the mountain next door. This samples the ground on a 5x5 grid over the lair's real footprint and,
  * if it's too steep or too wet (or, for a sea lair, too dry), slides the whole lair to the nearest spot within
  * {@link #MAX_SHIFT} blocks that fits. If none does, the lair isn't built there and the next spot in the set gets it.
- * Hooked into Structure.findValidGenerationPoint (LairSiteMixin), so /locate agrees with world generation.
+ * Hooked into Structure.findValidGenerationPoint (LairSiteMixin), so /locate agrees with world generation; /place
+ * structure skips it (PlaceCommandMixin).
  * -Dopbosses.siteRules=false turns it off.
  */
 public final class LairSites {
@@ -32,8 +33,10 @@ public final class LairSites {
 	private static final boolean DEBUG = Boolean.getBoolean("opbosses.siteDebug");
 
 	private static final int GRID = 5;
-	/** Most a land lair's ground may rise and fall across its footprint (the top 2 and bottom 2 samples are ignored). */
-	public static final int MAX_SPREAD = 10;
+	/** Most a land lair's ground may rise and fall across its footprint (the highest and lowest samples are ignored). */
+	public static final int MAX_SPREAD = 6;
+	/** How far past the lair's edge the grid reaches, so a cliff right at its wall counts too. */
+	private static final int MARGIN = 6;
 	/** Most of the 25 samples under a land lair that may be water. */
 	private static final int MAX_WET = 3;
 	/** Fewest of the 25 samples under a sea lair that must be water (most of it: reef and beach lairs keep a bit of shore). */
@@ -42,9 +45,12 @@ public final class LairSites {
 	/** A chunk looks 8 chunks around for structure starts: our widest lair (~120) can move ~48 blocks and stay seen. */
 	private static final int MAX_SHIFT = 48;
 
+	/** True while /place structure runs on this thread: a lair placed by hand goes exactly where it's asked. */
+	public static final ThreadLocal<Boolean> PLACING = ThreadLocal.withInitial(() -> false);
+
 	public static Optional<Structure.GenerationStub> filter(Structure structure, Structure.GenerationContext ctx,
 			Optional<Structure.GenerationStub> found) {
-		if (!ENABLED || found.isEmpty()) return found;
+		if (!ENABLED || found.isEmpty() || PLACING.get()) return found;
 		Identifier id = ctx.registryAccess().lookupOrThrow(Registries.STRUCTURE).getKey(structure);
 		if (id == null || !id.getNamespace().equals(BossesMod.MOD_ID)) return found;
 		boolean sea = structure.terrainAdaptation() == TerrainAdjustment.NONE;
@@ -81,9 +87,9 @@ public final class LairSites {
 	}
 
 	private record Ground(List<Integer> dry, int wet) {
-		/** Rise and fall of the dry ground, ignoring the two highest and two lowest samples (a tree stump, a gully). */
+		/** Rise and fall of the dry ground, ignoring the highest and lowest sample (a lone rock, a gully). */
 		int spread() {
-			return dry.size() < 5 ? 0 : dry.get(dry.size() - 3) - dry.get(2);
+			return dry.size() < 5 ? 0 : dry.get(dry.size() - 2) - dry.get(1);
 		}
 
 		/** The lower third of the dry ground. */
@@ -94,7 +100,7 @@ public final class LairSites {
 
 	private static Ground sample(Structure.GenerationContext ctx, BoundingBox box) {
 		int sea = ctx.chunkGenerator().getSeaLevel();
-		int x0 = box.minX() + 2, x1 = box.maxX() - 2, z0 = box.minZ() + 2, z1 = box.maxZ() - 2;
+		int x0 = box.minX() - MARGIN, x1 = box.maxX() + MARGIN, z0 = box.minZ() - MARGIN, z1 = box.maxZ() + MARGIN;
 		List<Integer> dry = new ArrayList<>();
 		int wet = 0;
 		for (int i = 0; i < GRID; i++) {

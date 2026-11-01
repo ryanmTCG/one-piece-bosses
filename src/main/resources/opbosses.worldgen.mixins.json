@@ -3,7 +3,8 @@
 	"package": "com.onepiecebosses.world.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"LairSiteMixin"
+		"LairSiteMixin",
+		"PlaceCommandMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

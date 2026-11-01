@@ -85,6 +85,21 @@ class Lair(Parts):
 
 LAIRS = []
 
+CLEAR_TOP = 24
+
+
+def clear_ground(b):
+    """Saves air in every empty spot over a land lair's ground (y 1 up to CLEAR_TOP, over its whole footprint), so the
+    land under it can't poke up through the yard: a dune burying a crewman, a hill swallowing a chimney, a mountain
+    face against the wall. LairSites (Java) already keeps lairs on fairly flat ground; this cuts away the rest."""
+    xs = [p[0] for p in b.blocks]; zs = [p[2] for p in b.blocks]; ys = [p[1] for p in b.blocks]
+    top = min(max(ys), CLEAR_TOP)
+    for x in range(min(xs), max(xs) + 1):
+        for z in range(min(zs), max(zs) + 1):
+            for y in range(1, top + 1):
+                if b.get(x, y, z) is None:
+                    b.set(x, y, z, AIR)
+
 
 def lair(name, title, boss, biomes, place, group="rogue_lairs"):
     def deco(fn):
@@ -1156,6 +1171,8 @@ def main(root):
                 kit = [t for t in data["Tags"] if t.startswith(KIT_TAG_PREFIX)][0][len(KIT_TAG_PREFIX):]
                 assert kit in kits, (l['name'], kit)
         name = l['name']
+        if l['place'] == "land":
+            clear_ground(b)
         size, my = b.save(f'{D}/structure/{name}.nbt')
         st = {"type": "minecraft:jigsaw", "biomes": f"#opbosses:has_structure/{name}", "step": "surface_structures",
               "spawn_overrides": {"monster": {"bounding_box": "piece", "spawns": []}, "ambient": {"bounding_box": "piece", "spawns": []}},
