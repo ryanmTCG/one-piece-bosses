@@ -205,6 +205,15 @@ public final class PirateRaids {
 			return null;
 		}
 		raid.total = raid.raiders.size();
+		// The rowboat they came in, pulled up on the shore.
+		BlockPos water = WorldMobs.waterNextTo(level, landing);
+		if (water != null) {
+			Entity boat = net.minecraft.world.entity.EntityTypes.OAK_BOAT.create(level, EntitySpawnReason.EVENT);
+			if (boat != null) {
+				boat.snapTo(water.getX() + 0.5, water.getY() + 1, water.getZ() + 0.5, random.nextFloat() * 360f, 0f);
+				level.addFreshEntity(boat);
+			}
+		}
 		RAIDS.add(raid);
 		Component news = Component.literal("Pirates! The " + raid.crew + " are raiding " + raid.place + "!").withStyle(ChatFormatting.RED);
 		for (ServerPlayer defender : raid.defenders(BAR_RANGE)) {

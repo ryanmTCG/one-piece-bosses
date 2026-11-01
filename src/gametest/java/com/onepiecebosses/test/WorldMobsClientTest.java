@@ -238,7 +238,7 @@ public class WorldMobsClientTest implements FabricClientGameTest {
 
 	private static void villagers(MinecraftServer s) {
 		for (int i = 0; i < 5; i++) {
-			Entity v = EntityType.VILLAGER.create(s.overworld(), EntitySpawnReason.COMMAND);
+			Entity v = net.minecraft.world.entity.EntityTypes.VILLAGER.create(s.overworld(), EntitySpawnReason.COMMAND);
 			if (v != null) {
 				v.snapTo(HOME.getX() + 2 + i, HOME.getY(), HOME.getZ() + 6, 0f, 0f);
 				s.overworld().addFreshEntity(v);
