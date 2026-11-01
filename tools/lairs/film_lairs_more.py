@@ -205,7 +205,7 @@ def add(lair, OCEANS, DEEP):
         b.scatter(0, 0, W, D, 1, ["minecraft:short_grass", "minecraft:fern", "minecraft:dead_bush"], 0.06, rnd, only_on=grass + sand)
 
         b.rogue(AX, 1, AZ - 6, "el_drago")
-        b.crew("el_drago_pirate", ((AX - 8, AZ - 4), (AX + 8, AZ - 4), (AX - 7, AZ + 8), (AX + 7, AZ + 8), (CX0 + 14, CZ0 + 6), (46, 36), (sx + 16, deck + 1, cz)))
+        b.crew("el_drago_pirate", ((AX - 8, AZ - 4), (AX + 8, AZ - 4), (AX - 7, AZ + 8), (AX + 7, AZ + 8), (CX0 + 14, CZ0 + 6), (48, 38), (sx + 16, deck + 1, cz)))
         clear_spawns(b)
 
     # ============================================================ Gasparde: the Salamander
