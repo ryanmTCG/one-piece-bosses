@@ -19,12 +19,32 @@
     {
       "structure": "opbosses:merveille",
       "weight": 1
+    },
+    {
+      "structure": "opbosses:gold_island",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:salamander",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:omatsuri_island",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:karakuri_castle",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:groseade",
+      "weight": 1
     }
   ],
   "placement": {
     "type": "minecraft:random_spread",
-    "spacing": 52,
-    "separation": 18,
+    "spacing": 40,
+    "separation": 15,
     "salt": 1408172177,
     "exclusion_zone": {
       "other_set": "opbosses:rogue_lairs",

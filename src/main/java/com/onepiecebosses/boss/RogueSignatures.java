@@ -143,6 +143,56 @@ public final class RogueSignatures {
 				level.playSound(null, boss.blockPosition(), SoundEvents.WIND_CHARGE_BURST.value(), SoundSource.HOSTILE, 2.0f, 0.6f);
 				strikes.signature("rain_rock", boss, target, level, damage, extra + 2);
 			}
+			case "goe_goe_blast" -> { // El Drago: a roar that flies down the line and bursts, deafening (nausea) and blowing everyone back.
+				strikes.signature("slash_line", boss, target, level, damage, extra);
+				for (Player player : playersNear(boss, level, 10)) {
+					player.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 100 + 20 * extra, 0));
+					Vec3 away = player.position().subtract(boss.position()).multiply(1, 0, 1).normalize().scale(1.4);
+					player.setDeltaMovement(away.x, 0.5, away.z);
+					player.needsSync = true;
+				}
+				MoveFx.shockwave(level, boss.position(), 10, MoveFx.QUAKE, MoveFx.QUAKE_OUT);
+				level.sendParticles(ParticleTypes.SONIC_BOOM, boss.getX(), boss.getEyeY(), boss.getZ(), 1, 0, 0, 0, 0);
+				level.playSound(null, boss.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.HOSTILE, 3.0f, 0.8f);
+			}
+			case "syrup_flood" -> { // Gasparde: a wave of candy syrup glues everyone in place, then it sets into spikes under them.
+				for (Player player : playersNear(boss, level, 11)) {
+					player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60 + 20 * extra, 5));
+					player.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, 80, 2));
+					level.sendParticles(ParticleTypes.DRIPPING_HONEY, player.getX(), player.getY() + 1.2, player.getZ(), 25, 0.4, 0.6, 0.4, 0.02);
+				}
+				MoveFx.shockwave(level, boss.position(), 11, 0xFFFFE0A0, 0xFFC88020);
+				level.playSound(null, boss.blockPosition(), SoundEvents.HONEY_BLOCK_SLIDE, SoundSource.HOSTILE, 3.0f, 0.5f);
+				strikes.signature("ground_wave", boss, target, level, damage, extra);
+				strikes.signature("rain_metal", boss, target, level, damage * 0.7f, extra); // the syrup spikes
+			}
+			case "lily_arrow_storm" -> { // Omatsuri: Lily Carnation drinks from everyone nearby and turns into a rain of arrows.
+				float drained = 0;
+				for (Player player : playersNear(boss, level, 12)) {
+					player.addEffect(new MobEffectInstance(MobEffects.WITHER, 60 + 20 * extra, 0));
+					level.sendParticles(ParticleTypes.SPORE_BLOSSOM_AIR, player.getX(), player.getY() + 1, player.getZ(), 20, 0.5, 0.8, 0.5, 0.0);
+					drained += 1;
+				}
+				boss.heal(boss.getMaxHealth() * 0.015f * Math.min(drained, 3)); // Lily keeps her host alive.
+				level.playSound(null, boss.blockPosition(), SoundEvents.ARROW_SHOOT, SoundSource.HOSTILE, 3.0f, 0.6f);
+				level.playSound(null, boss.blockPosition(), SoundEvents.SPORE_BLOSSOM_PLACE, SoundSource.HOSTILE, 3.0f, 0.5f);
+				strikes.signature("rain_plant", boss, target, level, damage, extra + 3);
+			}
+			case "super_zogame" -> { // Ratchet: his rocket claw hauls you in front of the drill, while the turtle's four shell cannons fire.
+				pull(target, boss, 1.6);
+				strikes.signature("slash_line", boss, target, level, damage, extra);
+				strikes.signature("rain_fire", boss, target, level, damage * 0.8f, extra + 1);
+				level.playSound(null, boss.blockPosition(), SoundEvents.PISTON_EXTEND, SoundSource.HOSTILE, 2.0f, 0.5f);
+				level.playSound(null, boss.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 1.5f, 1.2f);
+				level.sendParticles(ParticleTypes.LARGE_SMOKE, boss.getX(), boss.getY() + 1, boss.getZ(), 30, 1.0, 0.8, 1.0, 0.05);
+			}
+			case "moa_moa_hundred" -> { // World: a handful of pebbles thrown a hundred times faster and bigger. He speeds himself up too.
+				boss.addEffect(new MobEffectInstance(MobEffects.SPEED, 100 + 20 * extra, 2));
+				level.sendParticles(ParticleTypes.EXPLOSION, boss.getX(), boss.getY() + 1.5, boss.getZ(), 6, 1.5, 1.0, 1.5, 0.0);
+				level.playSound(null, boss.blockPosition(), SoundEvents.WIND_CHARGE_BURST.value(), SoundSource.HOSTILE, 2.5f, 0.5f);
+				strikes.signature("rain_rock", boss, target, level, damage * 1.1f, extra + 4);
+				strikes.signature("ground_wave", boss, target, level, damage, extra);
+			}
 			default -> strikes.signature(signature, boss, target, level, damage, extra); // Any main mod signature works too.
 		}
 	}

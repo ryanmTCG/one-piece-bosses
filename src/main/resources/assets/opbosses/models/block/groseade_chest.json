@@ -1,0 +1,271 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "iron": "opbosses:block/chest/groseade/iron",
+    "front": "opbosses:block/chest/groseade/front",
+    "band": "opbosses:block/chest/groseade/band",
+    "horn": "opbosses:block/chest/groseade/horn",
+    "shell": "opbosses:block/chest/groseade/shell",
+    "tip": "opbosses:block/chest/groseade/tip",
+    "particle": "opbosses:block/chest/groseade/iron"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        1
+      ],
+      "to": [
+        15,
+        11,
+        15
+      ],
+      "faces": {
+        "north": {
+          "texture": "#front"
+        },
+        "south": {
+          "texture": "#iron"
+        },
+        "east": {
+          "texture": "#iron"
+        },
+        "west": {
+          "texture": "#iron"
+        },
+        "up": {
+          "texture": "#iron"
+        },
+        "down": {
+          "texture": "#iron",
+          "cullface": "down"
+        }
+      }
+    },
+    {
+      "from": [
+        0.6,
+        3,
+        0.6
+      ],
+      "to": [
+        15.4,
+        4.5,
+        15.4
+      ],
+      "faces": {
+        "north": {
+          "texture": "#band"
+        },
+        "south": {
+          "texture": "#band"
+        },
+        "east": {
+          "texture": "#band"
+        },
+        "west": {
+          "texture": "#band"
+        },
+        "up": {
+          "texture": "#band"
+        },
+        "down": {
+          "texture": "#band"
+        }
+      }
+    },
+    {
+      "from": [
+        0.6,
+        9,
+        0.6
+      ],
+      "to": [
+        15.4,
+        11.5,
+        15.4
+      ],
+      "faces": {
+        "north": {
+          "texture": "#band"
+        },
+        "south": {
+          "texture": "#band"
+        },
+        "east": {
+          "texture": "#band"
+        },
+        "west": {
+          "texture": "#band"
+        },
+        "up": {
+          "texture": "#band"
+        },
+        "down": {
+          "texture": "#band"
+        }
+      }
+    },
+    {
+      "from": [
+        4,
+        11.5,
+        6
+      ],
+      "to": [
+        11,
+        14,
+        9
+      ],
+      "faces": {
+        "north": {
+          "texture": "#shell"
+        },
+        "south": {
+          "texture": "#shell"
+        },
+        "east": {
+          "texture": "#shell"
+        },
+        "west": {
+          "texture": "#shell"
+        },
+        "up": {
+          "texture": "#shell"
+        },
+        "down": {
+          "texture": "#shell"
+        }
+      }
+    },
+    {
+      "from": [
+        11,
+        12,
+        6.5
+      ],
+      "to": [
+        13.5,
+        13.5,
+        8.5
+      ],
+      "faces": {
+        "north": {
+          "texture": "#tip"
+        },
+        "south": {
+          "texture": "#tip"
+        },
+        "east": {
+          "texture": "#tip"
+        },
+        "west": {
+          "texture": "#tip"
+        },
+        "up": {
+          "texture": "#tip"
+        },
+        "down": {
+          "texture": "#tip"
+        }
+      }
+    },
+    {
+      "from": [
+        0.5,
+        11,
+        0.5
+      ],
+      "to": [
+        3,
+        13.5,
+        3
+      ],
+      "faces": {
+        "north": {
+          "texture": "#horn"
+        },
+        "south": {
+          "texture": "#horn"
+        },
+        "east": {
+          "texture": "#horn"
+        },
+        "west": {
+          "texture": "#horn"
+        },
+        "up": {
+          "texture": "#horn"
+        },
+        "down": {
+          "texture": "#horn"
+        }
+      }
+    },
+    {
+      "from": [
+        0.8,
+        13.5,
+        0.8
+      ],
+      "to": [
+        2.4,
+        16.5,
+        2.4
+      ],
+      "faces": {
+        "north": {
+          "texture": "#horn"
+        },
+        "south": {
+          "texture": "#horn"
+        },
+        "east": {
+          "texture": "#horn"
+        },
+        "west": {
+          "texture": "#horn"
+        },
+        "up": {
+          "texture": "#horn"
+        },
+        "down": {
+          "texture": "#horn"
+        }
+      }
+    },
+    {
+      "from": [
+        1.1,
+        16.5,
+        1.1
+      ],
+      "to": [
+        2,
+        18.5,
+        2
+      ],
+      "faces": {
+        "north": {
+          "texture": "#horn"
+        },
+        "south": {
+          "texture": "#horn"
+        },
+        "east": {
+          "texture": "#horn"
+        },
+        "west": {
+          "texture": "#horn"
+        },
+        "up": {
+          "texture": "#horn"
+        },
+        "down": {
+          "texture": "#horn"
+        }
+      }
+    }
+  ]
+}

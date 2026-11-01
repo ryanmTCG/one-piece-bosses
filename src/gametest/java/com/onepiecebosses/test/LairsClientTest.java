@@ -71,7 +71,12 @@ public class LairsClientTest implements FabricClientGameTest {
 			new Lair("elegia_stage", "uta_diva", "entranced_fan", 6, false),
 			new Lair("end_point", "zephyr_z", "neo_marine", 7, false),
 			new Lair("ironclad_colosseum", "douglas_bullet", "", 0, false),
-			new Lair("merveille", "shiki_golden_lion", "golden_lion_pirate", 7, false));
+			new Lair("merveille", "shiki_golden_lion", "golden_lion_pirate", 7, false),
+			new Lair("gold_island", "el_drago", "el_drago_pirate", 7, false),
+			new Lair("salamander", "gasparde", "gasparde_pirate", 7, true),
+			new Lair("omatsuri_island", "baron_omatsuri", "red_arrows_pirate", 7, false),
+			new Lair("karakuri_castle", "ratchet", "karakuri_soldier", 6, true),
+			new Lair("groseade", "byrnndi_world", "world_pirate", 6, false));
 
 	@Override
 	public void runTest(ClientGameTestContext context) {
