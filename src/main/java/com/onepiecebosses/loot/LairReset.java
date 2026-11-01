@@ -52,7 +52,7 @@ public final class LairReset {
 	public static Result reset(ServerLevel level, ServerPlayer player) {
 		Map.Entry<String, StructureStart> found = lairAt(level, player);
 		if (found == null) {
-			player.displayClientMessage(Component.literal("There's no rogue's lair here to rebuild.").withStyle(ChatFormatting.GRAY), true);
+			player.sendOverlayMessage(Component.literal("There's no rogue's lair here to rebuild.").withStyle(ChatFormatting.GRAY));
 			return Result.NOT_IN_LAIR;
 		}
 		String lair = found.getKey();
@@ -64,8 +64,8 @@ public final class LairReset {
 
 		// One boss at a time: beat the one that's here first.
 		if (!level.getEntitiesOfClass(RogueBossEntity.class, area, e -> e.isAlive() && e.getCharacterId().equals(bossId)).isEmpty()) {
-			player.displayClientMessage(Component.literal(boss.name() + " is still here. Beat them before you rebuild the lair.")
-					.withStyle(ChatFormatting.RED), true);
+			player.sendOverlayMessage(Component.literal(boss.name() + " is still here. Beat them before you rebuild the lair.")
+					.withStyle(ChatFormatting.RED));
 			return Result.BOSS_STILL_HERE;
 		}
 		// Clear out what's left of the old crew (and beasts), so nothing doubles up when the lair brings its own back.
@@ -79,13 +79,13 @@ public final class LairReset {
 		// Place every piece again in each chunk it covers (loading those chunks if they aren't).
 		ChunkPos min = new ChunkPos(bb.minX() >> 4, bb.minZ() >> 4);
 		ChunkPos max = new ChunkPos(bb.maxX() >> 4, bb.maxZ() >> 4);
-		for (int cx = min.x; cx <= max.x; cx++) {
-			for (int cz = min.z; cz <= max.z; cz++) {
+		for (int cx = min.x(); cx <= max.x(); cx++) {
+			for (int cz = min.z(); cz <= max.z(); cz++) {
 				level.getChunk(cx, cz);
 			}
 		}
-		for (int cx = min.x; cx <= max.x; cx++) {
-			for (int cz = min.z; cz <= max.z; cz++) {
+		for (int cx = min.x(); cx <= max.x(); cx++) {
+			for (int cz = min.z(); cz <= max.z(); cz++) {
 				ChunkPos cp = new ChunkPos(cx, cz);
 				BoundingBox chunkBox = new BoundingBox(cp.getMinBlockX(), level.getMinY(), cp.getMinBlockZ(),
 						cp.getMaxBlockX(), level.getMaxY() - 1, cp.getMaxBlockZ());
@@ -95,8 +95,8 @@ public final class LairReset {
 		level.playSound(null, player.blockPosition(), SoundEvents.RAID_HORN.value(), SoundSource.HOSTILE, 1.5f, 1.0f);
 		Component title = Component.literal(boss.lair.isEmpty() ? "The lair" : boss.lair).withStyle(ChatFormatting.GOLD);
 		for (ServerPlayer near : level.getEntitiesOfClass(ServerPlayer.class, area.inflate(32))) {
-			near.displayClientMessage(Component.empty().append(title).append(Component.literal(" stands again, and " + boss.name() + " is back.")
-					.withStyle(ChatFormatting.YELLOW)), false);
+			near.sendSystemMessage(Component.empty().append(title).append(Component.literal(" stands again, and " + boss.name() + " is back.")
+					.withStyle(ChatFormatting.YELLOW)));
 		}
 		BossesMod.LOGGER.info("Rebuilt {} at {} for {}", lair, bb, player.getName().getString());
 		return Result.DONE;
