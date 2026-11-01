@@ -124,7 +124,8 @@ def main(res):
     missing = [b["trophy"] for b in bosses if b.get("trophy") and b["trophy"] not in TROPHIES]
     if missing:
         sys.exit("No look yet for: " + ", ".join(missing) + " (add them to TROPHIES)")
-    lang = {"itemGroup.opbosses.bosses": "One Piece: Rogue Bosses", "entity.opbosses.rogue_boss": "Rogue Boss"}
+    lang = {"itemGroup.opbosses.bosses": "One Piece: Rogue Bosses", "entity.opbosses.rogue_boss": "Rogue Boss",
+            "entity.opbosses.wandering_hunter": "Wandering Bounty Hunter", "entity.opbosses.rookie_raider": "Rookie Raider"}
     for b in bosses:
         items = [("rumor_" + b["id"], item_texture(POSTER_SEAL[b["tier"]], None, "poster"))]
         key_c, key_d = (TROPHIES[b["trophy"]][:2] if b.get("trophy") else ((200, 170, 70), (70, 60, 50)))

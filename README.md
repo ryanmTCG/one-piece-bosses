@@ -53,6 +53,14 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 - The main mod's pirates and Marines sometimes carry a Rumor Poster when beaten (4% for a tier 1 rogue down to 0.6% for tier 5). Which NPCs know about which rogue is `rumorFrom` in `bosses.json`.
 - Creative: the **One Piece: Rogue Bosses** tab has every poster, trophy, key and lair chest (a chest you place yourself is plain storage, with no lock).
 
+## Out in the world
+
+Two kinds of mobs that fill gaps the One Piece Mod leaves open. Its own Marine squads, Devil Fruit bounty hunters (from 100M), Sea Kings, Pacifista hunts and pirate ships and patrols are untouched, so nothing here doubles them.
+
+- **Wandering bounty hunters** live off small bounties. If yours is under 100M, every so often one to three of them pick up your trail (a veteran leads them from 50M), call you out and come for you. Over 100M you're out of their league and they leave you alone. Without a bounty you'll still meet pairs walking the land; they don't bother you, but they pick fights with pirate NPCs and raiders. Beating one raises your bounty by 2M to 4M (5M for a veteran). They're on the law's side, so they never fight Marines.
+- **Rookie pirate raids.** While you're in a village (three or more villagers nearby) or one of the One Piece Mod's towns, now and then a small crew lands on the shore in a rowboat (or walks in from the edge) and marches on it, going after villagers, townsfolk, golems and you. A red boss bar counts the raiders left. Beat them all for Berries (and Hero of the Village in a village). Leave, or let six minutes pass, and they make off with their loot. About one raid per 25 minutes spent in a settlement, then a 20 minute break; while one is on, the main mod holds back its Marine hunts on you.
+- Operators can call them with `/opbosses hunters [player]`, `/opbosses roam` and `/opbosses raid [player]`. Their kits are `wandering_hunter`, `veteran_hunter`, `rookie_raider` and `raider_captain` in `src/main/resources/opbosses/world_mobs.json`.
+
 ## Changing or adding a rogue
 
 | File | What it does |
@@ -61,6 +69,7 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 | `src/main/resources/opbosses/crews.json` | **The crews.** Same format as the main mod's `npc_kits.json`. |
 | `src/main/java/com/onepiecebosses/boss/RogueSignatures.java` | The phase 3 signature moves. A boss can also use any of the main mod's (`slash_line`, `black_hole`, `rain_fire`...). |
 | `src/main/java/com/onepiecebosses/boss/RogueBossEntity.java` | The boss mob: the main mod's boss with our data, plus crew, lines and signature. |
+| `src/main/java/com/onepiecebosses/world/` | **The world mobs:** wandering bounty hunters (`WanderingHunters`), pirate raids (`PirateRaids`), their kits in `opbosses/world_mobs.json`. Spawn rates are the constants at the top of each spawner. |
 | `src/main/java/com/onepiecebosses/compat/OnePieceBridge.java` | Every other call into the main mod. If it renames something, fix it here. |
 | `tools/gen_models.py` | **Each rogue's body shape and skin.** Writes `client/RogueModels.java` and the skins. |
 | `tools/gen_chests.py` | **Each lair's own chest:** the model, textures and name. Run `python3 tools/gen_chests.py src/main/resources` after a change (then `gen_assets.py` for the names). |
@@ -99,7 +108,7 @@ The One Piece Mod isn't on a maven, so build against its jar, the same way as On
 1. In the One Piece Mod, run `./gradlew build`.
 2. Copy `build/libs/onepiece-0.1.0.jar` into this repo's `libs/` folder (change `onepiece_jar` in `gradle.properties` if the name differs).
 3. Run `./gradlew build` here. The jar lands in `build/libs/`; put it in your `mods/` folder next to the One Piece Mod.
-4. To test, run `./gradlew runClientGameTest`. A game window opens, fights every boss in a test world and closes: Rumor Poster spawn, crew waves, phase lines, signature moves, trophy, bounty (including a long-range kill), the Hard rematch and Rumor Poster drops. It fails with a list of what went wrong, and saves screenshots to `build/run/clientGameTest/screenshots`. The tests are in `src/gametest` and never go into the mod jar, and a normal `runClient` or modpack launch never runs them. To replay only what a change touches, add `-Dopbosses.tests=bosses` or `lairs` (or `models` for model portraits) and `-Dopbosses.only=<boss ids or lair names>`.
+4. To test, run `./gradlew runClientGameTest`. A game window opens, fights every boss in a test world and closes: Rumor Poster spawn, crew waves, phase lines, signature moves, trophy, bounty (including a long-range kill), the Hard rematch and Rumor Poster drops. It fails with a list of what went wrong, checks the bounty hunters and a pirate raid, and saves screenshots to `build/run/clientGameTest/screenshots`. The tests are in `src/gametest` and never go into the mod jar, and a normal `runClient` or modpack launch never runs them. To replay only what a change touches, add `-Dopbosses.tests=bosses`, `lairs` or `mobs` (or `models` for model portraits) and `-Dopbosses.only=<boss ids or lair names>` (`hunters` or `raids` for the world mobs).
 
 ## Planned
 
