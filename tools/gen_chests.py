@@ -156,7 +156,7 @@ def _():
         box([2, 0, 1], [14, 8, 15], dict(all='black', front='front')),
         box([1.5, 8, 0.5], [14.5, 11, 15.5], dict(all='black', front='front')),
         box([3, 11, 2], [13, 12, 14], 'black'),
-        box([2.5, 12, 2.5], [13.5, 12.6, 13.5], 'black'),        # her wide-brimmed hat on the lid
+        box([-0.5, 12, -0.5], [16.5, 12.6, 16.5], 'black'),      # her wide-brimmed hat on the lid, brim past the edges
         box([5, 12.6, 5], [11, 15.5, 11], 'black'),
         box([4.9, 12.6, 4.9], [11.1, 13.6, 11.1], 'violet'),     # hatband
         box([13.6, 9.5, 0.2], [14.4, 10.3, 1.2], 'silver'),       # lantern bracket on the corner
@@ -344,10 +344,10 @@ def _():
     for x in range(S):
         put(front, x, 9, '#d83040'); put(front, x, 15, '#d83040')
     for (x, y) in ((2, 11), (7, 10), (12, 11)):   # eighth notes: a round head, a stem and a flag
-        rect(front, x, y + 2, x + 1, y + 3, '#d84890')
+        rect(front, x, y + 2, x + 1, y + 3, '#c02860')
         for yy in range(y - 1, y + 3):
-            put(front, x + 1, yy, '#d84890')
-        put(front, x + 2, y - 1, '#d84890'); put(front, x + 2, y, '#d84890')
+            put(front, x + 1, yy, '#c02860')
+        put(front, x + 2, y - 1, '#c02860'); put(front, x + 2, y, '#c02860')
     red = lacquer('#c82838', 37)
     gold = new('#e8c040', 0.15, 38)
     tex = dict(white=white, front=front, red=red, gold=gold)
@@ -355,10 +355,10 @@ def _():
         box([1, 0, 2], [15, 8, 14], dict(all='white', front='front')),
         box([0.5, 8, 1.5], [15.5, 11, 14.5], 'red'),
         box([2, 11, 3], [14, 11.5, 13], 'white'),
-        box([5, 11.5, 6.5], [8.5, 14, 9.5], 'gold'),          # a big gold eighth note: head,
+        box([7.5, 11.5, 6.5], [11, 14, 9.5], 'gold'),          # a big gold eighth note: head,
         box([7.5, 14, 7.5], [8.5, 19, 8.5], 'gold'),          # stem
-        box([8.5, 18, 7.5], [11, 19, 8.5], 'gold'),           # and flag
-        box([10, 16.5, 7.5], [11, 18, 8.5], 'gold'),
+        box([5, 18, 7.5], [7.5, 19, 8.5], 'gold'),             # and flag (to the viewer's right: -x)
+        box([5, 16.5, 7.5], [6, 18, 8.5], 'gold'),
         box([15, 4, 7.5], [16, 5, 8.5], 'gold'),
         box([16, 2, 7.5], [17, 5, 8.5], 'gold'),
         box([1.5, -0.01, 2.5], [3, 0.6, 4], 'gold'),
