@@ -21,11 +21,11 @@ PAPER_HANG = "onepiece:paper_lantern[hanging=true]"
 
 def clear_spawns(b):
     """Natural terrain stays wherever a lair has no block of its own, so a hill can poke up through it: make sure every
-    spawn has a clear 3x3 column three blocks high round it, whatever the ground was."""
-    for (_eid, x, y, z, _data) in b.entities:
+    spawn has a clear 3x3 column round it (three blocks high, five for the boss), whatever the ground was."""
+    for (eid, x, y, z, _data) in b.entities:
         for dx in (-1, 0, 1):
             for dz in (-1, 0, 1):
-                for yy in range(y, y + 3):
+                for yy in range(y, y + (5 if eid == "opbosses:rogue_boss" else 3)):   # the bosses are big
                     if b.get(x + dx, yy, z + dz) is None:
                         b.set(x + dx, yy, z + dz, AIR)
 
@@ -205,7 +205,7 @@ def add(lair, OCEANS, DEEP):
         b.scatter(0, 0, W, D, 1, ["minecraft:short_grass", "minecraft:fern", "minecraft:dead_bush"], 0.06, rnd, only_on=grass + sand)
 
         b.rogue(AX, 1, AZ - 6, "el_drago")
-        b.crew("el_drago_pirate", ((AX - 8, AZ - 4), (AX + 8, AZ - 4), (AX - 7, AZ + 8), (AX + 7, AZ + 8), (CX0 + 14, CZ0 + 6), (54, 36), (sx + 16, deck + 1, cz)))
+        b.crew("el_drago_pirate", ((AX - 8, AZ - 4), (AX + 8, AZ - 4), (AX - 7, AZ + 8), (AX + 7, AZ + 8), (CX0 + 14, CZ0 + 6), (46, 36), (sx + 16, deck + 1, cz)))
         clear_spawns(b)
 
     # ============================================================ Gasparde: the Salamander
