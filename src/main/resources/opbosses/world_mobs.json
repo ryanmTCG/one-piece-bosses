@@ -1,0 +1,77 @@
+{
+	"_help": "Kits for the mobs out in the world (world/WorldMobs.java): wandering bounty hunters and rookie raiders. Same format as the One Piece Mod's npc_kits.json, added to its kit list when the game loads, so /npc spawn <kit> works too. 'bounty' on a hunter kit is how much your bounty rises for beating one. Skins must be one of the main mod's skin groups (see its NpcSkins.java).",
+	"kits": [
+		{
+			"id": "wandering_hunter",
+			"faction": "marine",
+			"crews": [""],
+			"name": "{epithet} {name}",
+			"ranks": ["Bounty Hunter", "Pirate Hunter", "Headhunter"],
+			"skins": ["bounty_hunter"],
+			"loadouts": [
+				{"style": "sword", "weight": 3, "weapons": ["minecraft:iron_sword", "minecraft:stone_sword"]},
+				{"style": "gunner", "weight": 2, "weapons": ["onepiece:flintlock_pistol"]},
+				{"style": "brawler", "weight": 1, "weapons": []}
+			],
+			"health": 28,
+			"damage": 5,
+			"armor": 2,
+			"berries": 4,
+			"bounty": 2000000
+		},
+		{
+			"id": "veteran_hunter",
+			"faction": "marine",
+			"crews": [""],
+			"name": "{epithet} {name}",
+			"ranks": ["Veteran Hunter"],
+			"skins": ["bounty_hunter"],
+			"loadouts": [
+				{"style": "sword", "weight": 2, "weapons": ["minecraft:iron_sword"]},
+				{"style": "sniper", "weight": 1, "weapons": ["onepiece:marine_rifle"]},
+				{"style": "heavy", "weight": 1, "weapons": ["minecraft:iron_axe"]}
+			],
+			"health": 46,
+			"damage": 7,
+			"armor": 4,
+			"knockbackResistance": 0.2,
+			"berries": 9,
+			"bounty": 5000000
+		},
+		{
+			"id": "rookie_raider",
+			"faction": "pirate",
+			"crews": [""],
+			"name": "{name}",
+			"ranks": ["Deckhand", "Looter", "Lookout"],
+			"skins": ["rookie", "deckhand", "bandit"],
+			"loadouts": [
+				{"style": "sword", "weight": 3, "weapons": ["minecraft:wooden_sword", "minecraft:stone_sword", "minecraft:stone_axe"]},
+				{"style": "brawler", "weight": 1, "weapons": []},
+				{"style": "gunner", "weight": 1, "weapons": ["onepiece:flintlock_pistol"]}
+			],
+			"health": 20,
+			"damage": 4,
+			"armor": 1,
+			"berries": 2
+		},
+		{
+			"id": "raider_captain",
+			"faction": "pirate",
+			"crews": [""],
+			"name": "Captain {epithet} {name}",
+			"ranks": ["Captain"],
+			"skins": ["pirate_captain", "bandit"],
+			"loadouts": [
+				{"style": "sword", "weight": 2, "weapons": ["minecraft:iron_sword"]},
+				{"style": "heavy", "weight": 1, "weapons": ["minecraft:iron_axe"]},
+				{"style": "gunner", "weight": 1, "weapons": ["onepiece:flintlock_pistol"]}
+			],
+			"health": 40,
+			"damage": 6,
+			"armor": 3,
+			"knockbackResistance": 0.2,
+			"berries": 8
+		}
+	]
+}

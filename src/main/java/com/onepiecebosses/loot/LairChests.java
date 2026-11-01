@@ -40,7 +40,9 @@ public final class LairChests {
 				{"sunken_kasbah", "khamsin_sandshackle"}, {"gilded_wake", "mortimer_gale"}, {"leviathan_pens", "vasco_tidebreaker"},
 				{"laboratory_null", "doctor_kreuz"},
 				{"gran_tesoro", "gild_tesoro"}, {"elegia_stage", "uta_diva"}, {"end_point", "zephyr_z"},
-				{"ironclad_colosseum", "douglas_bullet"}, {"merveille", "shiki_golden_lion"}};
+				{"ironclad_colosseum", "douglas_bullet"}, {"merveille", "shiki_golden_lion"},
+				{"gold_island", "el_drago"}, {"salamander", "gasparde"}, {"omatsuri_island", "baron_omatsuri"},
+				{"karakuri_castle", "ratchet"}, {"groseade", "byrnndi_world"}};
 		for (String[] pair : pairs) {
 			LAIR_BOSSES.put(pair[0], pair[1]);
 		}

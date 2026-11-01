@@ -1085,6 +1085,8 @@ more_rogue_lairs.add(lair, OCEANS, DEEP)
 # ============================================================ the film villains (film_lairs.py)
 import film_lairs  # noqa: E402
 film_lairs.add(lair, OCEANS, DEEP)
+import film_lairs_more  # noqa: E402
+film_lairs_more.add(lair, OCEANS, DEEP)
 
 
 # ============================================================ loot
@@ -1139,9 +1141,10 @@ LOOT = {
 # One rogue lair per this many chunks on average (the main mod's hard lairs are 40 / 14).
 SPACING, SEPARATION, SALT = 44, 16, 1408172101
 # The film villains' lairs are their own set, so adding them didn't make the rogue lairs any rarer.
-GROUPS = {"rogue_lairs": (SPACING, SEPARATION, SALT), "film_lairs": (52, 18, 1408172177)}
+GROUPS = {"rogue_lairs": (SPACING, SEPARATION, SALT), "film_lairs": (40, 15, 1408172177)}
 LOOT.update(more_rogue_lairs.LOOT)
 LOOT.update(film_lairs.LOOT)
+LOOT.update(film_lairs_more.LOOT)
 # ...and never right next to one: a film lair stays at least 10 chunks from any rogue lair.
 EXCLUDE = {"film_lairs": {"exclusion_zone": {"other_set": "opbosses:rogue_lairs", "chunk_count": 10}}}
 

@@ -1,6 +1,8 @@
 {
   "itemGroup.opbosses.bosses": "One Piece: Rogue Bosses",
   "entity.opbosses.rogue_boss": "Rogue Boss",
+  "entity.opbosses.wandering_hunter": "Wandering Bounty Hunter",
+  "entity.opbosses.rookie_raider": "Rookie Raider",
   "item.opbosses.rusted_anchor_link": "Rusted Anchor Link",
   "item.opbosses.widows_lantern": "Widow's Lantern",
   "item.opbosses.deserters_epaulette": "Deserter's Epaulette",
@@ -16,6 +18,11 @@
   "item.opbosses.smasher_knuckle": "Battle Smasher Knuckle",
   "item.opbosses.clank_clank_rivet": "Clank-Clank Rivet",
   "item.opbosses.golden_lion_helm": "Golden Lion's Helm",
+  "item.opbosses.golden_nail": "El Drago's Golden Nail",
+  "item.opbosses.syrup_spike": "Hardened Syrup Spike",
+  "item.opbosses.red_arrow": "Red Arrow of Omatsuri",
+  "item.opbosses.clockwork_gear": "Karakuri Clockwork Gear",
+  "item.opbosses.broken_horn": "World's Broken Horn",
   "item.opbosses.lair_charter": "Lair Restoration Charter",
   "block.opbosses.scrapheap_reef_chest": "Rourke's Sea Chest",
   "block.opbosses.lantern_house_chest": "The Widow's Casket",
@@ -31,5 +38,10 @@
   "block.opbosses.elegia_stage_chest": "Uta's Music Box",
   "block.opbosses.end_point_chest": "Neo Marine Arms Crate",
   "block.opbosses.ironclad_colosseum_chest": "Gashapon Scrap Crate",
-  "block.opbosses.merveille_chest": "Golden Lion's Chest"
+  "block.opbosses.merveille_chest": "Golden Lion's Chest",
+  "block.opbosses.gold_island_chest": "Woonan's Treasure Chest",
+  "block.opbosses.salamander_chest": "Gasparde's Syrup Safe",
+  "block.opbosses.omatsuri_island_chest": "Festival Prize Box",
+  "block.opbosses.karakuri_castle_chest": "Clockwork Turtle Chest",
+  "block.opbosses.groseade_chest": "World's War Chest"
 }

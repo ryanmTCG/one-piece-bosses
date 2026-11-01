@@ -7,13 +7,14 @@ import java.util.stream.Collectors;
 /**
  * Which in-world tests run, so a change only replays what it touches. Pass them to Gradle:
  *
- *     gradlew runClientGameTest                                       (bosses and lairs, everything)
+ *     gradlew runClientGameTest                                       (bosses, lairs and world mobs, everything)
  *     gradlew runClientGameTest -Dopbosses.tests=lairs                (only the lair test)
  *     gradlew runClientGameTest -Dopbosses.tests=bosses -Dopbosses.only=uta_diva,zephyr_z
  *     gradlew runClientGameTest -Dopbosses.tests=models               (model portraits)
+ *     gradlew runClientGameTest -Dopbosses.tests=mobs -Dopbosses.only=raids   (only the pirate raids)
  *
- * opbosses.tests: any of bosses, lairs, models (default "bosses,lairs"). opbosses.only: boss ids or lair names
- * (default: all of them); a lair is picked by its own name or its boss's id.
+ * opbosses.tests: any of bosses, lairs, mobs, models (default "bosses,lairs,mobs"). opbosses.only: boss ids or lair
+ * names (default: all of them); a lair is picked by its own name or its boss's id; the world mobs are "hunters" and "raids".
  */
 final class TestFilter {
 	private TestFilter() {
@@ -25,7 +26,7 @@ final class TestFilter {
 	}
 
 	static boolean runs(String test) {
-		return list("opbosses.tests", "bosses,lairs").contains(test);
+		return list("opbosses.tests", "bosses,lairs,mobs").contains(test);
 	}
 
 	static boolean picks(String... ids) {

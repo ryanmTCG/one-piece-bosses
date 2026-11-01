@@ -9,7 +9,8 @@
     "fabric-client-gametest": [
       "com.onepiecebosses.test.BossesClientTest",
       "com.onepiecebosses.test.LairsClientTest",
-      "com.onepiecebosses.test.ModelShotsClientTest"
+      "com.onepiecebosses.test.ModelShotsClientTest",
+      "com.onepiecebosses.test.WorldMobsClientTest"
     ]
   },
   "depends": {

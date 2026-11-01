@@ -398,6 +398,130 @@ ROGUES = {
             B('leg', -1.2, 0, -1.2, 2.4, 15, 2.4, '#f6e0d4'),
             B('leg', -1.4, 15, -1.7, 2.8, 4, 3.2, '#f4f4f8', 'leather'),                 # boots
         ]),
+    # El Drago (One Piece: The Movie): a tall, broad pirate with dark skin and a red, lion-like mane. Gold-alloy
+    # shoulder armour and gorget over a white shirt, a gold belt, and hard golden nails over his fingertips.
+    # The Goe Goe Fruit: his mouth is the weapon, so it's drawn open.
+    "el_drago": dict(
+        pivots=dict(head=(0, -6, 0), body=(0, -6, 0), arm=(-7, -4, 0), leg=(-2.6, 9, 0)),
+        boxes=[
+            B('head', -3.8, -8, -3.8, 7.6, 8, 7.6, '#5a3a28', None, front='face', eyes='#f0c040', brows='#c02818', mouth='roar'),
+            B('head', -4.4, -9.6, -4.2, 8.8, 2.2, 7.6, '#c02818', 'mane'),                 # mane on top
+            B('head', -5, -9, -3, 1.4, 11, 5.6, '#c02818', 'mane', mirror=True),            # and down the sides
+            B('head', -5.5, -9.5, 2.6, 11, 13, 2.6, '#c02818', 'mane'),                     # flowing down his back
+            B('body', -5.6, -0.8, -3.2, 11.2, 3, 6.4, '#e8c040', 'gold'),                   # gold gorget
+            B('body', -4.8, 0, -2.6, 9.6, 10, 5.2, '#f0eee8', 'cloth', front='drago_shirt'),
+            B('body', -5, 10, -2.8, 10, 2, 5.6, '#d8b030', 'gold', front='buckle'),
+            B('body', -4.6, 12, -2.5, 9.2, 3, 5, '#3a2a2a', 'cloth'),
+            B('arm', -3.6, -3, -3.4, 6.2, 4.5, 6.8, '#e8c040', 'plates'),                   # gold shoulder armour
+            B('arm', -2.2, -1, -2.2, 4.4, 9, 4.4, '#f0eee8', 'cloth'),
+            B('arm', -2, 8, -2, 4, 3.5, 4, '#5a3a28'),
+            B('arm', -2.1, 11.5, -2.6, 4.2, 1.6, 0.9, '#e8c040', 'gold', front='knuckles'),   # golden nails
+            B('leg', -2.4, 0, -2.4, 4.8, 13, 4.8, '#3a2a2a', 'cloth'),
+            B('leg', -2.6, 13, -3, 5.2, 2, 5.6, '#1e1618', 'leather'),
+        ]),
+    # Gasparde (Dead End Adventure): tall and muscular, heavy chin, narrow eyes, dark-blonde hair combed to the sides
+    # and flaring out behind. An ornate Marine officer's jacket (its insignia crossed out on the back) open over a brown
+    # shirt and a bare chest, a purple scarf, a black belt with two buckles, brown gloves and steel boots.
+    "gasparde": dict(
+        pivots=dict(head=(0, -8, 0), body=(0, -8, 0), arm=(-6.5, -6, 0), leg=(-2.4, 7, 0)),
+        boxes=[
+            B('head', -3.5, -8, -3.5, 7, 7.6, 7, '#e0b48c', None, front='face', eyes='#2a2a30', brows='#7a6030', mouth=None, narrow=True),
+            B('head', -3, -0.8, -3.9, 6, 1.6, 1, '#d4a880'),                                # heavy chin
+            B('head', -3.8, -8.8, -3.8, 7.6, 1.8, 7.6, '#a88a48', 'hair'),                  # combed to the sides
+            B('head', -4.6, -7.6, -2.6, 1.1, 4.6, 6, '#a88a48', 'hair', mirror=True),
+            B('head', -5.2, -7.2, 3.2, 10.4, 8, 1.4, '#a88a48', 'hair'),                    # and flaring out behind
+            B('body', -4.2, -1, -3, 8.4, 2.2, 6, '#6a3a8a', 'cloth'),                       # purple scarf
+            B('body', -3.6, 1.2, -3.3, 1.6, 5, 0.6, '#6a3a8a', 'cloth'),
+            B('body', -5, 0, -2.6, 10, 11, 5.2, '#2e4a3e', 'cloth', front='gasparde_coat'),
+            B('body', -4.8, 11, -2.7, 9.6, 2, 5.4, '#1a1a1e', 'leather', front='two_buckles'),
+            B('body', -4.6, 13, -2.5, 9.2, 2, 5, '#1e1e22', 'cloth'),
+            B('body', -5.6, 0, 0, 11.2, 14, 1, '#2e4a3e', 'crossed', sway=1, pivot=(0, 9, 2.8)),   # coat tails
+            B('arm', -3.2, -2.5, -3, 5.8, 2, 6, '#d8b040', 'fringe'),                       # epaulettes
+            B('arm', -2.4, -1, -2.4, 4.8, 11, 4.8, '#2e4a3e', 'cloth', front='cuff'),
+            B('arm', -2.2, 10, -2.2, 4.4, 3.5, 4.4, '#6a4a2a', 'leather'),                  # gloves
+            B('leg', -2.4, 0, -2.4, 4.8, 13, 4.8, '#1e1e22', 'cloth'),
+            B('leg', -2.7, 13, -3.2, 5.4, 4, 6, '#9aa0a8', 'iron'),                         # steel boots
+        ]),
+    # Baron Omatsuri (Baron Omatsuri and the Secret Island): tall and lean, broad shoulders, long limbs, a thin waist and
+    # a triangular head. Palm-tree hair, long brows, a pointed nose, an upswept moustache and a pointed black goatee,
+    # pink goggles on his forehead. A dark purple suit with orange-yellow flowers, a white collar and neckerchief, and
+    # Lily Carnation, the little yellow flower, sitting on his left shoulder. He fights with a bow.
+    "baron_omatsuri": dict(
+        pivots=dict(head=(0, -10, 0), body=(0, -10, 0), arm=(-5.5, -8, 0), leg=(-1.9, 6, 0)),
+        boxes=[
+            B('head', -3.4, -8, -3.4, 6.8, 5, 6.8, '#d8a880', None, front='face', eyes='#2a2a2a', brows='#141414', mouth=None),
+            B('head', -2.4, -3, -3, 4.8, 2.2, 5.6, '#d8a880'),                              # the head narrows to a point
+            B('head', -1.2, -0.8, -2.6, 2.4, 1, 4, '#d8a880'),
+            B('head', -0.8, 0.2, -2.8, 1.6, 2.2, 1.2, '#141414'),                           # pointed goatee
+            B('head', -2.6, -3.2, -3.5, 2, 0.6, 0.4, '#141414', mirror=True),              # moustache
+            B('head', -3, -4.2, -3.5, 0.6, 1, 0.4, '#141414', mirror=True),                # curling up
+            B('head', -0.4, -5.2, -4.2, 0.8, 1.6, 0.8, '#d8a880'),                          # pointed nose
+            B('head', -3.6, -8.2, -3.7, 7.2, 1.4, 0.6, '#f080b0', 'gold'),                  # pink goggles
+            B('head', -3.5, -9.2, -3.5, 7, 1.4, 7, '#2a2018', 'hair'),
+            B('head', -1, -12.5, -1, 2, 3.5, 2, '#2a2018', 'hair'),                          # palm-tree tuft
+            B('head', 0, -0.6, -1.2, 6, 1.2, 2.4, '#2a2018', 'hair', rot=(0, 0, 0.55), pivot=(0.5, -11.8, 0), mirror=True),
+            B('head', -1.2, -0.6, 0, 2.4, 1.2, 5.5, '#2a2018', 'hair', rot=(-0.55, 0, 0), pivot=(0, -11.8, 0.5)),
+            B('head', -1.2, -0.6, -5.5, 2.4, 1.2, 5.5, '#2a2018', 'hair', rot=(0.55, 0, 0), pivot=(0, -11.8, -0.5)),
+            B('body', -2.6, -0.8, -2.8, 5.2, 2.4, 1.2, '#f4f4f0', 'cloth'),                 # white collar and neckerchief
+            B('body', -5, 0, -2.4, 10, 5, 4.8, '#3e2a5a', 'flowers'),                       # broad shoulders
+            B('body', -3.4, 5, -2, 6.8, 7, 4, '#3e2a5a', 'flowers', front='omatsuri_suit'),  # thin waist
+            B('body', -3.8, 12, -2.2, 7.6, 4, 4.4, '#3e2a5a', 'flowers'),
+            B('body', 5, -3, -0.5, 1, 3, 1, '#3a8a3a'),                                      # Lily's stem, on his left shoulder
+            B('body', 3.6, -6.8, -0.6, 3.8, 3.8, 1.2, '#f0d030', None, front='lily_face'),
+            B('arm', -2.2, -2, -2.2, 4.4, 3, 4.4, '#3e2a5a', 'flowers'),
+            B('arm', -1.8, 1, -1.8, 3.6, 11, 3.6, '#3e2a5a', 'flowers', front='cuff'),
+            B('arm', -1.6, 12, -1.6, 3.2, 2.5, 3.2, '#d8a880'),
+            B('leg', -1.8, 0, -1.8, 3.6, 16, 3.6, '#3e2a5a', 'cloth'),
+            B('leg', -2, 16, -2.8, 4, 2, 4.8, '#1e1a22', 'leather'),
+        ]),
+    # Dr. Ratchet (The Giant Mechanical Soldier of Karakuri Castle): a thin, lanky young inventor. Light brown hair
+    # parted to one side, narrow eyes behind round orange mechanical glasses (with wipers), loose yellow overalls and
+    # a thick black scarf printed with red gears. His fighting is done by his machines.
+    "ratchet": dict(
+        pivots=dict(head=(0, -3, 0), body=(0, -3, 0), arm=(-4, -1.5, 0), leg=(-1.6, 10, 0)),
+        boxes=[
+            B('head', -3.5, -7.5, -3.5, 7, 7.5, 7, '#f0cca8', None, front='face', eyes=None, brows='#8a6038', mouth='smirk'),
+            B('head', -3.4, -5.6, -4.1, 3, 2.6, 0.5, '#f0a040', None, front='lens'),        # round mechanical glasses
+            B('head', 0.4, -5.6, -4.1, 3, 2.6, 0.5, '#f0a040', None, front='lens'),
+            B('head', -0.4, -4.8, -4.0, 0.8, 0.6, 0.4, '#b06a20'),
+            B('head', -3.7, -8.3, -3.7, 7.4, 1.8, 7.4, '#b08050', 'hair'),
+            B('head', -3.8, -7.2, -3.9, 4.6, 2, 0.6, '#b08050', 'hair'),                    # parted 7:3
+            B('head', 1.4, -7.2, -3.9, 2.4, 1.2, 0.6, '#b08050', 'hair'),
+            B('head', -3.7, -7, 3.1, 7.4, 5, 0.8, '#b08050', 'hair'),
+            B('body', -3.4, -1.2, -2.6, 6.8, 2.6, 5.2, '#1a1a1e', 'gears'),                 # thick black scarf
+            B('body', -3, 0, 0, 2, 7, 0.7, '#1a1a1e', 'gears', sway=-1, pivot=(0, 1.4, -2.7)),
+            B('body', -3.2, 0, -1.9, 6.4, 10, 3.8, '#e8c430', 'cloth', front='overalls'),
+            B('body', -3.3, 10, -2, 6.6, 3, 4, '#e8c430', 'cloth'),
+            B('arm', -1.5, -1.5, -1.5, 3, 10.5, 3, '#e8c430', 'cloth'),
+            B('arm', -1.4, 9, -1.4, 2.8, 2.5, 2.8, '#f0cca8'),
+            B('leg', -1.5, 0, -1.5, 3, 12, 3, '#e8c430', 'cloth'),
+            B('leg', -1.7, 12, -2.4, 3.4, 2, 4.2, '#5a3a22', 'leather'),
+        ]),
+    # Byrnndi World (the 3D2Y special): very tall and broad with huge bare arms on thin legs. A horned helmet with one
+    # horn broken off (so his brother Byojack could sit on his shoulder), a green beard and a paler W-shaped moustache,
+    # a gap-toothed grin, an open sleeveless black-and-purple coat over his bare chest, green trousers, a brown belt and shoes.
+    "byrnndi_world": dict(
+        pivots=dict(head=(0, -9, -1), body=(0, -8, 0), arm=(-9.5, -6, 0), leg=(-2.6, 8, 0)),
+        boxes=[
+            B('head', -3.5, -7, -3.5, 7, 7, 7, '#c89068', None, front='face', eyes='#2a2a2a', brows='#3a7a3a', mouth='gap'),
+            B('head', -3.4, -2, -4.0, 6.8, 5, 2.6, '#3a7a3a', 'hair'),                       # green beard
+            B('head', -3, -2.8, -4.2, 6, 1, 0.5, '#7aba6a', 'hair'),                         # W moustache
+            B('head', -3.4, -3.8, -4.2, 0.8, 1.6, 0.5, '#7aba6a', 'hair', mirror=True),
+            B('head', -4, -9, -4, 8, 3.5, 8, '#5a4a3a', 'iron'),                             # helmet
+            B('head', -0.7, -6, -0.7, 1.4, 6, 1.4, '#e8e0c8', 'bone', rot=(0, 0, -0.6), pivot=(-3.6, -8, 0)),   # his horn
+            B('head', -0.7, -2.2, -0.7, 1.4, 2.2, 1.4, '#e8e0c8', 'bone', rot=(0, 0, 0.6), pivot=(3.6, -8, 0)),  # the broken one
+            B('body', -8, -2, -1.2, 16, 3, 5.8, '#6a3a8a', 'ruff'),                          # purple collar
+            B('body', -7.5, 0, -4, 15, 9, 8, '#c89068', 'muscle', front='pecs'),
+            B('body', -8, -1, -4.4, 3.6, 15, 8.8, '#1e1a24', 'purple_trim', mirror=True),    # the open coat
+            B('body', -5.5, 9, -3.4, 11, 5, 6.8, '#c89068', 'muscle', front='abs'),
+            B('body', -6, 14, -3.6, 12, 2, 7.2, '#6a4a2a', 'leather', front='buckle'),
+            B('body', -8, 0, 0, 16, 15, 1, '#1e1a24', 'purple_trim', sway=1, pivot=(0, 9, 4.5)),   # coat tails
+            B('arm', -4.5, -3, -4.5, 8, 7, 9, '#c89068', 'muscle'),
+            B('arm', -4, 4, -4, 7, 10, 8, '#c89068', 'muscle'),
+            B('arm', -3.5, 14, -3.5, 6.5, 4, 7, '#b88060', None, front='knuckles'),
+            B('leg', -2, 0, -2, 4, 13, 4, '#3a6a3a', 'cloth'),
+            B('leg', -2.4, 13, -3, 4.8, 3, 5.6, '#6a4a2a', 'leather'),
+        ]),
 }
 
 # ---------------- painting ----------------
@@ -544,6 +668,26 @@ def paint_face_texture(img, x0, y0, w, h, colour, pattern, rnd, face):
                 c = shade(base, 0.95 + 0.05 * n)
                 if (x + y) % 3 == 0:
                     c = (250, 250, 245) if y % 2 else (150, 140, 120)   # shark teeth sewn on
+            elif pattern == 'flowers':
+                c = shade(base, 0.95 + 0.07 * n)
+                if (x * 5 + y * 7) % 13 == 0:
+                    c = (236, 168, 40)   # orange-yellow flowers
+                elif (x * 5 + y * 7) % 13 in (1, 12) and y % 2 == 0:
+                    c = (250, 214, 90)
+            elif pattern == 'gears':
+                c = shade(base, 0.95 + 0.08 * n)
+                if (x % 5 in (1, 3) and y % 5 == 2) or (x % 5 == 2 and y % 5 in (1, 3)):
+                    c = (200, 40, 40)   # red gear teeth
+                if x % 5 == 2 and y % 5 == 2:
+                    c = (120, 20, 20)
+            elif pattern in ('purple_trim', 'crossed'):
+                c = shade(base, 0.94 + 0.08 * n)
+                if x in (0, w - 1) or y == h - 1:
+                    c = (138, 80, 180) if pattern == 'purple_trim' else (200, 160, 60)
+            elif pattern == 'bone':
+                c = shade(base, 0.9 + 0.12 * n)
+                if y % 3 == 0:
+                    c = shade(base, 0.8)
             elif pattern in ('ring', 'wheel'):
                 # A ring (hair loop) or a ship's wheel: the big faces are cut out in the middle.
                 c = shade(base, 0.9 + 0.15 * n)
@@ -598,6 +742,13 @@ def decorate_front(img, x0, y0, w, h, box):
             for dx in range(-2, 3):
                 dot(img, cx + dx, my, '#f8f8f0' if abs(dx) < 2 else '#4a2020')
             dot(img, cx - 1, my, '#e8c040')   # a gold tooth
+        elif mouth == 'roar':
+            for dx in range(-2, 2):
+                dot(img, cx + dx, my, '#3a0a0a'); dot(img, cx + dx, my - 1, '#f4f0e8' if dx % 2 else '#3a0a0a')
+            dot(img, cx - 2, my + 1, '#3a0a0a'); dot(img, cx + 1, my + 1, '#3a0a0a')
+        elif mouth == 'gap':
+            for dx in range(-2, 3):
+                dot(img, cx + dx, my, '#f4f0e0' if dx not in (-1, 1) else '#2a1010')   # missing teeth
         elif mouth == 'grit':
             for dx in range(-2, 2):
                 dot(img, cx + dx, my, '#f0f0e8' if dx % 2 else '#303030')
@@ -794,6 +945,46 @@ def decorate_front(img, x0, y0, w, h, box):
         for x in (1, 3, 5):
             if x < w - 1:
                 dot(img, x0 + x, y0, '#e890a8')   # toe beans
+    elif kind == 'drago_shirt':
+        for y in range(h):
+            dot(img, cx - 1, y0 + y, '#d8d4cc')
+        for y in range(0, 3):
+            for x in range(cx - 1 - (2 - y), cx + 1 + (2 - y)):
+                dot(img, x, y0 + y, '#5a3a28')   # open neck
+    elif kind == 'gasparde_coat':
+        for y in range(h):
+            o = max(0, 3 - y // 3)
+            for x in range(cx - 1 - o, cx + 1 + o):
+                dot(img, x, y0 + y, '#e0b48c' if y < 5 else '#6a4a2a')   # bare chest, then the brown shirt
+            dot(img, cx - 2 - o, y0 + y, '#d8b040'); dot(img, cx + 1 + o, y0 + y, '#d8b040')   # gold-trimmed lapels
+        for y in (2, 5, 8):
+            dot(img, x0 + 1, y0 + y, '#d8b040'); dot(img, x0 + w - 2, y0 + y, '#d8b040')
+    elif kind == 'two_buckles':
+        for x in (x0 + 1, x0 + w - 3):
+            dot(img, x, y0, '#c8c8d0'); dot(img, x + 1, y0, '#c8c8d0'); dot(img, x, y0 + 1, '#c8c8d0'); dot(img, x + 1, y0 + 1, '#c8c8d0')
+    elif kind == 'omatsuri_suit':
+        for y in range(h):
+            dot(img, cx - 1, y0 + y, '#2a1c40')
+        for y in (1, 3, 5):
+            dot(img, cx, y0 + y, '#e8c040')
+    elif kind == 'lily_face':
+        # Five yellow petals with red joints and two red dots on each; a smiling face in the middle.
+        dot(img, x0 + 1, y0, '#c82020'); dot(img, x0 + w - 2, y0, '#c82020')
+        dot(img, x0, y0 + 1, '#c82020'); dot(img, x0 + w - 1, y0 + 1, '#c82020'); dot(img, cx, y0 + h - 1, '#c82020')
+        dot(img, cx - 1, y0 + 1, '#1a1a1a'); dot(img, cx + 1 if w > 3 else cx, y0 + 1, '#1a1a1a')
+        dot(img, cx - 1, y0 + 2, '#8a2020'); dot(img, cx, y0 + 2, '#8a2020')
+    elif kind == 'lens':
+        for y in range(h):
+            for x in range(w):
+                edge = x in (0, w - 1) or y in (0, h - 1)
+                dot(img, x0 + x, y0 + y, '#f0a040' if edge else '#fff0d8')
+        dot(img, x0 + 1, y0 + 1, '#4a3a2a')   # the wiper
+    elif kind == 'overalls':
+        for y in range(0, 5):
+            dot(img, x0 + 1, y0 + y, '#c09820'); dot(img, x0 + w - 2, y0 + y, '#c09820')   # bib straps
+        for x in range(cx - 2, cx + 2):
+            dot(img, x, y0 + 5, '#c09820'); dot(img, x, y0 + 7, '#c09820')               # pocket
+        dot(img, x0 + 1, y0 + 4, '#f0e0a0'); dot(img, x0 + w - 2, y0 + 4, '#f0e0a0')
     elif kind == 'bands':
         for y in range(2, h, 5):
             for x in range(w):
@@ -865,6 +1056,13 @@ def paint_box(img, u, v, b, rnd):
     if b.get('front'):
         fx, fy, fw, fh = faces['front']
         decorate_front(img, fx, fy, fw, fh, b)
+    if b.get('pattern') == 'crossed':
+        fx, fy, fw, fh = faces['back']
+        mx, my = fx + fw // 2, fy + 4
+        for dx in range(-3, 4):
+            dot(img, mx + dx, my + abs(dx) // 2, (230, 230, 236))   # the Marines' gull
+        for i in range(-3, 4):
+            dot(img, mx + i, my - 2 + (i + 3), (200, 30, 30)); dot(img, mx - i, my - 2 + (i + 3), (200, 30, 30))   # crossed out
     if b.get('pattern') in ('justice', ) and b['w'] >= 12:
         # The Navy's "Justice" on the back of the coat, torn through.
         fx, fy, fw, fh = faces['back']

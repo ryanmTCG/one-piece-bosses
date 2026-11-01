@@ -222,6 +222,88 @@
 			"damage": 14,
 			"armor": 8,
 			"berries": 8
+		},
+		{
+			"id": "el_drago_pirate",
+			"faction": "pirate",
+			"crews": ["El Drago Pirates"],
+			"name": "{rank} {name}",
+			"ranks": ["Gold Digger", "Hyena", "Golass's Mate"],
+			"skins": ["bandit", "pirate_captain"],
+			"loadouts": [
+				{"style": "heavy", "weight": 2, "weapons": ["minecraft:iron_axe", "minecraft:golden_axe"]},
+				{"style": "gunner", "weight": 1, "weapons": ["onepiece:flintlock_pistol"]}
+			],
+			"health": 55,
+			"damage": 9,
+			"armor": 5,
+			"berries": 5
+		},
+		{
+			"id": "gasparde_pirate",
+			"faction": "pirate",
+			"crews": ["Gasparde Pirates"],
+			"name": "{rank} {name}",
+			"ranks": ["Deckhand", "Racer", "Gunner"],
+			"skins": ["marine_grunt", "bandit"],
+			"loadouts": [
+				{"style": "sword", "weight": 2, "weapons": ["minecraft:iron_sword"]},
+				{"style": "gunner", "weight": 2, "weapons": ["onepiece:flintlock_pistol"]}
+			],
+			"health": 80,
+			"damage": 12,
+			"armor": 7,
+			"berries": 7
+		},
+		{
+			"id": "red_arrows_pirate",
+			"faction": "pirate",
+			"crews": ["Red Arrows Pirates"],
+			"name": "{rank} {name}",
+			"ranks": ["Revived Archer", "Revived Deckhand", "Revived Mate"],
+			"skins": ["deckhand", "pirate_captain"],
+			"loadouts": [
+				{"style": "sniper", "weight": 2, "weapons": ["minecraft:bow"]},
+				{"style": "sword", "weight": 1, "weapons": ["minecraft:iron_sword"]}
+			],
+			"health": 80,
+			"damage": 12,
+			"armor": 6,
+			"berries": 6
+		},
+		{
+			"id": "karakuri_soldier",
+			"faction": "pirate",
+			"crews": ["Karakuri Castle Guard"],
+			"name": "{rank} {name}",
+			"ranks": ["Mech Pilot", "Clockwork Guard", "Castle Engineer"],
+			"skins": ["jailer", "deckhand"],
+			"loadouts": [
+				{"style": "bomber", "weight": 2, "weapons": []},
+				{"style": "heavy", "weight": 1, "weapons": ["minecraft:iron_axe"]},
+				{"style": "gunner", "weight": 1, "weapons": ["onepiece:flintlock_pistol"]}
+			],
+			"health": 75,
+			"damage": 12,
+			"armor": 8,
+			"berries": 6
+		},
+		{
+			"id": "world_pirate",
+			"faction": "pirate",
+			"crews": ["World Pirates"],
+			"name": "{rank} {name}",
+			"ranks": ["World Raider", "Destroyer", "World's Officer"],
+			"skins": ["blackbeard", "headliner"],
+			"loadouts": [
+				{"style": "heavy", "weight": 2, "weapons": ["minecraft:iron_axe"]},
+				{"style": "haki", "weight": 1, "weapons": []},
+				{"style": "gunner", "weight": 1, "weapons": ["onepiece:flintlock_pistol"]}
+			],
+			"health": 100,
+			"damage": 15,
+			"armor": 9,
+			"berries": 9
 		}
 	]
 }

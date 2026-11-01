@@ -30,10 +30,15 @@ The main antagonists of the One Piece films, built the same way as the rogues (t
 | **"Z", Admiral Zephyr** of the Neo Marines | Film Z | 5 | Punches, then Haki | Neo Marines | **Battle Smasher**: a seastone haymaker that sends you flying and drains fruit users, a shockwave and Smash Blaster shells | Battle Smasher Knuckle |
 | **Douglas Bullet**, the Demon Heir (Clank-Clank Fruit) | Stampede | 5 | Punches, then Haki | none (fights alone) | **Gashapon Fortress**: fuses scrap into armour (resistance and absorption), scrap rains down, then a shockwave | Clank-Clank Rivet |
 | **Shiki, the Golden Lion** (Float-Float Fruit) | Strong World | 5 | Launches you into the sky, then his sword legs | Golden Lion Pirates and his mutated beasts (manticores, humandrills, basilisks) | **Lion Float**: floats everyone into the air and lets go, while floating rock rains down | Golden Lion's Helm, and his **Float-Float Fruit** |
+| **El Drago** (Goe Goe Fruit) | One Piece: The Movie | 3 | Shockwave roars, then punches | El Drago Pirates | **Goe Goe Blast**: a voice beam down a line that leaves you dizzy and thrown back, with a sonic boom | El Drago's Golden Nail |
+| **Gasparde**, ex-Marine captain (Ame Ame Fruit) | Dead End Adventure | 4 | Syrup that sets you solid, then his sword | Gasparde Pirates | **Syrup Flood**: a wave of syrup that bogs you down (heavy slowness, mining fatigue), then hardened spikes rain down | Hardened Syrup Spike |
+| **Baron Omatsuri**, lord of Omatsuri Island | Baron Omatsuri and the Secret Island | 4 | Roots and curses, and a bow | the revived Red Arrows Pirates | **Lily Arrow Storm**: Lily Carnation drains you (wither) to heal him while flower arrows rain down | Red Arrow of Omatsuri |
+| **Dr. Ratchet**, the Karakuri lord | The Giant Mechanical Soldier of Karakuri Castle | 4 | Pulls you in, then shockwaves | Karakuri soldiers | **Super Zogame-kun**: his giant turtle mech hauls you in, cuts a line and shells the area | Karakuri Clockwork Gear |
+| **Byrnndi World** (Moa Moa Fruit) | 3D2Y | 5 | Blinks at you, then Haki | World Pirates | **Moa Moa Hundred**: goes a hundred times faster, rains boulders thrown at a hundred times the speed, then a shockwave | World's Broken Horn |
 
-Bounties for a first win: Tesoro 300M, Uta 400M, Zephyr 500M, Bullet 800M, Shiki 900M.
+Bounties for a first win: Tesoro 300M, Uta 400M, Zephyr 500M, Bullet 800M, Shiki 900M, El Drago 90M, Gasparde 200M, Ratchet 220M, Omatsuri 250M, World 700M.
 
-Their looks: Bullet is a gorilla of a man with arms thicker than his body in fused-scrap gauntlets and a riveted plate on his back; Tesoro is all legs under a green pompadour, red shades, a white suit and a gold fur stole and cape, with hands of gold rings; Zephyr is lopsided by the Battle Smasher, a seastone war-arm bigger than his chest, under purple hair and a Neo Marine coat; Shiki has a golden mane bigger than he is, a ship's wheel stuck in his skull and two swords where his legs should be; Uta has red-and-white hair looped into two great rings, headphones and a frilled skirt.
+Their looks: Bullet is a gorilla of a man with arms thicker than his body in fused-scrap gauntlets and a riveted plate on his back; Tesoro is all legs under a green pompadour, red shades, a white suit and a gold fur stole and cape, with hands of gold rings; Zephyr is lopsided by the Battle Smasher, a seastone war-arm bigger than his chest, under purple hair and a Neo Marine coat; Shiki has a golden mane bigger than he is, a ship's wheel stuck in his skull and two swords where his legs should be; Uta has red-and-white hair looped into two great rings, headphones and a frilled skirt; El Drago has a red lion's mane, a white shirt under gold shoulder armour and gold nails; Gasparde is tall and broad in an ornate Marine coat with the gull crossed out, a purple scarf and steel boots; Omatsuri is long and lean with a triangle head, palm-tree hair, pink goggles, a flowered purple suit and Lily Carnation on his shoulder; Ratchet is a lanky boy in yellow overalls, round orange goggles and a black scarf of red gears; World is huge up top on thin green legs, with a green beard, a W moustache and a horned helmet missing a horn.
 
 ## Their looks
 
@@ -57,6 +62,14 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 - The main mod's pirates and Marines sometimes carry a Rumor Poster when beaten (4% for a tier 1 rogue down to 0.6% for tier 5). Which NPCs know about which rogue is `rumorFrom` in `bosses.json`.
 - Creative: the **One Piece: Rogue Bosses** tab has every poster, trophy, key and lair chest (a chest you place yourself is plain storage, with no lock).
 
+## Out in the world
+
+Two kinds of mobs that fill gaps the One Piece Mod leaves open. Its own Marine squads, Devil Fruit bounty hunters (from 100M), Sea Kings, Pacifista hunts and pirate ships and patrols are untouched, so nothing here doubles them.
+
+- **Wandering bounty hunters** live off small bounties. If yours is under 100M, every so often one to three of them pick up your trail (a veteran leads them from 50M), call you out and come for you. Over 100M you're out of their league and they leave you alone. Without a bounty you'll still meet pairs walking the land; they don't bother you, but they pick fights with pirate NPCs and raiders. Beating one raises your bounty by 2M to 4M (5M for a veteran). They're on the law's side, so they never fight Marines.
+- **Rookie pirate raids.** While you're in a village (three or more villagers nearby) or one of the One Piece Mod's towns, now and then a small crew lands on the shore in a rowboat (or walks in from the edge) and marches on it, going after villagers, townsfolk, golems and you. A red boss bar counts the raiders left. Beat them all for Berries (and Hero of the Village in a village). Leave, or let six minutes pass, and they make off with their loot. About one raid per 25 minutes spent in a settlement, then a 20 minute break; while one is on, the main mod holds back its Marine hunts on you.
+- Operators can call them with `/opbosses hunters [player]`, `/opbosses roam` and `/opbosses raid [player]`. Their kits are `wandering_hunter`, `veteran_hunter`, `rookie_raider` and `raider_captain` in `src/main/resources/opbosses/world_mobs.json`.
+
 ## Changing or adding a rogue
 
 | File | What it does |
@@ -65,6 +78,7 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 | `src/main/resources/opbosses/crews.json` | **The crews.** Same format as the main mod's `npc_kits.json`. |
 | `src/main/java/com/onepiecebosses/boss/RogueSignatures.java` | The phase 3 signature moves. A boss can also use any of the main mod's (`slash_line`, `black_hole`, `rain_fire`...). |
 | `src/main/java/com/onepiecebosses/boss/RogueBossEntity.java` | The boss mob: the main mod's boss with our data, plus crew, lines and signature. |
+| `src/main/java/com/onepiecebosses/world/` | **The world mobs:** wandering bounty hunters (`WanderingHunters`), pirate raids (`PirateRaids`), their kits in `opbosses/world_mobs.json`. Spawn rates are the constants at the top of each spawner. |
 | `src/main/java/com/onepiecebosses/compat/OnePieceBridge.java` | Every other call into the main mod. If it renames something, fix it here. |
 | `tools/gen_models.py` | **Each rogue's body shape and skin.** Writes `client/RogueModels.java` and the skins. |
 | `tools/gen_chests.py` | **Each lair's own chest:** the model, textures and name. Run `python3 tools/gen_chests.py src/main/resources` after a change (then `gen_assets.py` for the names). |
@@ -77,7 +91,7 @@ To add a rogue: add an entry to `bosses.json` (and a crew to `crews.json` if it 
 
 ## Their lairs
 
-Every rogue has a base of their own out in the world, so you can stumble on them without a poster. Each one spawns its boss and crew once, when it's first generated, and has a chest of its own design (Tesoro's gold vault with a roulette lock, Uta's music box, a giant clam, a lion-faced chest for Shiki...), locked to the key that boss drops, whose loot always includes that boss's Rumor Poster for a rematch. They're rare: about one rogue lair per 44 chunks, and separately one film lair per 52 chunks. Find one with `/locate structure opbosses:<name>`.
+Every rogue has a base of their own out in the world, so you can stumble on them without a poster. Each one spawns its boss and crew once, when it's first generated, and has a chest of its own design (Tesoro's gold vault with a roulette lock, Uta's music box, a giant clam, a lion-faced chest for Shiki...), locked to the key that boss drops, whose loot always includes that boss's Rumor Poster for a rematch. They're rare: about one rogue lair per 44 chunks, and separately one film lair per 40 chunks. Find one with `/locate structure opbosses:<name>`.
 
 | Lair | Rogue | Where |
 | --- | --- | --- |
@@ -96,6 +110,11 @@ Every rogue has a base of their own out in the world, so you can stumble on them
 | `end_point`: a volcano with a glowing crater and a Dyna Stone vault inside, the Neo Marine HQ (Zephyr's office and the chest on the top floor), a training ground, a battleship in dry dock, watchtowers and cannons | Zephyr | Badlands, savanna plateaus, stony shores, Punk Hazard, Marineford |
 | `ironclad_colosseum`: an oval colosseum of fused scrap with an arena floor, and Bullet's Gashapon war machine slumped against its wall; his camp (the chest), wrecked ships and scrap heaps outside | Douglas Bullet | Desert, savanna, plains, Alabasta |
 | `merveille`: a jungle court ringed with lions, cages of mutated beasts, a rock spire with a stair to a floating island where Shiki's palace has a lion's head for a gate (the chest), more floating islets and his flagship hanging in the sky | Shiki | Jungles, Little Garden |
+| `gold_island`: a gold-veined mountain with a path spiralling up to Woonan's hut on the summit (the chest), Woonan's castle blasted full of round holes with its courtyard for an arena, gold dig pits and a mine-cart line, and El Drago's gold-plated ship with a lion figurehead run up on the beach | El Drago | Beaches and jungles |
+| `salamander`: an ironclad steam racer nearly 100 blocks long with paddle wheels and three smoking funnels, a chequered racing foredeck, a two-deck bridge with Gasparde's cabin (the chest), a betting lounge in the hull, and the Dead End's finish-line lighthouse off the bow | Gasparde | Oceans |
+| `omatsuri_island`: a festival island with the Trials of Hell ring under strings of paper lanterns, a judge's tower, goldfish scooping, ring toss and a shooting gallery, a guest hotel, and Lily Carnation grown huge on a hill with roots writhing out of it, Omatsuri's shrine at its foot (the chest) and the Red Arrows' empty graves | Baron Omatsuri | Beaches, sparse and bamboo jungles, savanna, cherry groves |
+| `karakuri_castle`: Mecha Island, a giant sea turtle with a scute-plated shell, red-eyed head and flippers, carrying Karakuri Castle (a machine hall, barracks, a throne room and Ratchet's workshop on top with the chest), a clock tower, shell cannon turrets and the Tetsujin-kun mech standing over a cog-floored courtyard | Dr. Ratchet | Oceans and deep oceans |
+| `groseade`: World's black-and-purple warship hauled up on a slipway with its island-sinking bow cannon raised (his stern cabin has the chest), a scorched crater arena with thrown boulders, the World Pirates' camp and dump of giant shells, a Marine fort he punched through, and a scrap lookout | Byrnndi World | Beaches, plains, snowy plains |
 
 ![The first six rogue lairs](docs/lairs.png)
 
@@ -108,7 +127,7 @@ The One Piece Mod isn't on a maven, so build against its jar, the same way as On
 1. In the One Piece Mod, run `./gradlew build`.
 2. Copy `build/libs/onepiece-0.1.0.jar` into this repo's `libs/` folder (change `onepiece_jar` in `gradle.properties` if the name differs).
 3. Run `./gradlew build` here. The jar lands in `build/libs/`; put it in your `mods/` folder next to the One Piece Mod.
-4. To test, run `./gradlew runClientGameTest`. A game window opens, fights every boss in a test world and closes: Rumor Poster spawn, crew waves, phase lines, signature moves, trophy, bounty (including a long-range kill), the Hard rematch and Rumor Poster drops. It fails with a list of what went wrong, and saves screenshots to `build/run/clientGameTest/screenshots`. The tests are in `src/gametest` and never go into the mod jar, and a normal `runClient` or modpack launch never runs them. To replay only what a change touches, add `-Dopbosses.tests=bosses` or `lairs` (or `models` for model portraits) and `-Dopbosses.only=<boss ids or lair names>`.
+4. To test, run `./gradlew runClientGameTest`. A game window opens, fights every boss in a test world and closes: Rumor Poster spawn, crew waves, phase lines, signature moves, trophy, bounty (including a long-range kill), the Hard rematch and Rumor Poster drops. It fails with a list of what went wrong, checks the bounty hunters and a pirate raid, and saves screenshots to `build/run/clientGameTest/screenshots`. The tests are in `src/gametest` and never go into the mod jar, and a normal `runClient` or modpack launch never runs them. To replay only what a change touches, add `-Dopbosses.tests=bosses`, `lairs` or `mobs` (or `models` for model portraits) and `-Dopbosses.only=<boss ids or lair names>` (`hunters` or `raids` for the world mobs).
 
 ## Planned
 

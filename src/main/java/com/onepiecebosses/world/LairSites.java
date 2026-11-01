@@ -5,11 +5,15 @@ import com.onepiecebosses.BossesMod;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
@@ -19,7 +23,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilde
 /**
  * Keeps our lairs off mountains and out of the sea (ryan 2026-11-01: "the lairs keep spawning in mountains").
  * Vanilla only checks the biome at a structure's middle, and our lairs are 70-120 blocks across, so a desert fort could
- * run up the side of the mountain next door. This samples the ground on a 5x5 grid over the lair's real footprint and,
+ * run up the side of the mountain next door. This samples the ground on a 7x7 grid over the lair's real footprint and,
  * if it's too steep or too wet (or, for a sea lair, too dry), slides the whole lair to the nearest spot within
  * {@link #MAX_SHIFT} blocks that fits. If none does, the lair isn't built there and the next spot in the set gets it.
  * Hooked into Structure.findValidGenerationPoint (LairSiteMixin), so /locate agrees with world generation; /place
@@ -32,15 +36,18 @@ public final class LairSites {
 	private static final boolean ENABLED = !"false".equals(System.getProperty("opbosses.siteRules"));
 	private static final boolean DEBUG = Boolean.getBoolean("opbosses.siteDebug");
 
-	private static final int GRID = 5;
+	/** Samples per side: 7 x 7 over the footprint and its margin, about one every 15 blocks on our biggest lair. */
+	private static final int GRID = 7;
 	/** Most a land lair's ground may rise and fall across its footprint (the highest and lowest samples are ignored). */
 	public static final int MAX_SPREAD = 6;
 	/** How far past the lair's edge the grid reaches, so a cliff right at its wall counts too. */
-	private static final int MARGIN = 6;
-	/** Most of the 25 samples under a land lair that may be water. */
-	private static final int MAX_WET = 3;
-	/** Fewest of the 25 samples under a sea lair that must be water (most of it: reef and beach lairs keep a bit of shore). */
-	private static final int MIN_WET_SEA = 15;
+	private static final int MARGIN = 12;
+	/** Most even the single highest sample may stand over the lair's floor: one tall hill at the wall is enough to say no. */
+	private static final int MAX_RISE = 12;
+	/** Most of the 49 samples under a land lair that may be water. */
+	private static final int MAX_WET = 6;
+	/** Fewest of the 49 samples under a sea lair that must be water (most of it: reef and beach lairs keep a bit of shore). */
+	private static final int MIN_WET_SEA = 29;
 	private static final int STEP = 16;
 	/** A chunk looks 8 chunks around for structure starts: our widest lair (~120) can move ~48 blocks and stay seen. */
 	private static final int MAX_SHIFT = 48;
@@ -65,9 +72,9 @@ public final class LairSites {
 
 		for (int[] o : spiral(shift)) {
 			Ground g = sample(ctx, box.moved(o[0], 0, o[1]));
-			boolean fits = sea ? g.wet >= MIN_WET_SEA : g.wet <= MAX_WET && g.spread() <= MAX_SPREAD;
-			if (DEBUG) BossesMod.LOGGER.info("lair site {} at {} {} offset {},{}: wet {} spread {} -> {}", id.getPath(),
-					start.getX(), start.getZ(), o[0], o[1], g.wet, g.spread(), fits);
+			boolean fits = sea ? g.wet >= MIN_WET_SEA : g.wet <= MAX_WET && g.spread() <= MAX_SPREAD && g.peak() <= MAX_RISE;
+			if (DEBUG) BossesMod.LOGGER.info("lair site {} at {} {} offset {},{}: wet {} spread {} peak {} -> {}", id.getPath(),
+					start.getX(), start.getZ(), o[0], o[1], g.wet, g.spread(), g.peak(), fits);
 			if (!fits) continue;
 			int dy = 0;
 			if (!sea) {
@@ -92,6 +99,11 @@ public final class LairSites {
 			return dry.size() < 5 ? 0 : dry.get(dry.size() - 2) - dry.get(1);
 		}
 
+		/** How far the highest sample stands over the floor the lair will sit on. */
+		int peak() {
+			return dry.isEmpty() ? 0 : dry.get(dry.size() - 1) - low();
+		}
+
 		/** The lower third of the dry ground. */
 		int low() {
 			return dry.isEmpty() ? 0 : dry.get(dry.size() * 3 / 10);
@@ -106,13 +118,30 @@ public final class LairSites {
 		for (int i = 0; i < GRID; i++) {
 			for (int j = 0; j < GRID; j++) {
 				int x = x0 + (x1 - x0) * i / (GRID - 1), z = z0 + (z1 - z0) * j / (GRID - 1);
-				int h = ctx.chunkGenerator().getFirstFreeHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, ctx.heightAccessor(), ctx.randomState());
+				int h = height(ctx, x, z);
 				if (h >= sea) dry.add(h);
 				else wet++;
 			}
 		}
 		Collections.sort(dry);
 		return new Ground(dry, wet);
+	}
+
+	/** Ground heights already worked out, per world: neighbouring candidates sample the same ground over and over, and
+	 * sampling the noise is the slow part. Points snap to a 4-block grid, far finer than the sample grid. */
+	private static final Map<RandomState, ConcurrentHashMap<Long, Integer>> HEIGHTS = Collections.synchronizedMap(new WeakHashMap<>());
+
+	private static int height(Structure.GenerationContext ctx, int x, int z) {
+		ConcurrentHashMap<Long, Integer> cache = HEIGHTS.computeIfAbsent(ctx.randomState(), r -> new ConcurrentHashMap<>());
+		if (cache.size() > 200_000) cache.clear();
+		int sx = (x & ~3) + 2, sz = (z & ~3) + 2;
+		long key = ((long) sx << 32) ^ (sz & 0xFFFFFFFFL);
+		Integer h = cache.get(key);
+		if (h == null) {
+			h = ctx.chunkGenerator().getFirstFreeHeight(sx, sz, Heightmap.Types.OCEAN_FLOOR_WG, ctx.heightAccessor(), ctx.randomState());
+			cache.put(key, h);
+		}
+		return h;
 	}
 
 	/** Offsets to try, the original spot first, then rings out to `max` blocks. */

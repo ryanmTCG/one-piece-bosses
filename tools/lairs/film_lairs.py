@@ -940,7 +940,7 @@ def add(lair, OCEANS, DEEP):
         b.scatter(0, 0, W, D, 1, ["minecraft:fern", "minecraft:short_grass", "minecraft:short_grass", "minecraft:bush" if False else "minecraft:fern"], 0.08, rnd, only_on=grass)
 
         b.rogue(AX, 1, AZ, "shiki_golden_lion")
-        b.crew("golden_lion_pirate", ((AX - 8, AZ - 6), (AX + 8, AZ - 6), (AX - 8, AZ + 6), (AX + 8, AZ + 6), (22, 60)))
+        b.crew("golden_lion_pirate", ((AX - 8, AZ - 6), (AX + 8, AZ - 6), (AX - 8, AZ + 6), (AX + 8, AZ + 6), (AX, AZ - 10)))   # on the paving: a jungle tree grew through the garden spot
         b.crew("golden_lion_pirate", ((TX - 6, PZ0 + 9), (TX + 6, PZ0 + 9)), y=IY + 1)   # palace guards, inside the hall
 
 

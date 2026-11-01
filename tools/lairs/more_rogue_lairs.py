@@ -602,7 +602,7 @@ def add(lair, OCEANS, DEEP):
 
         b.waterline = dy - 2   # the sea's top layer: the deck stands 2 above it
         b.rogue(X0 + 26, dy + 1, CZ, "mortimer_gale")
-        b.crew("cursed_deckhand", ((X0 + 22, CZ - 4), (X0 + 22, CZ + 4), (X0 + 38, CZ - 4), (X0 + 38, CZ + 4), (X0 + 47, CZ + 3)), y=dy + 1)
+        b.crew("cursed_deckhand", ((X0 + 22, CZ - 4), (X0 + 22, CZ + 4), (X0 + 38, CZ - 4), (X0 + 38, CZ + 4), (X0 + 47, CZ + 1)), y=dy + 1)
         b.crew("cursed_deckhand", ((FX0 + 8, dy + 4, CZ), (CVX, 1, CVZ)))
 
     # ============================================================ Vasco: the Leviathan Pens
