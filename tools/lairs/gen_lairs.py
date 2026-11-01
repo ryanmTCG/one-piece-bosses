@@ -469,7 +469,7 @@ def _(b):
 
 # ============================================================ Graves: Fort Iron Tide
 @lair("fort_iron_tide", "Fort Iron Tide", "iron_tide_graves",
-      ["#minecraft:is_beach", "minecraft:plains", "minecraft:savanna", "minecraft:stony_shore", "onepiece:east_blue", "onepiece:jaya"], "land")
+      ["#minecraft:is_beach", "minecraft:plains", "minecraft:savanna", "onepiece:east_blue", "onepiece:jaya"], "land")
 def _(b):
     rnd = random.Random(3)
     N = 62
@@ -657,7 +657,7 @@ def _(b):
 
 # ============================================================ Tsurugi: the Hollow Shrine
 @lair("hollow_shrine", "The Hollow Shrine", "hollow_ronin_tsurugi",
-      ["minecraft:cherry_grove", "minecraft:meadow", "minecraft:windswept_hills", "minecraft:taiga", "onepiece:wano"], "land")
+      ["minecraft:cherry_grove", "minecraft:meadow", "minecraft:taiga", "onepiece:wano"], "land")
 def _(b):
     rnd = random.Random(4)
     W, D = 58, 74
@@ -810,7 +810,7 @@ def _(b):
 
 # ============================================================ Gantz: the Shipbreakers' Foundry
 @lair("shipbreakers_foundry", "The Shipbreakers' Foundry", "boilerheart_gantz",
-      ["minecraft:stony_shore", "minecraft:badlands", "minecraft:desert", "minecraft:windswept_gravelly_hills", "onepiece:onigashima", "onepiece:punk_hazard_burning"], "land")
+      ["minecraft:badlands", "minecraft:desert", "onepiece:onigashima", "onepiece:punk_hazard_burning"], "land")
 def _(b):
     rnd = random.Random(5)
     W, D = 64, 58
@@ -1159,7 +1159,7 @@ def main(root):
         size, my = b.save(f'{D}/structure/{name}.nbt')
         st = {"type": "minecraft:jigsaw", "biomes": f"#opbosses:has_structure/{name}", "step": "surface_structures",
               "spawn_overrides": {"monster": {"bounding_box": "piece", "spawns": []}, "ambient": {"bounding_box": "piece", "spawns": []}},
-              "terrain_adaptation": "beard_thin", "start_pool": f"opbosses:{name}", "size": 1, "max_distance_from_center": 80, "use_expansion_hack": False}
+              "terrain_adaptation": "beard_box", "start_pool": f"opbosses:{name}", "size": 1, "max_distance_from_center": 80, "use_expansion_hack": False}
         # The jigsaw puts a piece's lowest level 1 below surface + start_height (a single element's ground level delta is 1),
         # so start_height 0 puts y = 0 on the top block of the ground, or of the sea for a sea lair's waterline.
         if l['place'] == "land":

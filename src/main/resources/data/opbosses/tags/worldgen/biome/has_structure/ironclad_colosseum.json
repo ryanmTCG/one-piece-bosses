@@ -3,7 +3,6 @@
   "values": [
     "minecraft:desert",
     "minecraft:savanna",
-    "minecraft:windswept_savanna",
     "minecraft:plains",
     {
       "id": "onepiece:alabasta",

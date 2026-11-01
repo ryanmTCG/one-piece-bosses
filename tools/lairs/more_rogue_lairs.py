@@ -46,7 +46,7 @@ def add(lair, OCEANS, DEEP):
 
     # ============================================================ Khamsin: the Sunken Kasbah
     @lair("sunken_kasbah", "The Sunken Kasbah", "khamsin_sandshackle",
-          ["minecraft:desert", "minecraft:badlands", "minecraft:eroded_badlands", "minecraft:wooded_badlands", "minecraft:savanna",
+          ["minecraft:desert", "minecraft:badlands", "minecraft:savanna",
            "onepiece:alabasta"], "land")
     def _(b):
         rnd = random.Random(21)
@@ -821,7 +821,7 @@ def add(lair, OCEANS, DEEP):
 
     # ============================================================ Dr. Kreuz: Laboratory Null
     @lair("laboratory_null", "Laboratory Null", "doctor_kreuz",
-          ["minecraft:snowy_plains", "minecraft:ice_spikes", "minecraft:stony_shore", "minecraft:windswept_hills", "onepiece:punk_hazard_frozen"], "land")
+          ["minecraft:snowy_plains", "minecraft:ice_spikes", "onepiece:punk_hazard_frozen"], "land")
     def _(b):
         rnd = random.Random(24)
         W, D = 96, 82

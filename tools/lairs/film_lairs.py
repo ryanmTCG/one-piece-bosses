@@ -472,7 +472,7 @@ def add(lair, OCEANS, DEEP):
 
     # ============================================================ Zephyr: the End Point
     @lair("end_point", "The End Point", "zephyr_z",
-          ["#minecraft:is_badlands", "minecraft:savanna_plateau", "minecraft:windswept_savanna", "minecraft:stony_shore", "onepiece:punk_hazard_burning", "onepiece:marineford"],
+          ["minecraft:badlands", "minecraft:savanna_plateau", "onepiece:punk_hazard_burning", "onepiece:marineford"],
           "land", group="film_lairs")
     def _(b):
         rnd = random.Random(13)
@@ -631,7 +631,7 @@ def add(lair, OCEANS, DEEP):
 
     # ============================================================ Douglas Bullet: the Ironclad Colosseum
     @lair("ironclad_colosseum", "The Ironclad Colosseum", "douglas_bullet",
-          ["minecraft:desert", "minecraft:savanna", "minecraft:windswept_savanna", "minecraft:plains", "onepiece:alabasta"], "land", group="film_lairs")
+          ["minecraft:desert", "minecraft:savanna", "minecraft:plains", "onepiece:alabasta"], "land", group="film_lairs")
     def _(b):
         rnd = random.Random(14)
         W, D = 92, 96
