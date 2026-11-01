@@ -28,9 +28,9 @@ public class BossesMod implements ModInitializer {
 	public void onInitialize() {
 		CrewKits.initialize(); // Before the bosses, so their crews exist when a saved boss loads.
 		RogueBosses.initialize();
+		LairChests.initialize();
 		BossItems.initialize();
 		RumorDrops.initialize();
-		LairChests.initialize();
 		LOGGER.info("One Piece Bosses: {} rogue bosses loaded", com.onepiecebosses.boss.RogueData.all().size());
 	}
 

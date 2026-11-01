@@ -29,7 +29,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.AABB;
@@ -42,6 +41,8 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
 import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
 
 import com.onepiecebosses.BossItems;
+import com.onepiecebosses.loot.LairChestBlockEntity;
+import com.onepiecebosses.loot.LairChests;
 import com.onepiecebosses.boss.RogueBossEntity;
 import com.onepiecemod.npc.HumanNpc;
 import com.onepiecemod.world.GuardKit;
@@ -350,12 +351,14 @@ public class LairsClientTest implements FabricClientGameTest {
 			for (int cz = (boss.getBlockZ() >> 4) - 3; cz <= (boss.getBlockZ() >> 4) + 3; cz++) {
 				for (BlockPos bp : level.getChunk(cx, cz).getBlockEntitiesPos()) {
 					BlockEntity be = level.getBlockEntity(bp);
-					if (!(be instanceof ChestBlockEntity chest) || chest.getLootTable() == null
+					if (!(be instanceof LairChestBlockEntity chest) || chest.getLootTable() == null
 							|| !chest.getLootTable().identifier().getNamespace().equals("opbosses")) {
 						continue;
 					}
 					String table = chest.getLootTable().identifier().toString();
 					check(table.equals("opbosses:chests/" + lair.name), name + ": chest at " + bp + " has loot table " + table);
+					check(level.getBlockState(bp).is(LairChests.BLOCKS.get(lair.name)),
+							name + ": the chest at " + bp + " is " + level.getBlockState(bp) + ", not the lair's own chest");
 					chest.unpackLootTable(player(s));
 					List<String> items = new ArrayList<>();
 					boolean poster = false;

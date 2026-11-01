@@ -18,6 +18,7 @@ import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 
 import com.onepiecebosses.boss.RogueData;
 import com.onepiecebosses.boss.RumorPosterItem;
+import com.onepiecebosses.loot.LairChests;
 import com.onepiecebosses.loot.LairKeyItem;
 
 /** A Rumor Poster, a trophy and a lair key for every rogue boss in bosses.json, and the creative tab. */
@@ -54,6 +55,7 @@ public final class BossItems {
 					RUMORS.values().forEach(output::accept);
 					TROPHIES.values().forEach(output::accept);
 					KEYS.values().forEach(output::accept);
+					LairChests.ITEMS.values().forEach(output::accept);
 				})
 				.build());
 	}

@@ -50,7 +50,7 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 
 - **Rumor Posters** are the rogues' Wanted Posters. Use one on a block to call the rogue out. Beat them and the poster brings them back on Hard, then Expert; sneak while using it for a Normal fight.
 - The main mod's pirates and Marines sometimes carry a Rumor Poster when beaten (4% for a tier 1 rogue down to 0.6% for tier 5). Which NPCs know about which rogue is `rumorFrom` in `bosses.json`.
-- Creative: the **One Piece: Rogue Bosses** tab has every poster, trophy and key.
+- Creative: the **One Piece: Rogue Bosses** tab has every poster, trophy, key and lair chest (a chest you place yourself is plain storage, with no lock).
 
 ## Changing or adding a rogue
 
@@ -62,6 +62,7 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 | `src/main/java/com/onepiecebosses/boss/RogueBossEntity.java` | The boss mob: the main mod's boss with our data, plus crew, lines and signature. |
 | `src/main/java/com/onepiecebosses/compat/OnePieceBridge.java` | Every other call into the main mod. If it renames something, fix it here. |
 | `tools/gen_models.py` | **Each rogue's body shape and skin.** Writes `client/RogueModels.java` and the skins. |
+| `tools/gen_chests.py` | **Each lair's own chest:** the model, textures and name. Run `python3 tools/gen_chests.py src/main/resources` after a change (then `gen_assets.py` for the names). |
 | `tools/gen_assets.py` | Draws the poster, trophy and key art and writes the item JSON. |
 | `tools/lairs/gen_lairs.py` | **Each rogue's lair:** the build, where it spawns, and its chest loot. Run `python3 tools/lairs/gen_lairs.py .` after a change. |
 | `tools/lairs/film_lairs.py` | The film villains' lairs and their chest loot (gen_lairs.py builds them too). |
@@ -70,7 +71,7 @@ To add a rogue: add an entry to `bosses.json` (and a crew to `crews.json` if it 
 
 ## Their lairs
 
-Every rogue has a base of their own out in the world, so you can stumble on them without a poster. Each one spawns its boss and crew once, when it's first generated, and has a chest, locked to the key that boss drops, whose loot always includes that boss's Rumor Poster for a rematch. They're rare: about one rogue lair per 44 chunks, and separately one film lair per 52 chunks. Find one with `/locate structure opbosses:<name>`.
+Every rogue has a base of their own out in the world, so you can stumble on them without a poster. Each one spawns its boss and crew once, when it's first generated, and has a chest of its own design (Tesoro's gold vault with a roulette lock, Uta's music box, a giant clam, a lion-faced chest for Shiki...), locked to the key that boss drops, whose loot always includes that boss's Rumor Poster for a rematch. They're rare: about one rogue lair per 44 chunks, and separately one film lair per 52 chunks. Find one with `/locate structure opbosses:<name>`.
 
 | Lair | Rogue | Where |
 | --- | --- | --- |

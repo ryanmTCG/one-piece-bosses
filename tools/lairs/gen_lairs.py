@@ -50,9 +50,10 @@ class Lair(Parts):
     boss = None   # the lair's boss id, set before it's built
 
     def chest(self, x, y, z, loot, facing="south"):
-        # Locked (vanilla's container lock): it only opens for someone holding the key the boss drops.
-        self.set(x, y, z, f"minecraft:chest[facing={facing},type=single,waterlogged=false]",
-                 {"id": "minecraft:chest", "LootTable": f"opbosses:chests/{loot}", "lock": {"items": f"opbosses:key_{self.boss}"}})
+        # The lair's own chest (tools/gen_chests.py), locked with vanilla's container lock: it only opens for
+        # someone holding the key the boss drops.
+        self.set(x, y, z, f"opbosses:{loot}_chest[facing={facing}]",
+                 {"id": "opbosses:lair_chest", "LootTable": f"opbosses:chests/{loot}", "lock": {"items": f"opbosses:key_{self.boss}"}})
 
     def scatter(self, x0, z0, x1, z1, y, blocks, chance, rnd, only_on=None, replace=False):
         for x in range(x0, x1 + 1):

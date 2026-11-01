@@ -12,6 +12,9 @@ import sys
 
 from PIL import Image, ImageDraw
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from gen_chests import CHESTS  # noqa: E402  (the lair chests' names)
+
 # Trophy item: (main colour, shade, shape).
 TROPHIES = {
     "rusted_anchor_link": ((150, 90, 50), (90, 55, 30), "ring"),
@@ -131,6 +134,8 @@ def main(res):
                        {"parent": "minecraft:item/generated", "textures": {"layer0": "opbosses:item/" + name}})
             write_json(os.path.join(assets, "items", name + ".json"),
                        {"model": {"type": "minecraft:model", "model": "opbosses:item/" + name}})
+    for cid, c in CHESTS.items():
+        lang["block.opbosses." + cid + "_chest"] = c["name"]
     write_json(os.path.join(assets, "lang/en_us.json"), lang)
     print("Drew %d bosses" % len(bosses))
 
