@@ -19,7 +19,7 @@ import net.minecraft.world.level.levelgen.structure.StructureStart;
 /**
  * Keeps the world's trees out of our lairs. Trees are placed after structures, so a jungle tree could grow up through a
  * lair's garden, its yard or a crewman standing there (the Merveille and Gold Island crews ended up in leaves). While a
- * chunk is decorated, the lairs touching it are noted here, and ConfiguredFeatureMixin turns down any tree, giant
+ * chunk is decorated, the lairs touching it are noted here, and FeaturePlacerMixin turns down any tree, giant
  * mushroom or bamboo whose root is inside one of them (or within a few blocks of its edge).
  */
 public final class LairGrowth {
@@ -32,7 +32,7 @@ public final class LairGrowth {
 	public static void begin(WorldGenLevel level, ChunkPos chunk, StructureManager structures) {
 		var registry = level.registryAccess().lookupOrThrow(Registries.STRUCTURE);
 		List<BoundingBox> boxes = new ArrayList<>();
-		for (StructureStart start : structures.startsForStructure(chunk, s -> {
+		for (StructureStart start : structures.startsForStructure(chunk.x(), chunk.z(), s -> {
 			Identifier id = registry.getKey(s);
 			return id != null && id.getNamespace().equals(BossesMod.MOD_ID);
 		})) {
@@ -46,7 +46,7 @@ public final class LairGrowth {
 	}
 
 	/** True if this feature mustn't grow at pos: it's a tree (or the like) and pos is in a lair. */
-	public static boolean blocked(Feature<?> feature, BlockPos pos) {
+	public static boolean blocked(Feature feature, BlockPos pos) {
 		List<BoundingBox> boxes = LAIRS.get();
 		if (boxes == null) return false;
 		if (!(feature instanceof TreeFeature || feature instanceof AbstractHugeMushroomFeature || feature instanceof BambooFeature)) return false;

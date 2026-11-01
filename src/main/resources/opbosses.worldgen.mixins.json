@@ -6,7 +6,7 @@
 		"LairSiteMixin",
 		"PlaceCommandMixin",
 		"ChunkGeneratorMixin",
-		"ConfiguredFeatureMixin"
+		"FeaturePlacerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
