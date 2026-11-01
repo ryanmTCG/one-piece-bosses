@@ -792,7 +792,7 @@ def add(lair, OCEANS, DEEP):
 
     # ============================================================ Byrnndi World: the Groseade
     @lair("groseade", "The Groseade", "byrnndi_world",
-          ["minecraft:stony_shore", "minecraft:windswept_hills", "minecraft:windswept_gravelly_hills", "minecraft:windswept_forest", "minecraft:snowy_beach"],
+          ["minecraft:stony_shore", "minecraft:snowy_beach", "minecraft:beach", "minecraft:snowy_plains", "minecraft:plains"],
           "land", group="film_lairs")
     def _(b):
         rnd = random.Random(25)
