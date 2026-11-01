@@ -52,42 +52,21 @@ def add(lair, OCEANS, DEEP):
         b.disk(MX, TOP, MZ, 6.5, "minecraft:coarse_dirt")
         for y in range(TOP + 1, TOP + 6):   # clear the summit for the hut
             b.disk(MX, y, MZ, 7, AIR)
-        # A switchback stair up the mountain's south face, cut into the rock.
-        y, x, dx = 1, MX - 14, 1
-        zc = MZ + 16
-        path = []
+        # A path spiralling up the mountain, cut into the rock: it climbs one block every few steps round the peak.
+        ang, y = math.radians(100), 1
         while y < TOP:
-            for w in range(3):
-                zz = zc - w
-                b.set(x, y - 1, zz, "minecraft:cobblestone")
-                b.set(x, y, zz, stair("cobblestone", "east" if dx > 0 else "west"))
-                for yy in range(y + 1, y + 4):
-                    b.set(x, yy, zz, AIR)
-            path.append((x, y, zc))
-            x += dx
-            if x > MX + 10 or x < MX - 12:
-                dx = -dx
-                zc -= 4
-                x += dx * 2
-            # step up only every other block, and follow the slope inward
-            y += 1 if (x % 2 == 0) else 0
-            if zc < MZ + 5:
-                break
-        lx, ly, lz = path[-1]
-        for (sx, sy, sz) in path[::6]:
-            b.set(sx, sy + 1, sz + 1, LANTERN) if b.get(sx, sy + 1, sz + 1) in (None, AIR) else None
-        # from the end of the switchbacks straight up to the summit
-        yy = ly
-        zz = lz - 1
-        xx = lx
-        while yy < TOP:
-            yy += 1
-            zz -= 1
+            r = MR * (1 - (y / (MH + 4)) ** 0.85) - 1.2
             for w in (-1, 0, 1):
-                b.set(xx + w, yy - 1, zz, "minecraft:cobblestone")
-                b.set(xx + w, yy, zz, stair("cobblestone", "north"))
-                for k in range(yy + 1, yy + 4):
-                    b.set(xx + w, k, zz, AIR)
+                x = round(MX + (r + w * 0.9) * math.cos(ang)); z = round(MZ + (r + w * 0.9) * math.sin(ang))
+                b.set(x, y - 1, z, "minecraft:cobblestone"); b.set(x, y, z, "minecraft:gravel" if w == 0 else "minecraft:cobblestone")
+                for yy in range(y + 1, y + 4):
+                    b.set(x, yy, z, AIR)
+            if rnd.random() < 0.08:
+                b.set(round(MX + (r + 1.8) * math.cos(ang)), y + 1, round(MZ + (r + 1.8) * math.sin(ang)), LANTERN)
+            step = 1.1 / max(r, 3)
+            ang += step
+            if int((ang - step) / (step * 3)) != int(ang / (step * 3)):
+                y += 1
         # Woonan's hut on the summit: an old hermit's shack of driftwood, with the chest he left behind.
         HX0, HZ0, HX1, HZ1 = MX - 4, MZ - 4, MX + 4, MZ + 3
         b.hall(HX0, HZ0, HX1, HZ1, TOP, 4, "minecraft:spruce_planks", "minecraft:mossy_cobblestone", log("spruce"), floor="minecraft:spruce_planks",
