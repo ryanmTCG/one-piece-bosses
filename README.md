@@ -45,6 +45,7 @@ The models and their skins come from `tools/gen_models.py` (needs Pillow): chang
 - **Bounty**: a first win raises your bounty by the rogue's own amount (12M for Rourke up to 600M for Nereus Vane). Rematches add 10% of the tier value, like any boss. The paper reports first wins, and Arsenal's meito count rogues as named bosses.
 - **Trophy**: each rogue drops their trophy the first time someone nearby beats them at that difficulty.
 - **Lair key**: each rogue drops the key to their lair's chest every time they're beaten ("Key to The Gran Tesoro" and so on). The chest is locked: hold the key in your main hand to open it. Without it the chest won't open or break, except in creative.
+- **Lair Restoration Charter**: craft one (gold ingots around a diamond, paper and a compass: `GDG / PCP / GPG`) and use it inside a lair once its boss is beaten. The whole lair is rebuilt where it stands: every block, the boss and crew, and a fresh locked chest with new loot. It's used up. It also works on the One Piece Mod's boss structures whose boss lives in the structure (Buggy's Big Top, Loguetown, Rain Dinners, Shandora, Dressrosa Palace, Onigashima, Whole Cake Chateau and the rest listed in `opbosses/rebuildable.json`, from `tools/gen_rebuildable.py`).
 
 ## Finding them
 

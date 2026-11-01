@@ -32,9 +32,18 @@ public final class LairChests {
 	private LairChests() {
 	}
 
-	/** The lairs, by structure name. Their chests are "<lair>_chest". */
-	public static final List<String> LAIRS = List.of("scrapheap_reef", "lantern_house", "fort_iron_tide", "hollow_shrine",
-			"shipbreakers_foundry", "abyssal_temple", "gran_tesoro", "elegia_stage", "end_point", "ironclad_colosseum", "merveille");
+	/** Each lair (by structure name) and its boss. Their chests are "<lair>_chest". */
+	public static final Map<String, String> LAIR_BOSSES = new LinkedHashMap<>();
+	static {
+		String[][] pairs = {{"scrapheap_reef", "saltjaw_rourke"}, {"lantern_house", "corvina_fog_widow"}, {"fort_iron_tide", "iron_tide_graves"},
+				{"hollow_shrine", "hollow_ronin_tsurugi"}, {"shipbreakers_foundry", "boilerheart_gantz"}, {"abyssal_temple", "nereus_vane"},
+				{"gran_tesoro", "gild_tesoro"}, {"elegia_stage", "uta_diva"}, {"end_point", "zephyr_z"},
+				{"ironclad_colosseum", "douglas_bullet"}, {"merveille", "shiki_golden_lion"}};
+		for (String[] pair : pairs) {
+			LAIR_BOSSES.put(pair[0], pair[1]);
+		}
+	}
+	public static final List<String> LAIRS = List.copyOf(LAIR_BOSSES.keySet());
 
 	/** Lair name -> its chest block. */
 	public static final Map<String, Block> BLOCKS = new LinkedHashMap<>();

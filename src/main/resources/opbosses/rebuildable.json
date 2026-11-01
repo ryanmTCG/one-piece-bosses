@@ -1,0 +1,144 @@
+{
+  "_comment": "Written by tools/gen_rebuildable.py from the One Piece Mod's structures: the ones whose pieces carry their boss.",
+  "sites": {
+    "onepiece:blazing_hell_furnace": {
+      "name": "Blazing Hell Furnace",
+      "bosses": [
+        "magellan"
+      ]
+    },
+    "onepiece:buggy_big_top": {
+      "name": "Buggy Big Top",
+      "bosses": [
+        "buggy"
+      ]
+    },
+    "onepiece:corrida_colosseum": {
+      "name": "Corrida Colosseum",
+      "bosses": [
+        "fujitora"
+      ]
+    },
+    "onepiece:dressrosa_palace": {
+      "name": "Dressrosa Palace",
+      "bosses": [
+        "doflamingo"
+      ]
+    },
+    "onepiece:egghead_lab": {
+      "name": "Egghead Lab",
+      "bosses": [
+        "kizaru",
+        "vegapunk"
+      ]
+    },
+    "onepiece:flame_fortress": {
+      "name": "Flame Fortress",
+      "bosses": [
+        "king"
+      ]
+    },
+    "onepiece:god_valley": {
+      "name": "God Valley",
+      "bosses": [
+        "xebec"
+      ]
+    },
+    "onepiece:hachinosu": {
+      "name": "Hachinosu",
+      "bosses": [
+        "blackbeard"
+      ]
+    },
+    "onepiece:ice_fortress": {
+      "name": "Ice Fortress",
+      "bosses": [
+        "aokiji"
+      ]
+    },
+    "onepiece:kamazo_hideout": {
+      "name": "Kamazo Hideout",
+      "bosses": [
+        "killer"
+      ]
+    },
+    "onepiece:kuraigana_castle": {
+      "name": "Kuraigana Castle",
+      "bosses": [
+        "mihawk"
+      ]
+    },
+    "onepiece:loguetown": {
+      "name": "Loguetown",
+      "bosses": [
+        "smoker"
+      ]
+    },
+    "onepiece:marineford": {
+      "name": "Marineford",
+      "bosses": [
+        "akainu"
+      ]
+    },
+    "onepiece:mirror_hall": {
+      "name": "Mirror Hall",
+      "bosses": [
+        "katakuri"
+      ]
+    },
+    "onepiece:moby_dick": {
+      "name": "Moby Dick",
+      "bosses": [
+        "whitebeard"
+      ]
+    },
+    "onepiece:onigashima": {
+      "name": "Onigashima",
+      "bosses": [
+        "kaido"
+      ]
+    },
+    "onepiece:rain_dinners": {
+      "name": "Rain Dinners",
+      "bosses": [
+        "crocodile"
+      ]
+    },
+    "onepiece:shandora": {
+      "name": "Shandora",
+      "bosses": [
+        "enel"
+      ]
+    },
+    "onepiece:straw_shrine": {
+      "name": "Straw Shrine",
+      "bosses": [
+        "hawkins"
+      ]
+    },
+    "onepiece:thriller_bark": {
+      "name": "Thriller Bark",
+      "bosses": [
+        "moria"
+      ]
+    },
+    "onepiece:tower_of_justice": {
+      "name": "Tower Of Justice",
+      "bosses": [
+        "lucci"
+      ]
+    },
+    "onepiece:victoria_punk": {
+      "name": "Victoria Punk",
+      "bosses": [
+        "kid"
+      ]
+    },
+    "onepiece:whole_cake_chateau": {
+      "name": "Whole Cake Chateau",
+      "bosses": [
+        "big_mom"
+      ]
+    }
+  }
+}

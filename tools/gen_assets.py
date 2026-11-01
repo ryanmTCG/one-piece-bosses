@@ -94,6 +94,12 @@ def item_texture(main, dark, shape):
         d.ellipse([1, 1, 7, 7], outline=main + (255,), width=2); d.point([(4, 4)], fill=dark + (255,))
         d.line([(6, 6), (13, 13)], fill=shade(main, 0.8) + (255,), width=2)
         box(d, 10, 12, 2, 3, dark); box(d, 12, 10, 3, 2, dark); box(d, 13, 13, 2, 2, dark)
+    elif shape == "charter":
+        # A rolled charter with a gold seal: the lair's plans, to rebuild it.
+        box(d, 3, 2, 10, 12, (225, 205, 160)); box(d, 2, 1, 12, 2, (150, 110, 70)); box(d, 2, 13, 12, 2, (150, 110, 70))
+        for y in (4, 6, 8):
+            box(d, 5, y, 6, 1, (110, 90, 70))
+        d.ellipse([8, 8, 13, 13], fill=main + (255,)); d.point([(10, 10)], fill=dark + (255,))
     elif shape == "poster":
         box(d, 2, 1, 12, 14, (215, 190, 140)); box(d, 3, 2, 10, 2, (90, 40, 30))
         box(d, 5, 5, 6, 5, (120, 110, 100)); box(d, 7, 6, 2, 1, (40, 30, 30))   # a figure in shadow
@@ -134,6 +140,13 @@ def main(res):
                        {"parent": "minecraft:item/generated", "textures": {"layer0": "opbosses:item/" + name}})
             write_json(os.path.join(assets, "items", name + ".json"),
                        {"model": {"type": "minecraft:model", "model": "opbosses:item/" + name}})
+    charter = item_texture((220, 170, 50), (150, 30, 30), "charter")
+    os.makedirs(os.path.join(assets, "textures/item"), exist_ok=True)
+    charter.save(os.path.join(assets, "textures/item", "lair_charter.png"))
+    write_json(os.path.join(assets, "models/item", "lair_charter.json"),
+               {"parent": "minecraft:item/generated", "textures": {"layer0": "opbosses:item/lair_charter"}})
+    write_json(os.path.join(assets, "items", "lair_charter.json"), {"model": {"type": "minecraft:model", "model": "opbosses:item/lair_charter"}})
+    lang["item.opbosses.lair_charter"] = "Lair Restoration Charter"
     for cid, c in CHESTS.items():
         lang["block.opbosses." + cid + "_chest"] = c["name"]
     write_json(os.path.join(assets, "lang/en_us.json"), lang)

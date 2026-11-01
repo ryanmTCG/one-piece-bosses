@@ -43,6 +43,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContex
 import com.onepiecebosses.BossItems;
 import com.onepiecebosses.loot.LairChestBlockEntity;
 import com.onepiecebosses.loot.LairChests;
+import com.onepiecebosses.loot.LairReset;
 import com.onepiecebosses.boss.RogueBossEntity;
 import com.onepiecemod.npc.HumanNpc;
 import com.onepiecemod.world.GuardKit;
@@ -125,6 +126,7 @@ public class LairsClientTest implements FabricClientGameTest {
 			for (Lair lair : picked) {
 				if (located.containsKey(lair.name)) {
 					naturalTest(context, sp, lair, located.get(lair.name));
+					resetTest(context, sp, lair, located.get(lair.name));
 				}
 			}
 			// /place structure, somewhere else in a biome each spawns in. The chunks there are already decorated (trees,
@@ -132,6 +134,9 @@ public class LairsClientTest implements FabricClientGameTest {
 			List<BlockPos> used = new ArrayList<>(located.values());
 			for (int i = 0; i < picked.size(); i++) {
 				placeTest(context, sp, picked.get(i), i, used);
+			}
+			if (TestFilter.picks("buggy_big_top", "buggy")) {
+				mainModResetTest(context, sp, "buggy_big_top", "buggy");
 			}
 			LOG.info("LT DONE, {} failures", FAILURES.size());
 		}
@@ -224,6 +229,149 @@ public class LairsClientTest implements FabricClientGameTest {
 			context.waitTicks(20);
 			context.takeScreenshot("lair_" + lair.name + shots[i]);
 		}
+	}
+
+	/**
+	 * The Lair Restoration Charter: with the boss beaten, the chest emptied and a hole knocked in the lair, using it
+	 * rebuilds the lair, brings the boss back and puts a fresh locked chest in place. It refuses while the boss lives.
+	 */
+	private void resetTest(ClientGameTestContext context, TestSingleplayerContext sp, Lair lair, BlockPos pos) throws Exception {
+		String name = lair.name + " (reset)";
+		BlockPos[] chestAt = new BlockPos[1];
+		BlockPos[] hole = new BlockPos[1];
+		net.minecraft.world.level.block.state.BlockState[] holeWas = new net.minecraft.world.level.block.state.BlockState[1];
+		server(sp, s -> {
+			ServerLevel level = s.overworld();
+			ServerPlayer p = player(s);
+			for (int cx = (pos.getX() >> 4) - 5; cx <= (pos.getX() >> 4) + 5 && chestAt[0] == null; cx++) {
+				for (int cz = (pos.getZ() >> 4) - 5; cz <= (pos.getZ() >> 4) + 5 && chestAt[0] == null; cz++) {
+					for (BlockPos bp : level.getChunk(cx, cz).getBlockEntitiesPos()) {
+						if (level.getBlockEntity(bp) instanceof LairChestBlockEntity && level.getBlockState(bp).is(LairChests.BLOCKS.get(lair.name))) {
+							chestAt[0] = bp.immutable();
+						}
+					}
+				}
+			}
+			if (chestAt[0] == null) {
+				check(false, name + ": no lair chest to reset around");
+				return;
+			}
+			p.teleportTo(level, chestAt[0].getX() + 0.5, chestAt[0].getY() + 1, chestAt[0].getZ() + 0.5, Set.of(), 0f, 0f, true);
+			var refused = LairReset.reset(level, p);
+			LOG.info("LT {} with the boss alive: {}", name, refused);
+			check(refused == LairReset.Result.BOSS_STILL_HERE, name + ": rebuilt with the boss still alive (" + refused + ")");
+
+			// Beat the boss, loot the chest and knock a block out of the floor under it.
+			for (RogueBossEntity b : level.getEntitiesOfClass(RogueBossEntity.class, new AABB(chestAt[0]).inflate(150), e -> e.getCharacterId().equals(lair.boss))) {
+				b.discard();
+			}
+			LairChestBlockEntity chest = (LairChestBlockEntity) level.getBlockEntity(chestAt[0]);
+			chest.unpackLootTable(p);
+			chest.clearContent();
+			hole[0] = chestAt[0].below();
+			holeWas[0] = level.getBlockState(hole[0]);
+			level.setBlockAndUpdate(hole[0], net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+
+			var done = LairReset.reset(level, p);
+			LOG.info("LT {} after the win: {}", name, done);
+			check(done == LairReset.Result.DONE, name + ": the charter didn't rebuild the lair (" + done + ")");
+		});
+		context.waitTicks(40);
+		server(sp, s -> {
+			if (chestAt[0] == null) {
+				return;
+			}
+			ServerLevel level = s.overworld();
+			boolean bossBack = !level.getEntitiesOfClass(RogueBossEntity.class, new AABB(chestAt[0]).inflate(150),
+					e -> e.isAlive() && e.getCharacterId().equals(lair.boss)).isEmpty();
+			boolean chestBack = level.getBlockEntity(chestAt[0]) instanceof LairChestBlockEntity c && c.getLootTable() != null;
+			boolean floorBack = level.getBlockState(hole[0]).equals(holeWas[0]);
+			LOG.info("LT {} rebuilt: boss back={} fresh chest={} floor back={} ({})", name, bossBack, chestBack, floorBack, level.getBlockState(hole[0]));
+			check(bossBack, name + ": " + lair.boss + " didn't come back");
+			check(chestBack, name + ": the chest wasn't refilled");
+			check(floorBack, name + ": the broken block wasn't rebuilt");
+		});
+	}
+
+	/**
+	 * The charter on one of the main mod's boss structures, as the world made it (/place only builds a main-mod
+	 * structure's start tile, so its boss, saved in another tile, never appears). Then the same as resetTest without the
+	 * chest: refused while the boss lives; with the boss beaten and a block broken, the boss, the block and the same
+	 * number of crew come back.
+	 */
+	private void mainModResetTest(ClientGameTestContext context, TestSingleplayerContext sp, String structure, String boss) throws Exception {
+		String name = structure + " (main mod reset)";
+		BlockPos[] located = new BlockPos[1];
+		server(sp, s -> {
+			ServerLevel level = s.overworld();
+			Holder<Structure> st = level.registryAccess().lookupOrThrow(Registries.STRUCTURE)
+					.getOrThrow(net.minecraft.resources.ResourceKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath("onepiece", structure)));
+			Pair<BlockPos, Holder<Structure>> found = level.getChunkSource().getGenerator()
+					.findNearestMapStructure(level, HolderSet.direct(st), new BlockPos(0, 64, 0), 100, false);
+			located[0] = found == null ? null : found.getFirst();
+			LOG.info("LT {} located at {}", name, located[0]);
+		});
+		if (located[0] == null) {
+			check(false, name + ": /locate found none");
+			return;
+		}
+		int x = located[0].getX(), z = located[0].getZ();
+		server(sp, s -> player(s).teleportTo(s.overworld(), x + 0.5, 200, z + 0.5, Set.of(), 0f, 60f, true));
+		context.waitTicks(40);
+		// The tiles spread about 100 blocks either side of the start; 15x15 chunks stays under forceload's 256.
+		cmd(sp, "forceload add " + (x - 112) + " " + (z - 112) + " " + (x + 112) + " " + (z + 112));
+		context.waitTicks(200);
+		BlockPos[] hole = new BlockPos[1];
+		net.minecraft.world.level.block.state.BlockState[] holeWas = new net.minecraft.world.level.block.state.BlockState[1];
+		int[] crewBefore = new int[1];
+		AABB search = new AABB(x, -64, z, x, 320, z).inflate(160, 0, 160);
+		server(sp, s -> {
+			ServerLevel level = s.overworld();
+			ServerPlayer p = player(s);
+			var found = level.getEntitiesOfClass(com.onepiecemod.character.CharacterEntity.class, search, e -> e.isAlive() && e.getCharacterId().equals(boss));
+			LOG.info("LT {} placed: {} {} found", name, found.size(), boss);
+			if (found.isEmpty()) {
+				check(false, name + ": no " + boss + " after /place");
+				return;
+			}
+			var b = found.get(0);
+			BlockPos at = b.blockPosition();
+			p.teleportTo(level, at.getX() + 0.5, at.getY(), at.getZ() + 0.5, Set.of(), 0f, 0f, true);
+			crewBefore[0] = crew(level, search);
+			var refused = LairReset.reset(level, p);
+			LOG.info("LT {} with the boss alive: {} (crew {})", name, refused, crewBefore[0]);
+			check(refused == LairReset.Result.BOSS_STILL_HERE, name + ": rebuilt with " + boss + " still alive (" + refused + ")");
+
+			b.discard();
+			hole[0] = at.below();
+			holeWas[0] = level.getBlockState(hole[0]);
+			level.setBlockAndUpdate(hole[0], net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+			var done = LairReset.reset(level, p);
+			LOG.info("LT {} after the win: {}", name, done);
+			check(done == LairReset.Result.DONE, name + ": the charter didn't rebuild it (" + done + ")");
+		});
+		context.waitTicks(40);
+		server(sp, s -> {
+			if (hole[0] == null) {
+				return;
+			}
+			ServerLevel level = s.overworld();
+			int bosses = level.getEntitiesOfClass(com.onepiecemod.character.CharacterEntity.class, search, e -> e.isAlive() && e.getCharacterId().equals(boss)).size();
+			int crewAfter = crew(level, search);
+			boolean floorBack = level.getBlockState(hole[0]).equals(holeWas[0]);
+			LOG.info("LT {} rebuilt: {} x{} crew {} -> {} floor back={}", name, boss, bosses, crewBefore[0], crewAfter, floorBack);
+			check(bosses == 1, name + ": " + bosses + " " + boss + " after the rebuild, want 1");
+			check(crewAfter == crewBefore[0], name + ": crew went from " + crewBefore[0] + " to " + crewAfter);
+			check(floorBack, name + ": the broken block wasn't rebuilt");
+		});
+		cmd(sp, "forceload remove all");
+	}
+
+	/** The main mod's kept pirates and Marines (a structure's crew) in an area. */
+	private static int crew(ServerLevel level, AABB area) {
+		return level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, area, e -> e.isAlive() && e.isPersistenceRequired()
+				&& !(e instanceof com.onepiecemod.character.CharacterEntity)
+				&& net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).getNamespace().equals("onepiece")).size();
 	}
 
 	/** A camera at (x, y, z) looking at (tx, ty, tz), as {x, y, z, yaw, pitch}. */
