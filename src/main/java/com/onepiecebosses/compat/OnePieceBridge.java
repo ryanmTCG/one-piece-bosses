@@ -96,4 +96,14 @@ public final class OnePieceBridge {
 		}
 		return CharacterEntity.NORMAL;
 	}
+
+	/** A main mod (or rogue) character's display name, or a tidied id if it has none. */
+	public static String characterName(String id) {
+		com.onepiecebosses.boss.RogueData rogue = com.onepiecebosses.boss.RogueData.get(id);
+		if (rogue != null) {
+			return rogue.name();
+		}
+		com.onepiecemod.character.CharacterData data = com.onepiecemod.character.CharacterData.get(id);
+		return data != null && data.name != null ? data.name : id.replace('_', ' ');
+	}
 }

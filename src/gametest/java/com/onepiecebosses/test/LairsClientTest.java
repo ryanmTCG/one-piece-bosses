@@ -135,6 +135,9 @@ public class LairsClientTest implements FabricClientGameTest {
 			for (int i = 0; i < picked.size(); i++) {
 				placeTest(context, sp, picked.get(i), i, used);
 			}
+			if (TestFilter.picks("buggy_big_top", "buggy")) {
+				mainModResetTest(context, sp, "buggy_big_top", "buggy");
+			}
 			LOG.info("LT DONE, {} failures", FAILURES.size());
 		}
 		if (!FAILURES.isEmpty()) {
@@ -288,6 +291,73 @@ public class LairsClientTest implements FabricClientGameTest {
 			check(chestBack, name + ": the chest wasn't refilled");
 			check(floorBack, name + ": the broken block wasn't rebuilt");
 		});
+	}
+
+	/**
+	 * The charter on one of the main mod's boss structures: /place it far out, then the same as resetTest without the
+	 * chest: refused while the boss lives; with the boss beaten and a block broken, the boss, the block and the same
+	 * number of crew come back.
+	 */
+	private void mainModResetTest(ClientGameTestContext context, TestSingleplayerContext sp, String structure, String boss) throws Exception {
+		String name = structure + " (main mod reset)";
+		int x = 6000, z = 6000;
+		server(sp, s -> player(s).teleportTo(s.overworld(), x + 0.5, 200, z + 0.5, Set.of(), 0f, 60f, true));
+		context.waitTicks(40);
+		cmd(sp, "forceload add " + (x - 144) + " " + (z - 144) + " " + (x + 144) + " " + (z + 144));
+		context.waitTicks(40);
+		cmd(sp, "place structure onepiece:" + structure + " " + x + " 64 " + z);
+		context.waitTicks(60);
+		BlockPos[] hole = new BlockPos[1];
+		net.minecraft.world.level.block.state.BlockState[] holeWas = new net.minecraft.world.level.block.state.BlockState[1];
+		int[] crewBefore = new int[1];
+		AABB search = new AABB(x, -64, z, x, 320, z).inflate(160, 0, 160);
+		server(sp, s -> {
+			ServerLevel level = s.overworld();
+			ServerPlayer p = player(s);
+			var found = level.getEntitiesOfClass(com.onepiecemod.character.CharacterEntity.class, search, e -> e.isAlive() && e.getCharacterId().equals(boss));
+			LOG.info("LT {} placed: {} {} found", name, found.size(), boss);
+			if (found.isEmpty()) {
+				check(false, name + ": no " + boss + " after /place");
+				return;
+			}
+			var b = found.get(0);
+			BlockPos at = b.blockPosition();
+			p.teleportTo(level, at.getX() + 0.5, at.getY(), at.getZ() + 0.5, Set.of(), 0f, 0f, true);
+			crewBefore[0] = crew(level, search);
+			var refused = LairReset.reset(level, p);
+			LOG.info("LT {} with the boss alive: {} (crew {})", name, refused, crewBefore[0]);
+			check(refused == LairReset.Result.BOSS_STILL_HERE, name + ": rebuilt with " + boss + " still alive (" + refused + ")");
+
+			b.discard();
+			hole[0] = at.below();
+			holeWas[0] = level.getBlockState(hole[0]);
+			level.setBlockAndUpdate(hole[0], net.minecraft.world.level.block.Blocks.AIR.defaultBlockState());
+			var done = LairReset.reset(level, p);
+			LOG.info("LT {} after the win: {}", name, done);
+			check(done == LairReset.Result.DONE, name + ": the charter didn't rebuild it (" + done + ")");
+		});
+		context.waitTicks(40);
+		server(sp, s -> {
+			if (hole[0] == null) {
+				return;
+			}
+			ServerLevel level = s.overworld();
+			int bosses = level.getEntitiesOfClass(com.onepiecemod.character.CharacterEntity.class, search, e -> e.isAlive() && e.getCharacterId().equals(boss)).size();
+			int crewAfter = crew(level, search);
+			boolean floorBack = level.getBlockState(hole[0]).equals(holeWas[0]);
+			LOG.info("LT {} rebuilt: {} x{} crew {} -> {} floor back={}", name, boss, bosses, crewBefore[0], crewAfter, floorBack);
+			check(bosses == 1, name + ": " + bosses + " " + boss + " after the rebuild, want 1");
+			check(crewAfter == crewBefore[0], name + ": crew went from " + crewBefore[0] + " to " + crewAfter);
+			check(floorBack, name + ": the broken block wasn't rebuilt");
+		});
+		cmd(sp, "forceload remove all");
+	}
+
+	/** The main mod's kept pirates and Marines (a structure's crew) in an area. */
+	private static int crew(ServerLevel level, AABB area) {
+		return level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, area, e -> e.isAlive() && e.isPersistenceRequired()
+				&& !(e instanceof com.onepiecemod.character.CharacterEntity)
+				&& net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(e.getType()).getNamespace().equals("onepiece")).size();
 	}
 
 	/** A camera at (x, y, z) looking at (tx, ty, tz), as {x, y, z, yaw, pitch}. */

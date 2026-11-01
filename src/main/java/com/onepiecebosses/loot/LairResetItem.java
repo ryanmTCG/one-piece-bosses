@@ -15,7 +15,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 
-/** The Lair Restoration Charter: use it inside a rogue's lair and the lair is rebuilt, boss, crew, chest and all. Used up. */
+/** The Lair Restoration Charter: use it inside a boss's lair (a rogue's, or a main mod boss structure) and the lair is rebuilt, boss, crew, chest and all. Used up. */
 public class LairResetItem extends Item {
 	public LairResetItem(Properties properties) {
 		super(properties);
@@ -39,7 +39,7 @@ public class LairResetItem extends Item {
 
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
-		textConsumer.accept(Component.literal("Use it inside a rogue's lair to rebuild it:").withStyle(ChatFormatting.GRAY));
+		textConsumer.accept(Component.literal("Use it inside a boss's lair to rebuild it:").withStyle(ChatFormatting.GRAY));
 		textConsumer.accept(Component.literal("the boss, their crew and a fresh locked chest come back.").withStyle(ChatFormatting.GRAY));
 		textConsumer.accept(Component.literal("Only once the boss there is beaten.").withStyle(ChatFormatting.DARK_GRAY));
 	}
