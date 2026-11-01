@@ -465,6 +465,185 @@ def _():
     return tex, boxes
 
 
+@chest("gold_island", "Woonan's Treasure Chest")
+def _():
+    # The old pirate Woonan's chest: worn timber in gold bands, gold coins spilling over the lid, and El Drago's
+    # golden claw marks gouged across the front where he tried to tear it open.
+    wood = planks('#6a4a2a', '#3a2614', 55)
+    front = planks('#6a4a2a', '#3a2614', 56)
+    for i in range(4):
+        for (x0, y0) in ((3, 2), (6, 1), (9, 2)):
+            put(front, x0 + i, y0 + i * 2, '#e8c040'); put(front, x0 + i, y0 + i * 2 + 1, '#a07820')   # claw marks
+    band = new('#d8b030', 0.12, 57)
+    frame(band, 0, 0, 15, 15, '#a07820')
+    coins = new('#e8c040', 0.3, 58)
+    rnd = random.Random(59)
+    for _ in range(18):
+        x, y = rnd.randrange(S), rnd.randrange(S)
+        put(coins, x, y, '#fff0a0'); put(coins, x + 1, y, '#b08820')
+    lock = new('#c8a030', 0.1, 60)
+    rect(lock, 6, 5, 9, 9, '#2a2010')
+    tex = dict(wood=wood, front=front, band=band, coins=coins, lock=lock)
+    boxes = [
+        box([1, 0, 2], [15, 9, 14], dict(all='wood', front='front')),
+        box([1, 9, 2], [15, 12, 14], dict(all='wood', front='front')),
+        box([0.6, 0, 1.6], [2.4, 12.5, 14.4], 'band'),
+        box([13.6, 0, 1.6], [15.4, 12.5, 14.4], 'band'),
+        box([2.4, 8.6, 1.6], [13.6, 9.6, 14.4], 'band'),
+        box([6.5, 7, 1.2], [9.5, 11, 2], 'lock', full=True),
+        box([2.5, 12, 3.5], [13.5, 13.5, 12.5], 'coins'),            # the hoard spilling over the top
+        box([4, 13.5, 5], [12, 14.8, 11], 'coins'),
+        box([6, 14.8, 6.5], [10, 15.8, 9.5], 'coins'),
+        box([13.5, 0, 0.3], [15.5, 1.2, 2.3], 'coins'),              # and onto the floor
+        box([1, 0, 14.2], [3.5, 0.8, 15.8], 'coins'),
+    ]
+    return tex, boxes
+
+
+@chest("salamander", "Gasparde's Syrup Safe")
+def _():
+    # A Navy-green steel safe from the Salamander, its gull crest crossed out, with amber syrup oozing over the top
+    # and running down the front.
+    steel = metal('#2e4a3e', '#8aa090', 61, edge='#1e3028')
+    front = metal('#2e4a3e', '#8aa090', 62, edge='#1e3028')
+    for x in range(4, 12):
+        put(front, x, 4 + abs(x - 8) // 2, '#e8e8ec')   # the gull
+    for i in range(6):
+        put(front, 5 + i, 2 + i, '#c82020'); put(front, 10 - i, 2 + i, '#c82020')   # crossed out
+    dial = new('#c8c8d0', 0.06, 63)
+    for y in range(S):
+        for x in range(S):
+            r = math.hypot(x - 7.5, y - 7.5)
+            if r > 7.4:
+                put(dial, x, y, '#2e4a3e')
+            elif r < 2:
+                put(dial, x, y, '#4a4a52')
+    for a in range(0, 360, 30):
+        put(dial, 7.5 + 6 * math.cos(math.radians(a)), 7.5 + 6 * math.sin(math.radians(a)), '#1a1a1e')
+    syrup = new('#d89030', 0.12, 64)
+    for x in range(S):
+        put(syrup, x, (x * 3) % S, '#f8c870')
+    tex = dict(steel=steel, front=front, dial=dial, syrup=syrup)
+    boxes = [
+        box([1, 0, 1], [15, 12, 15], dict(all='steel', front='front')),
+        box([9.5, 2, 0.4], [13.5, 6, 1], 'dial', full=True),
+        box([1.5, 12, 1.5], [14.5, 13.5, 14.5], 'syrup'),              # syrup over the top,
+        box([3, 13.5, 4], [10, 14.5, 12], 'syrup'),
+        box([2, 7, 0.5], [4, 12.5, 1.5], 'syrup'),                     # running down the front
+        box([2.5, 4.5, 0.6], [3.5, 7, 1.4], 'syrup'),
+        box([11, 9, 0.5], [13, 12.5, 1.5], 'syrup'),
+        box([14.5, 6, 6], [15.5, 13, 8], 'syrup'),                     # and the side
+        box([0.8, -0.01, 0.8], [3, 1.5, 3], 'steel'),
+        box([13, -0.01, 0.8], [15.2, 1.5, 3], 'steel'),
+    ]
+    return tex, boxes
+
+
+@chest("omatsuri_island", "Festival Prize Box")
+def _():
+    # The Trials of Hell's prize box: red lacquer with gold corners, a red-and-white festival rope, a paper lantern on
+    # a post, and Lily Carnation herself sitting on the lid, smiling.
+    red = lacquer('#b82028', 65)
+    front = lacquer('#b82028', 66)
+    for x in range(S):
+        put(front, x, 5, '#ffffff' if x % 4 < 2 else '#c82020'); put(front, x, 6, '#c82020' if x % 4 < 2 else '#ffffff')
+    rect(front, 6, 9, 9, 12, '#e8c040')
+    gold = new('#e8c040', 0.15, 67)
+    lantern = new('#f8e8c0', 0.05, 68)
+    for y in (0, 15):
+        for x in range(S):
+            put(lantern, x, y, '#2a2020')
+    for x in range(4, 12):
+        put(lantern, x, 7, '#c82020'); put(lantern, x, 8, '#c82020')
+    petal = new('#f0d030', 0.08, 69)
+    put(petal, 4, 4, '#c82020'); put(petal, 11, 4, '#c82020'); put(petal, 4, 11, '#c82020'); put(petal, 11, 11, '#c82020')
+    face = new('#f8e070', 0.05, 70)
+    rect(face, 4, 5, 5, 6, '#1a1a1a'); rect(face, 10, 5, 11, 6, '#1a1a1a')
+    for x in range(5, 11):
+        put(face, x, 10 + (1 if 6 < x < 9 else 0), '#8a2020')
+    stem = new('#3a8a3a', 0.1, 71)
+    tex = dict(red=red, front=front, gold=gold, lantern=lantern, petal=petal, face=face, stem=stem)
+    boxes = [
+        box([1, 0, 2], [15, 9, 14], dict(all='red', front='front')),
+        box([0.6, 9, 1.6], [15.4, 11, 14.4], 'red'),
+        box([0.4, -0.01, 1.4], [2.4, 11.4, 3.4], 'gold'),
+        box([13.6, -0.01, 1.4], [15.6, 11.4, 3.4], 'gold'),
+        box([0.4, -0.01, 12.6], [2.4, 11.4, 14.6], 'gold'),
+        box([13.6, -0.01, 12.6], [15.6, 11.4, 14.6], 'gold'),
+        box([12.5, 11, 11], [13.5, 17, 12], 'stem'),                   # the lantern's post
+        box([11.5, 13, 10], [14.5, 16.5, 13], 'lantern', full=True, light=10),
+        box([6.5, 11, 7.5], [7.5, 13, 8.5], 'stem'),                   # Lily Carnation's stem
+        box([3.5, 13, 7], [10.5, 17, 8], dict(all='petal', front='face'), full=True),
+        box([4.5, 12, 7.2], [9.5, 13, 8.8], 'petal'),
+    ]
+    return tex, boxes
+
+
+@chest("karakuri_castle", "Clockwork Turtle Chest")
+def _():
+    # One of Ratchet's Zogame-kun turtles built as a strongbox: a riveted bronze body, a green plated shell for a lid,
+    # a turtle head and four stubby legs, and a big wind-up key in its back.
+    bronze = metal('#a8703a', '#e0b080', 72)
+    shell = new('#3a7a4a', 0.1, 73)
+    for y in range(S):
+        for x in range(S):
+            if (x + (y // 4) * 2) % 8 == 0 or y % 4 == 0:
+                put(shell, x, y, '#24502e')
+    head = new('#5a9a5a', 0.1, 74)
+    rect(head, 3, 5, 5, 7, '#ffffff'); put(head, 4, 6, '#c82020')
+    rect(head, 10, 5, 12, 7, '#ffffff'); put(head, 11, 6, '#c82020')        # glowing red eyes
+    for x in range(4, 12):
+        put(head, x, 11, '#2a3a2a')
+    key = new('#d8b040', 0.12, 75)
+    frame(key, 0, 0, 15, 15, '#a07820')
+    tex = dict(bronze=bronze, shell=shell, head=head, key=key)
+    boxes = [
+        box([2, 2, 2], [14, 9, 14], 'bronze'),
+        box([1, 9, 1], [15, 11, 15], 'shell'),
+        box([2.5, 11, 2.5], [13.5, 13, 13.5], 'shell'),
+        box([4.5, 13, 4.5], [11.5, 14.5, 11.5], 'shell'),
+        box([5.5, 5, -1.5], [10.5, 10, 2], dict(all='bronze', front='head'), full=True),   # the head, out front
+        box([1, 0, 1], [4, 3, 4], 'bronze'),
+        box([12, 0, 1], [15, 3, 4], 'bronze'),
+        box([1, 0, 12], [4, 3, 15], 'bronze'),
+        box([12, 0, 12], [15, 3, 15], 'bronze'),
+        box([7.5, 5, 14], [8.5, 7, 16], 'key'),                           # the key's shaft
+        box([5, 4, 15.5], [11, 9, 16.5], 'key', full=True),               # and its bow
+    ]
+    return tex, boxes
+
+
+@chest("groseade", "World's War Chest")
+def _():
+    # Byrnndi World's chest from the Groseade: black iron with purple bands, a horn bolted to one corner, and one of the
+    # cannon shells he likes to throw lying on the lid.
+    iron = metal('#1e1a24', '#5a4a6a', 76)
+    front = metal('#1e1a24', '#5a4a6a', 77)
+    for (x, y) in ((4, 4), (5, 5), (6, 4), (7, 5), (8, 4), (9, 5), (10, 4), (11, 5)):
+        put(front, x, y + 4, '#8a5ab8'); put(front, x, y + 5, '#8a5ab8')   # a W, his mark
+    band = new('#6a3a8a', 0.12, 78)
+    horn = new('#e8e0c8', 0.12, 79)
+    for y in range(0, S, 3):
+        for x in range(S):
+            put(horn, x, y, '#c8c0a8')
+    shell = new('#b08840', 0.1, 80)
+    for x in range(S):
+        put(shell, x, 3, '#e0c070')
+    tip = new('#5a5a62', 0.1, 81)
+    tex = dict(iron=iron, front=front, band=band, horn=horn, shell=shell, tip=tip)
+    boxes = [
+        box([1, 0, 1], [15, 11, 15], dict(all='iron', front='front')),
+        box([0.6, 3, 0.6], [15.4, 4.5, 15.4], 'band'),
+        box([0.6, 9, 0.6], [15.4, 11.5, 15.4], 'band'),
+        box([4, 11.5, 6], [11, 14, 9], 'shell'),                         # a cannon shell on the lid
+        box([11, 12, 6.5], [13.5, 13.5, 8.5], 'tip'),
+        box([0.5, 11, 0.5], [3, 13.5, 3], 'horn'),                       # a horn on the corner
+        box([0.8, 13.5, 0.8], [2.4, 16.5, 2.4], 'horn'),
+        box([1.1, 16.5, 1.1], [2, 18.5, 2], 'horn'),
+    ]
+    return tex, boxes
+
+
 # ---------------------------------------------------------------- writing
 
 FACE = dict(north='front', south='back', east='side', west='side', up='top', down='bottom')

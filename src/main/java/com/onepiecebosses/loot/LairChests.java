@@ -38,7 +38,9 @@ public final class LairChests {
 		String[][] pairs = {{"scrapheap_reef", "saltjaw_rourke"}, {"lantern_house", "corvina_fog_widow"}, {"fort_iron_tide", "iron_tide_graves"},
 				{"hollow_shrine", "hollow_ronin_tsurugi"}, {"shipbreakers_foundry", "boilerheart_gantz"}, {"abyssal_temple", "nereus_vane"},
 				{"gran_tesoro", "gild_tesoro"}, {"elegia_stage", "uta_diva"}, {"end_point", "zephyr_z"},
-				{"ironclad_colosseum", "douglas_bullet"}, {"merveille", "shiki_golden_lion"}};
+				{"ironclad_colosseum", "douglas_bullet"}, {"merveille", "shiki_golden_lion"},
+				{"gold_island", "el_drago"}, {"salamander", "gasparde"}, {"omatsuri_island", "baron_omatsuri"},
+				{"karakuri_castle", "ratchet"}, {"groseade", "byrnndi_world"}};
 		for (String[] pair : pairs) {
 			LAIR_BOSSES.put(pair[0], pair[1]);
 		}
