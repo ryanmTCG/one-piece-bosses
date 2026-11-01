@@ -20,6 +20,7 @@ import com.onepiecebosses.boss.RogueData;
 import com.onepiecebosses.boss.RumorPosterItem;
 import com.onepiecebosses.loot.LairChests;
 import com.onepiecebosses.loot.LairKeyItem;
+import com.onepiecebosses.loot.LairResetItem;
 
 /** A Rumor Poster, a trophy and a lair key for every rogue boss in bosses.json, and the creative tab. */
 public final class BossItems {
@@ -32,6 +33,8 @@ public final class BossItems {
 	public static final Map<String, Item> TROPHIES = new LinkedHashMap<>();
 	/** Boss id -> the key to its lair's chest ("key_" + boss id), dropped every time the boss is beaten. */
 	public static final Map<String, Item> KEYS = new LinkedHashMap<>();
+	/** Rebuilds the lair you stand in and brings its boss back (crafted: see data/opbosses/recipe). */
+	public static Item LAIR_CHARTER;
 
 	public static final ResourceKey<CreativeModeTab> TAB_KEY = ResourceKey.create(
 			BuiltInRegistries.CREATIVE_MODE_TAB.key(), BossesMod.id("bosses"));
@@ -48,6 +51,8 @@ public final class BossItems {
 			}
 		}
 
+		LAIR_CHARTER = register("lair_charter", LairResetItem::new, new Item.Properties().stacksTo(16).rarity(Rarity.RARE));
+
 		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TAB_KEY, FabricCreativeModeTab.builder()
 				.icon(() -> new ItemStack(RUMORS.values().iterator().next()))
 				.title(Component.literal("One Piece: Rogue Bosses"))
@@ -56,6 +61,7 @@ public final class BossItems {
 					TROPHIES.values().forEach(output::accept);
 					KEYS.values().forEach(output::accept);
 					LairChests.ITEMS.values().forEach(output::accept);
+					output.accept(LAIR_CHARTER);
 				})
 				.build());
 	}

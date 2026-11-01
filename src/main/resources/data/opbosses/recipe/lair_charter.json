@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "GDG",
+    "PCP",
+    "GPG"
+  ],
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "D": "minecraft:diamond",
+    "P": "minecraft:paper",
+    "C": "minecraft:compass"
+  },
+  "result": {
+    "id": "opbosses:lair_charter",
+    "count": 1
+  }
+}
