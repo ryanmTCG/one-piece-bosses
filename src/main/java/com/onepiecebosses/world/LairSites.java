@@ -50,8 +50,10 @@ public final class LairSites {
 	/** Fewest of the 49 samples under a sea lair that must be water (most of it: reef and beach lairs keep a bit of shore). */
 	private static final int MIN_WET_SEA = 29;
 	private static final int STEP = 16;
-	/** A chunk looks 8 chunks around for structure starts: our widest lair (~120) can move ~48 blocks and stay seen. */
+	/** Furthest a lair slides to find flat ground. */
 	private static final int MAX_SHIFT = 48;
+	/** A chunk looks 8 chunks around for structure starts; one chunk of slack. */
+	private static final int REACH = 7;
 
 	/** True while /place structure runs on this thread: a lair placed by hand goes exactly where it's asked. */
 	public static final ThreadLocal<Boolean> PLACING = ThreadLocal.withInitial(() -> false);
@@ -69,9 +71,15 @@ public final class LairSites {
 		if (builder.isEmpty()) return found;
 		BoundingBox box = builder.getBoundingBox();
 		BlockPos start = stub.position();
-		int shift = Math.max(0, Math.min(MAX_SHIFT, 128 - 16 - Math.max(box.getXSpan(), box.getZSpan()) / 2));
+		// A chunk only looks REACH chunks around itself for structure starts, so every part of the lair must stay within
+		// that many chunks of its start chunk, or the far pieces are never built (Ironclad lost its chest that way).
+		int sx = ctx.chunkPos().getMinBlockX(), sz = ctx.chunkPos().getMinBlockZ();
+		int minX = sx - REACH * 16, maxX = sx + 15 + REACH * 16, minZ = sz - REACH * 16, maxZ = sz + 15 + REACH * 16;
+		int shift = MAX_SHIFT;
 
 		for (int[] o : spiral(shift)) {
+			BoundingBox moved = box.moved(o[0], 0, o[1]);
+			if ((o[0] != 0 || o[1] != 0) && (moved.minX() < minX || moved.maxX() > maxX || moved.minZ() < minZ || moved.maxZ() > maxZ)) continue;
 			Ground g = sample(ctx, box.moved(o[0], 0, o[1]));
 			boolean fits = sea ? g.wet >= MIN_WET_SEA : g.wet <= MAX_WET && g.spread() <= MAX_SPREAD && g.peak() <= MAX_RISE;
 			if (DEBUG) BossesMod.LOGGER.info("lair site {} at {} {} offset {},{}: wet {} spread {} peak {} -> {}", id.getPath(),
