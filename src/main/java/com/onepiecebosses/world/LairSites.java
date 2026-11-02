@@ -26,7 +26,8 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilde
  * run up the side of the mountain next door. This samples the ground on a 7x7 grid over the lair's real footprint and,
  * if it's too steep or too wet (or, for a sea lair, too dry), slides the whole lair to the nearest spot within
  * {@link #MAX_SHIFT} blocks that fits. If none does, the lair isn't built there and the next spot in the set gets it.
- * Hooked into Structure.findValidGenerationPoint (LairSiteMixin), so /locate agrees with world generation; /place
+ * Hooked around the calls to Structure.findValidGenerationPoint in Structure.generate and StructureCheck (LairSiteMixin,
+ * StructureCheckSiteMixin), so /locate agrees with world generation; /place
  * structure skips it (PlaceCommandMixin).
  * -Dopbosses.siteRules=false turns it off.
  */
