@@ -472,7 +472,7 @@ def add(lair, OCEANS, DEEP):
 
     # ============================================================ Zephyr: the End Point
     @lair("end_point", "The End Point", "zephyr_z",
-          ["#minecraft:is_badlands", "minecraft:savanna_plateau", "minecraft:windswept_savanna", "minecraft:stony_shore", "onepiece:punk_hazard_burning", "onepiece:marineford"],
+          ["minecraft:badlands", "minecraft:savanna_plateau", "minecraft:savanna", "onepiece:punk_hazard_burning", "onepiece:marineford"],
           "land", group="film_lairs")
     def _(b):
         rnd = random.Random(13)
@@ -631,7 +631,7 @@ def add(lair, OCEANS, DEEP):
 
     # ============================================================ Douglas Bullet: the Ironclad Colosseum
     @lair("ironclad_colosseum", "The Ironclad Colosseum", "douglas_bullet",
-          ["minecraft:desert", "minecraft:savanna", "minecraft:windswept_savanna", "minecraft:plains", "onepiece:alabasta"], "land", group="film_lairs")
+          ["minecraft:desert", "minecraft:savanna", "minecraft:plains", "onepiece:alabasta"], "land", group="film_lairs")
     def _(b):
         rnd = random.Random(14)
         W, D = 92, 96
@@ -940,7 +940,7 @@ def add(lair, OCEANS, DEEP):
         b.scatter(0, 0, W, D, 1, ["minecraft:fern", "minecraft:short_grass", "minecraft:short_grass", "minecraft:bush" if False else "minecraft:fern"], 0.08, rnd, only_on=grass)
 
         b.rogue(AX, 1, AZ, "shiki_golden_lion")
-        b.crew("golden_lion_pirate", ((AX - 8, AZ - 6), (AX + 8, AZ - 6), (AX - 8, AZ + 6), (AX + 8, AZ + 6), (22, 60)))
+        b.crew("golden_lion_pirate", ((AX - 8, AZ - 6), (AX + 8, AZ - 6), (AX - 8, AZ + 6), (AX + 8, AZ + 6), (AX, AZ - 10)))   # on the paving: a jungle tree grew through the garden spot
         b.crew("golden_lion_pirate", ((TX - 6, PZ0 + 9), (TX + 6, PZ0 + 9)), y=IY + 1)   # palace guards, inside the hall
 
 

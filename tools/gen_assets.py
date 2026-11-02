@@ -23,6 +23,10 @@ TROPHIES = {
     "hollow_menpo": ((40, 36, 46), (120, 230, 255), "mask"),
     "cracked_boiler_core": ((255, 140, 30), (80, 60, 50), "core"),
     "abyssal_conch": ((240, 220, 200), (60, 140, 160), "conch"),
+    "broken_shackle": ((120, 120, 128), (200, 160, 90), "shackle"),
+    "cursed_doubloon": ((236, 196, 64), (64, 240, 208), "doubloon"),
+    "sea_king_bridle": ((110, 70, 40), (58, 122, 138), "bridle"),
+    "prototype_core": ((96, 224, 255), (90, 106, 122), "prototype"),
     "golden_casino_chip": ((240, 200, 60), (170, 30, 40), "chip"),
     "diva_headphones": ((244, 244, 248), (232, 144, 184), "headphones"),
     "smasher_knuckle": ((110, 90, 150), (50, 50, 60), "knuckle"),
@@ -42,6 +46,10 @@ TROPHY_NAMES = {
     "hollow_menpo": "Hollow Menpo",
     "cracked_boiler_core": "Cracked Boiler Core",
     "abyssal_conch": "Abyssal Conch",
+    "broken_shackle": "Broken Sandshackle",
+    "cursed_doubloon": "Cursed Doubloon",
+    "sea_king_bridle": "Sea King Bridle",
+    "prototype_core": "Prototype Core",
     "golden_casino_chip": "Tesoro's Golden Chip",
     "diva_headphones": "Diva's Headphones",
     "smasher_knuckle": "Battle Smasher Knuckle",
@@ -99,6 +107,25 @@ def item_texture(main, dark, shape):
         d.line([(8, 0), (8, 15)], fill=main + (255,)); d.line([(0, 8), (15, 8)], fill=main + (255,))
         d.line([(3, 3), (12, 12)], fill=main + (255,)); d.line([(12, 3), (3, 12)], fill=main + (255,))
         d.ellipse([6, 6, 9, 9], fill=dark + (255,))
+    elif shape == "shackle":
+        # An iron cuff snapped open, its chain broken off.
+        d.arc([2, 2, 11, 11], 30, 330, fill=main + (255,), width=2); box(d, 10, 5, 2, 3, dark)
+        for i, (x, y) in enumerate(((11, 9), (12, 11), (13, 13))):
+            d.ellipse([x, y, x + 2, y + 2], outline=shade(main, 1.2) + (255,))
+    elif shape == "doubloon":
+        # A gold coin with a skull struck on it, glowing with the curse.
+        d.ellipse([1, 1, 14, 14], fill=main + (255,)); d.ellipse([2, 2, 13, 13], outline=shade(main, 0.75) + (255,))
+        d.ellipse([5, 4, 10, 9], fill=shade(main, 0.6) + (255,)); box(d, 6, 6, 1, 1, dark); box(d, 9, 6, 1, 1, dark)
+        box(d, 6, 10, 4, 1, shade(main, 0.6)); d.point([(1, 1), (14, 2), (13, 14)], fill=dark + (255,))
+    elif shape == "bridle":
+        # Leather reins and a bit sized for a Sea King's jaw, with a scale charm.
+        d.arc([1, 1, 14, 14], 200, 340, fill=main + (255,), width=2); d.line([(3, 12), (8, 4), (12, 12)], fill=main + (255,), width=2)
+        box(d, 2, 11, 3, 3, (180, 180, 190)); box(d, 11, 11, 3, 3, (180, 180, 190)); d.ellipse([6, 9, 10, 13], fill=dark + (255,))
+    elif shape == "prototype":
+        # A Pacifista prototype's reactor core: a glowing cell in a steel cage.
+        box(d, 4, 1, 8, 2, dark); box(d, 4, 13, 8, 2, dark); box(d, 5, 3, 6, 10, main); box(d, 7, 4, 2, 8, (230, 255, 255))
+        for x in (3, 12):
+            box(d, x, 2, 1, 12, dark)
     elif shape == "claw":
         # A hooked golden fingernail.
         d.polygon([(4, 14), (6, 4), (10, 1), (13, 3), (9, 6), (8, 14)], fill=main + (255,))

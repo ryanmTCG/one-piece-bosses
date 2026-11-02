@@ -67,6 +67,10 @@ public class LairsClientTest implements FabricClientGameTest {
 			new Lair("hollow_shrine", "hollow_ronin_tsurugi", "", 0, false),
 			new Lair("shipbreakers_foundry", "boilerheart_gantz", "boiler_stoker", 7, false),
 			new Lair("abyssal_temple", "nereus_vane", "abyssal_cultist", 7, true),
+			new Lair("sunken_kasbah", "khamsin_sandshackle", "sandshackle_raider", 7, false),
+			new Lair("gilded_wake", "mortimer_gale", "cursed_deckhand", 7, true),
+			new Lair("leviathan_pens", "vasco_tidebreaker", "sea_king_wrangler", 7, true),
+			new Lair("laboratory_null", "doctor_kreuz", "pacifista_prototype", 7, false),
 			new Lair("gran_tesoro", "gild_tesoro", "gran_tesoro_guard", 7, true),
 			new Lair("elegia_stage", "uta_diva", "entranced_fan", 6, false),
 			new Lair("end_point", "zephyr_z", "neo_marine", 7, false),
@@ -217,8 +221,21 @@ public class LairsClientTest implements FabricClientGameTest {
 		return p;
 	}
 
+	/**
+	 * The middle of the lair /locate found. /locate gives its start chunk, but the ground check (LairSites) may have slid
+	 * the lair up to 48 blocks from there, so the test goes to the lair's own bounds instead.
+	 */
+	private static BlockPos centre(MinecraftServer s, Lair lair, BlockPos pos) {
+		var start = s.overworld().getChunk(pos).getStartForStructure(structure(s, lair.name).value());
+		if (start == null || !start.isValid()) return pos;
+		var bb = start.getBoundingBox();
+		return new BlockPos((bb.minX() + bb.maxX()) / 2, pos.getY(), (bb.minZ() + bb.maxZ()) / 2);
+	}
+
 	private void naturalTest(ClientGameTestContext context, TestSingleplayerContext sp, Lair lair, BlockPos pos) throws Exception {
-		server(sp, s -> player(s).teleportTo(s.overworld(), pos.getX() + 0.5, 160, pos.getZ() + 0.5, Set.of(), 0f, 60f, true));
+		BlockPos[] mid = new BlockPos[1];
+		server(sp, s -> mid[0] = centre(s, lair, pos));
+		server(sp, s -> player(s).teleportTo(s.overworld(), mid[0].getX() + 0.5, 160, mid[0].getZ() + 0.5, Set.of(), 0f, 60f, true));
 		context.waitTicks(60);
 		sp.getConnection().waitForChunksRender();
 		context.waitTicks(20);
@@ -248,8 +265,9 @@ public class LairsClientTest implements FabricClientGameTest {
 		server(sp, s -> {
 			ServerLevel level = s.overworld();
 			ServerPlayer p = player(s);
-			for (int cx = (pos.getX() >> 4) - 5; cx <= (pos.getX() >> 4) + 5 && chestAt[0] == null; cx++) {
-				for (int cz = (pos.getZ() >> 4) - 5; cz <= (pos.getZ() >> 4) + 5 && chestAt[0] == null; cz++) {
+			BlockPos mid = centre(s, lair, pos);
+			for (int cx = (mid.getX() >> 4) - 5; cx <= (mid.getX() >> 4) + 5 && chestAt[0] == null; cx++) {
+				for (int cz = (mid.getZ() >> 4) - 5; cz <= (mid.getZ() >> 4) + 5 && chestAt[0] == null; cz++) {
 					for (BlockPos bp : level.getChunk(cx, cz).getBlockEntitiesPos()) {
 						if (level.getBlockEntity(bp) instanceof LairChestBlockEntity && level.getBlockState(bp).is(LairChests.BLOCKS.get(lair.name))) {
 							chestAt[0] = bp.immutable();

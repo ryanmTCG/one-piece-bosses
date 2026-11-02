@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "com.onepiecebosses.world.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"LairSiteMixin",
+		"StructureCheckSiteMixin",
+		"PlaceCommandMixin",
+		"ChunkGeneratorMixin",
+		"FeaturePlacerMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

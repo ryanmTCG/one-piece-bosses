@@ -23,6 +23,22 @@
     {
       "structure": "opbosses:abyssal_temple",
       "weight": 1
+    },
+    {
+      "structure": "opbosses:sunken_kasbah",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:gilded_wake",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:leviathan_pens",
+      "weight": 1
+    },
+    {
+      "structure": "opbosses:laboratory_null",
+      "weight": 1
     }
   ],
   "placement": {

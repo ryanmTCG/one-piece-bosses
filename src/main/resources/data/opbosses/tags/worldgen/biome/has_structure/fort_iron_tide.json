@@ -4,7 +4,6 @@
     "#minecraft:is_beach",
     "minecraft:plains",
     "minecraft:savanna",
-    "minecraft:stony_shore",
     {
       "id": "onepiece:east_blue",
       "required": false

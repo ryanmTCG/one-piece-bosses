@@ -85,6 +85,61 @@ public final class RogueSignatures {
 				}
 				level.sendParticles(ParticleTypes.SPLASH, boss.getX(), boss.getY() + 0.5, boss.getZ(), 120, 5, 0.5, 5, 0.3);
 			}
+			case "shackle_storm" -> { // Khamsin whips up a sandstorm, then yanks you in by his chains and claps the irons on.
+				for (Player player : playersNear(boss, level, 12)) {
+					player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 30 + 10 * extra, 0));
+					player.addEffect(new MobEffectInstance(MobEffects.HUNGER, 120, 2)); // The desert dries you out.
+				}
+				pull(target, boss, 1.2);
+				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 60 + 20 * extra, 3)); // Shackled.
+				level.sendParticles(ParticleTypes.WHITE_ASH, boss.getX(), boss.getY() + 2, boss.getZ(), 200, 6, 2, 6, 0.05);
+				level.playSound(null, boss.blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.HOSTILE, 2.0f, 0.5f);
+				strikes.signature("rain_sand", boss, target, level, damage, extra + 1);
+			}
+			case "drowned_doubloon" -> { // Gale's cursed gold takes years off everyone near, and the years mend him: he can't die while it's paid.
+				float taken = 0;
+				for (Player player : playersNear(boss, level, 10)) {
+					player.addEffect(new MobEffectInstance(MobEffects.WITHER, 60 + 20 * extra, 1));
+					player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, 0));
+					level.sendParticles(ParticleTypes.SOUL, player.getX(), player.getY() + 1, player.getZ(), 12, 0.3, 0.6, 0.3, 0.03);
+					taken += 1;
+				}
+				boss.heal(boss.getMaxHealth() * 0.015f * Math.min(taken, 4));
+				level.sendParticles(ParticleTypes.SOUL, boss.getX(), boss.getY() + 1, boss.getZ(), 40, 1.5, 1.0, 1.5, 0.02);
+				level.playSound(null, boss.blockPosition(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 2.0f, 0.5f);
+				strikes.signature("rain_curse", boss, target, level, damage, extra + 1);
+			}
+			case "leviathan_charge" -> { // Vasco's Sea King lunges: a charge straight at you, a wall of seawater, the ground bucks.
+				Vec3 at = target.position().subtract(boss.position()).multiply(1, 0, 1);
+				if (at.lengthSqr() > 0.01) {
+					Vec3 dash = at.normalize().scale(Math.min(2.4, at.length() * 0.35));
+					boss.setDeltaMovement(dash.x, 0.35, dash.z);
+					boss.needsSync = true;
+				}
+				Vec3 away = target.position().subtract(boss.position()).multiply(1, 0, 1).normalize().scale(1.6);
+				target.setDeltaMovement(away.x, 0.7, away.z);
+				target.needsSync = true;
+				target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 40 + 20 * extra, 1)); // Soaked through.
+				level.sendParticles(ParticleTypes.SPLASH, target.getX(), target.getY() + 0.5, target.getZ(), 150, 2.5, 1.0, 2.5, 0.4);
+				level.sendParticles(ParticleTypes.BUBBLE_POP, boss.getX(), boss.getY() + 1, boss.getZ(), 60, 2, 1, 2, 0.1);
+				level.playSound(null, boss.blockPosition(), SoundEvents.ELDER_GUARDIAN_CURSE, SoundSource.HOSTILE, 1.5f, 0.6f);
+				level.playSound(null, boss.blockPosition(), SoundEvents.GENERIC_SPLASH, SoundSource.HOSTILE, 2.0f, 0.7f);
+				strikes.signature("ground_wave", boss, target, level, damage, extra);
+				strikes.signature("rain_ice", boss, target, level, damage * 0.6f, extra);
+			}
+			case "prototype_barrage" -> { // Kreuz: every prototype fires at once (laser rain), a paw-pad blast throws back anyone close, and a shield goes up.
+				for (Player player : playersNear(boss, level, 6)) {
+					Vec3 away = player.position().subtract(boss.position()).multiply(1, 0, 1).normalize().scale(1.8);
+					player.setDeltaMovement(away.x, 1.1, away.z);
+					player.needsSync = true;
+				}
+				boss.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, 80 + 20 * extra, 1)); // His deflector prototype.
+				MoveFx.shockwave(level, boss.position(), 6, 0xFFE8F0FF, 0xFF3A6AC8);
+				level.sendParticles(ParticleTypes.ELECTRIC_SPARK, boss.getX(), boss.getY() + 1.5, boss.getZ(), 80, 1.2, 1.2, 1.2, 0.4);
+				level.playSound(null, boss.blockPosition(), SoundEvents.BEACON_POWER_SELECT, SoundSource.HOSTILE, 2.0f, 0.5f);
+				level.playSound(null, boss.blockPosition(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.HOSTILE, 1.0f, 1.6f);
+				strikes.signature("rain_light", boss, target, level, damage, extra + 3);
+			}
 			// ---- The film villains ----
 			case "golden_finale" -> { // Tesoro: the gold everyone touched grabs them, and molten gold rains down.
 				for (Player player : playersNear(boss, level, 12)) {

@@ -85,6 +85,21 @@ class Lair(Parts):
 
 LAIRS = []
 
+CLEAR_TOP = 24
+
+
+def clear_ground(b):
+    """Saves air in every empty spot over a land lair's ground (y 1 up to CLEAR_TOP, over its whole footprint), so the
+    land under it can't poke up through the yard: a dune burying a crewman, a hill swallowing a chimney, a mountain
+    face against the wall. LairSites (Java) already keeps lairs on fairly flat ground; this cuts away the rest."""
+    xs = [p[0] for p in b.blocks]; zs = [p[2] for p in b.blocks]; ys = [p[1] for p in b.blocks]
+    top = min(max(ys), CLEAR_TOP)
+    for x in range(min(xs), max(xs) + 1):
+        for z in range(min(zs), max(zs) + 1):
+            for y in range(1, top + 1):
+                if b.get(x, y, z) is None:
+                    b.set(x, y, z, AIR)
+
 
 def lair(name, title, boss, biomes, place, group="rogue_lairs"):
     def deco(fn):
@@ -469,7 +484,7 @@ def _(b):
 
 # ============================================================ Graves: Fort Iron Tide
 @lair("fort_iron_tide", "Fort Iron Tide", "iron_tide_graves",
-      ["#minecraft:is_beach", "minecraft:plains", "minecraft:savanna", "minecraft:stony_shore", "onepiece:east_blue", "onepiece:jaya"], "land")
+      ["#minecraft:is_beach", "minecraft:plains", "minecraft:savanna", "onepiece:east_blue", "onepiece:jaya"], "land")
 def _(b):
     rnd = random.Random(3)
     N = 62
@@ -657,7 +672,7 @@ def _(b):
 
 # ============================================================ Tsurugi: the Hollow Shrine
 @lair("hollow_shrine", "The Hollow Shrine", "hollow_ronin_tsurugi",
-      ["minecraft:cherry_grove", "minecraft:meadow", "minecraft:windswept_hills", "minecraft:taiga", "onepiece:wano"], "land")
+      ["minecraft:cherry_grove", "minecraft:meadow", "minecraft:taiga", "onepiece:wano"], "land")
 def _(b):
     rnd = random.Random(4)
     W, D = 58, 74
@@ -810,7 +825,7 @@ def _(b):
 
 # ============================================================ Gantz: the Shipbreakers' Foundry
 @lair("shipbreakers_foundry", "The Shipbreakers' Foundry", "boilerheart_gantz",
-      ["minecraft:stony_shore", "minecraft:badlands", "minecraft:desert", "minecraft:windswept_gravelly_hills", "onepiece:onigashima", "onepiece:punk_hazard_burning"], "land")
+      ["minecraft:badlands", "minecraft:desert", "onepiece:onigashima", "onepiece:punk_hazard_burning"], "land")
 def _(b):
     rnd = random.Random(5)
     W, D = 64, 58
@@ -1062,6 +1077,11 @@ def _(b):
     b.crew("abyssal_cultist", ((C - 7, C - 6), (C + 7, C - 6), (C - 7, C + 7), (C + 7, C + 7), (C, SZ + 2), (C - R - 4, C), (C + R + 4, C)), y=F + 1)
 
 
+# ============================================================ the second band of rogues (more_rogue_lairs.py)
+import more_rogue_lairs  # noqa: E402
+more_rogue_lairs.add(lair, OCEANS, DEEP)
+
+
 # ============================================================ the film villains (film_lairs.py)
 import film_lairs  # noqa: E402
 film_lairs.add(lair, OCEANS, DEEP)
@@ -1122,6 +1142,7 @@ LOOT = {
 SPACING, SEPARATION, SALT = 44, 16, 1408172101
 # The film villains' lairs are their own set, so adding them didn't make the rogue lairs any rarer.
 GROUPS = {"rogue_lairs": (SPACING, SEPARATION, SALT), "film_lairs": (40, 15, 1408172177)}
+LOOT.update(more_rogue_lairs.LOOT)
 LOOT.update(film_lairs.LOOT)
 LOOT.update(film_lairs_more.LOOT)
 # ...and never right next to one: a film lair stays at least 10 chunks from any rogue lair.
@@ -1153,10 +1174,12 @@ def main(root):
                 kit = [t for t in data["Tags"] if t.startswith(KIT_TAG_PREFIX)][0][len(KIT_TAG_PREFIX):]
                 assert kit in kits, (l['name'], kit)
         name = l['name']
+        if l['place'] == "land":
+            clear_ground(b)
         size, my = b.save(f'{D}/structure/{name}.nbt')
         st = {"type": "minecraft:jigsaw", "biomes": f"#opbosses:has_structure/{name}", "step": "surface_structures",
               "spawn_overrides": {"monster": {"bounding_box": "piece", "spawns": []}, "ambient": {"bounding_box": "piece", "spawns": []}},
-              "terrain_adaptation": "beard_thin", "start_pool": f"opbosses:{name}", "size": 1, "max_distance_from_center": 80, "use_expansion_hack": False}
+              "terrain_adaptation": "beard_box", "start_pool": f"opbosses:{name}", "size": 1, "max_distance_from_center": 80, "use_expansion_hack": False}
         # The jigsaw puts a piece's lowest level 1 below surface + start_height (a single element's ground level delta is 1),
         # so start_height 0 puts y = 0 on the top block of the ground, or of the sea for a sea lair's waterline.
         if l['place'] == "land":
