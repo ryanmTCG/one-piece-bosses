@@ -1075,6 +1075,10 @@ def add(lair, OCEANS, DEEP):
         b.scatter(0, 0, W, D, 1, ["minecraft:snow[layers=1]", "minecraft:snow[layers=2]"], 0.12, rnd,
                   only_on=["minecraft:snow_block", "minecraft:gravel", "minecraft:stone", "minecraft:andesite", "minecraft:polished_andesite", "minecraft:smooth_stone"])
 
+        for x in range(CX - 3, CX + 4):   # no drift where Kreuz stands: a 2-layer drift counts as standing in a block
+            for z in range(AZ - 3, AZ + 4):
+                if (b.get(x, 1, z) or "").startswith("minecraft:snow["):
+                    b.set(x, 1, z, AIR)
         b.rogue(CX, 1, AZ, "doctor_kreuz")
         b.crew("pacifista_prototype", ((AX0 + 9, AZ0 + 4), (AX1 - 5, AZ0 + 4), (AX1 - 5, AZ1 - 4), (AX0 + 9, AZ1 - 4), (CX, AZ0 - 4), (BX0 + 6, BZ0 + 10), (CX + 10, FZ1 - 6)))
 
